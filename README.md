@@ -1,6 +1,6 @@
 # kwantklubben-site
 
-The public recruiting site for **Kwant Klubben**, a student quant-finance club at SDU Odense. Plain static HTML/CSS/vanilla-JS — no build step, no framework. Deployed via GitHub Pages at `kwantklubben.dk`.
+The public recruiting site for **Kwant Klubben**, a student quant-finance club at SDU Odense. Plain static HTML/CSS/vanilla-JS — no build step, no framework. Deployed via GitHub Pages at `kwantklubben.com`.
 
 This repo is intentionally separate from the club's private research repo (`kwantklubben`, not public). Nothing sensitive lives here — brand assets, marketing copy, and a link out to the application form.
 
@@ -35,7 +35,7 @@ then open `http://localhost:8000`.
 
 ## Deploy
 
-Push to `main`. GitHub Pages is configured to deploy from `main` / root — no Actions workflow needed. Custom domain (`kwantklubben.dk`) is set in repo Settings → Pages, which manages the `CNAME` file automatically.
+Push to `main`. GitHub Pages is configured to deploy from `main` / root — no Actions workflow needed. Custom domain (`kwantklubben.com`) is set in repo Settings → Pages, which manages the `CNAME` file automatically.
 
 ## Provenance
 
