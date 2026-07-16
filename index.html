@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kwant Klubben — SDU Quantitative Finance</title>
+<meta name="description" content="A student quant-finance club at SDU Odense. Paper-trading only, hypotheses pre-registered, every trial logged. We have fun with fat tails.">
+
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/favicon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="kk-nav">
+  <div class="kk-nav__inner">
+    <img src="assets/logo-primary.png" alt="Kwant Klubben" style="height:72px">
+    <nav class="kk-nav__links">
+      <a href="#manifesto" style="font-family:var(--font-mono);font-size:13px;letter-spacing:.04em;color:var(--ink-700);text-decoration:none">Manifesto</a>
+      <a href="#projects" style="font-family:var(--font-mono);font-size:13px;letter-spacing:.04em;color:var(--ink-700);text-decoration:none">Projects</a>
+      <a href="#join" style="font-family:var(--font-mono);font-size:13px;letter-spacing:.04em;color:var(--ink-700);text-decoration:none">Join</a>
+      <a class="kk-btn kk-btn--primary kk-btn--sm" href="#join">Join the klub</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="kk-gridpaper" style="border-bottom:2px solid var(--ink-800)">
+  <div class="kk-section kk-two-col" style="padding-top:68px;padding-bottom:40px">
+    <div>
+      <div style="display:flex;gap:8px;margin-bottom:22px">
+        <span class="kk-badge kk-badge--solid">SDU · Odense</span>
+        <span class="kk-badge kk-badge--survived kk-badge--dot">Paper only · no pooled money</span>
+      </div>
+      <h1 style="font:var(--weight-bold) 66px/1.0 var(--font-display);letter-spacing:-.03em;color:var(--ink-900);margin:0 0 20px">
+        We have fun<br>with <span style="color:var(--lime-600)">fat tails.</span>
+      </h1>
+      <p style="font:var(--type-body);font-size:19px;color:var(--ink-700);max-width:46ch;margin:0 0 28px">
+        A student quant-finance club that treats backtests like crime scenes. We pre-register hypotheses, log every trial, and KILL the strategies that can't survive an honest validation battery — because a clean negative result is still a finished project.
+      </p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <a class="kk-btn kk-btn--primary kk-btn--lg" href="#join">Join the klub →</a>
+        <a class="kk-btn kk-btn--secondary kk-btn--lg" href="#manifesto">Read the manifesto</a>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="kk-card kk-card--pad-lg">
+        <div class="kk-overline" style="margin-bottom:10px">Empirical return distribution · NVO daily</div>
+        <img src="assets/hero-distribution.svg" alt="Return distribution with fat tails" style="width:100%;display:block">
+        <div style="display:flex;justify-content:space-between;margin-top:12px;font-family:var(--font-mono);font-size:12px;color:var(--ink-400)">
+          <span>−3σ</span><span style="color:var(--coral-600);font-weight:700">the tails the Gaussian swears can't happen</span><span>+3σ</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MANIFESTO ============ -->
+<section id="manifesto" style="background:var(--lime-500);border-bottom:2px solid var(--ink-800)">
+  <div class="kk-section" style="padding-top:56px;padding-bottom:56px">
+    <div class="kk-overline" style="color:var(--ink-700);margin-bottom:8px">House rules</div>
+    <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0 0 36px;max-width:18ch">How we keep ourselves honest.</h2>
+    <div class="kk-manifesto-grid">
+      <div>
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-800);margin-bottom:14px">01</div>
+        <div style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin-bottom:10px">SPEC before code</div>
+        <div style="font:var(--type-body-sm);color:var(--ink-700)">Pre-registering the hypothesis is the cheapest anti-overfitting device there is.</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-800);margin-bottom:14px">02</div>
+        <div style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin-bottom:10px">Log every trial</div>
+        <div style="font:var(--type-body-sm);color:var(--ink-700)">No entry in trials.csv? Then the result doesn’t exist. The honest trial count is what makes the Deflated Sharpe mean anything.</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-800);margin-bottom:14px">03</div>
+        <div style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin-bottom:10px">Validate before you believe</div>
+        <div style="font:var(--type-body-sm);color:var(--ink-700)">Walk-forward, permutation test, Monte Carlo, DSR. Most things die here. That’s the point.</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-800);margin-bottom:14px">04</div>
+        <div style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin-bottom:10px">Failures stay in the repo</div>
+        <div style="font:var(--type-body-sm);color:var(--ink-700)">A strategy that honestly failed is just as valuable a library entry as one that survived.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS BAND ============ -->
+<section style="background:var(--ink-800);border-bottom:2px solid var(--ink-900)">
+  <div class="kk-section kk-stats-grid" style="padding-top:44px;padding-bottom:44px">
+
+    <!-- TODO(content): unverified placeholder — check against docs/DEVLOG.md and strategies/*/SPEC.md before publishing -->
+    <div class="kk-stat kk-stat--ink">
+      <span class="kk-stat__label">Strategies spec'd</span>
+      <span class="kk-stat__value"><span class="kk-stat__num" data-kk-countup data-target="11">0</span></span>
+      <span class="kk-stat__sub">across FX, equities, options</span>
+    </div>
+
+    <!-- TODO(content): unverified placeholder — check against docs/DEVLOG.md before publishing -->
+    <div class="kk-stat kk-stat--ink">
+      <span class="kk-stat__label">Honestly killed</span>
+      <span class="kk-stat__value">
+        <span class="kk-stat__num" data-kk-countup data-target="7">0</span>
+        <span class="kk-stat__delta kk-stat__delta--down">−64%</span>
+      </span>
+      <span class="kk-stat__sub">survival rate by design</span>
+    </div>
+
+    <!-- TODO(content): unverified placeholder — check against docs/DEVLOG.md before publishing -->
+    <div class="kk-stat kk-stat--ink">
+      <span class="kk-stat__label">Survived validation</span>
+      <span class="kk-stat__value">
+        <span class="kk-stat__num" data-kk-countup data-target="2">0</span>
+        <span class="kk-stat__delta kk-stat__delta--up">paper-trading</span>
+      </span>
+    </div>
+
+    <!-- TODO(content): pre-launch this is honestly near-zero — consider dropping this stat entirely until the first meeting has happened, rather than shipping a fabricated member count -->
+    <div class="kk-stat kk-stat--ink">
+      <span class="kk-stat__label">Members</span>
+      <span class="kk-stat__value"><span class="kk-stat__num" data-kk-countup data-target="14">0</span></span>
+      <span class="kk-stat__sub">IBKR paper · USD 100k each</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ PROJECTS ============ -->
+<section id="projects" style="background:var(--paper-50)">
+  <div class="kk-section" style="padding-top:64px;padding-bottom:64px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:34px;flex-wrap:wrap;gap:16px">
+      <div>
+        <div class="kk-overline" style="margin-bottom:8px">The library</div>
+        <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0">Every project, honest outcome and all.</h2>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:13px;color:var(--ink-400);max-width:30ch">The repo is the portfolio. SPEC → code → trials.csv → honesty card → write-up.</div>
+    </div>
+
+    <div class="kk-projects-grid">
+
+      <!-- TODO(content): unverified placeholder (Net Sharpe 0.71) — strategies/pairs-twins/SPEC.md currently says "in validation", no verdict recorded yet. Replace with real current status before publishing. -->
+      <div class="kk-card kk-card--pad-md kk-card--hover">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
+          <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:12ch">NVO / LLY pairs</h3>
+          <span class="kk-stamp kk-stamp--paper kk-stamp--sm">Live paper</span>
+        </div>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:84px">Market-neutral pharma duopoly spread with a pre-registered z-band and deflated-Sharpe validation.</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+          <span class="kk-tag">equities</span><span class="kk-tag">stat-arb</span><span class="kk-tag">cointegration</span>
+        </div>
+        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px">
+          <div class="kk-stat"><span class="kk-stat__label">Net Sharpe</span><span class="kk-stat__value"><span class="kk-stat__num kk-stat__num--sm">0.71</span></span></div>
+        </div>
+      </div>
+
+      <!-- TODO(content): unverified placeholder — no strategies/options-pricer folder exists in the repo yet (this is currently just a catalog idea in PROJECTS.md, not completed work). Drop this card or replace before publishing. -->
+      <div class="kk-card kk-card--pad-md kk-card--hover">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
+          <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:12ch">Options pricer + Greeks</h3>
+          <span class="kk-stamp kk-stamp--survived kk-stamp--sm">Survived</span>
+        </div>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:84px">Closed-form BS pricer cross-checked against Monte Carlo, then run on a live NVO/LLY chain to map the skew the model can’t explain.</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+          <span class="kk-tag">options</span><span class="kk-tag">black-scholes</span><span class="kk-tag">monte-carlo</span>
+        </div>
+        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px">
+          <div class="kk-stat"><span class="kk-stat__label">IV error</span><span class="kk-stat__value"><span class="kk-stat__num kk-stat__num--sm">1.2%</span></span></div>
+        </div>
+      </div>
+
+      <!-- Verified against docs/DEVLOG.md: KILL, perm p=0.87, gross premium absent (+0.01%/mo, NW t=0.03). Real. -->
+      <div class="kk-card kk-card--pad-md kk-card--hover">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
+          <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:12ch">XS-momentum (12-1)</h3>
+          <span class="kk-stamp kk-stamp--killed kk-stamp--sm">Killed</span>
+        </div>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:84px">Construction valid (UMD ρ=0.88) but the gross premium is gone. The anomaly decayed, not our data. Two kill conditions hit.</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+          <span class="kk-tag">equities</span><span class="kk-tag">factor</span>
+        </div>
+        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px">
+          <div class="kk-stat"><span class="kk-stat__label">Perm p</span><span class="kk-stat__value"><span class="kk-stat__num kk-stat__num--sm">0.87</span></span></div>
+        </div>
+      </div>
+
+      <!-- Verified against docs/DEVLOG.md: KILL, perm p=0.112 (missed pre-registered 0.10 bar), net SR 0.522, DSR 0.928. Real. -->
+      <div class="kk-card kk-card--pad-md kk-card--hover">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
+          <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:12ch">TSMOM multi-asset</h3>
+          <span class="kk-stamp kk-stamp--killed kk-stamp--sm">Killed</span>
+        </div>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:84px">Net SR 0.52, DSR 0.93 — but permutation p just missed the pre-registered 0.10 bar. Timing added no Sharpe over the static book. Killed per spec.</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+          <span class="kk-tag">multi-asset</span><span class="kk-tag">trend</span><span class="kk-tag">vol-target</span>
+        </div>
+        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px">
+          <div class="kk-stat"><span class="kk-stat__label">Perm p</span><span class="kk-stat__value"><span class="kk-stat__num kk-stat__num--sm">0.112</span></span></div>
+        </div>
+      </div>
+
+      <!-- TODO(content): unverified placeholder — no matching strategies/ folder or docs/DEVLOG.md entry found. Drop this card or replace before publishing. -->
+      <div class="kk-card kk-card--pad-md kk-card--hover">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
+          <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:12ch">Stylized facts &amp; fractals</h3>
+          <span class="kk-stamp kk-stamp--survived kk-stamp--sm">Survived</span>
+        </div>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:84px">Return distributions vs normal across timescales: QQ-plots, tail indices, and the shuffle test that proves clustering is real and fat tails are forever.</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+          <span class="kk-tag">research</span><span class="kk-tag">hurst</span><span class="kk-tag">hill</span>
+        </div>
+        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px">
+          <div class="kk-stat"><span class="kk-stat__label">Hurst</span><span class="kk-stat__value"><span class="kk-stat__num kk-stat__num--sm">0.58</span></span></div>
+        </div>
+      </div>
+
+      <!-- TODO(content): unverified placeholder — no matching strategies/ folder or docs/DEVLOG.md entry found. Drop this card or replace before publishing. -->
+      <div class="kk-card kk-card--pad-md kk-card--hover">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
+          <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:12ch">Markov regime model</h3>
+          <span class="kk-stamp kk-stamp--review kk-stamp--sm">In review</span>
+        </div>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:84px">Vol/trend state classification on weekly returns, conditioning an existing strategy and permutation-testing whether it honestly improves anything.</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+          <span class="kk-tag">regime</span><span class="kk-tag">HMM</span>
+        </div>
+        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px">
+          <div class="kk-stat"><span class="kk-stat__label">States</span><span class="kk-stat__value"><span class="kk-stat__num kk-stat__num--sm">3</span></span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ JOIN ============ -->
+<section id="join" style="background:var(--ink-900);border-top:2px solid var(--ink-900)">
+  <div class="kk-gridpaper" style="background:transparent">
+    <div class="kk-section kk-two-col--join" style="padding-top:72px;padding-bottom:72px">
+      <div>
+        <h2 style="font:var(--weight-bold) 52px/1.0 var(--font-display);letter-spacing:-.03em;color:#fff;margin:0 0 18px">Bring a hypothesis.<br>We’ll help you kill it.</h2>
+        <p style="font:var(--type-body);font-size:18px;color:var(--paper-300);max-width:44ch;margin:0 0 28px">
+          No finance background required — just curiosity and a tolerance for being wrong in public. Apply below, and if it's a fit we'll get you into the first meeting.
+        </p>
+        <div style="display:flex;gap:14px;flex-wrap:wrap">
+          <!-- TODO(content): replace this mailto: fallback with the real Google Form URL once created -->
+          <a class="kk-btn kk-btn--primary kk-btn--lg" href="mailto:alfredbirkelund@gmail.com?subject=Kwant%20Klubben%20-%20I%20want%20to%20join">Apply to join</a>
+        </div>
+      </div>
+      <div class="kk-card kk-card--ink kk-card--pad-lg" style="background:var(--ink-700)">
+        <div class="kk-overline" style="margin-bottom:14px">Setup check</div>
+        <pre style="font-family:var(--font-mono);font-size:13px;color:var(--paper-100);margin:0;white-space:pre-wrap;line-height:1.7">$ git clone kwantklubben
+$ pip install -r requirements.txt
+$ python -m honesty.test_honesty</pre>
+        <div style="margin-top:14px;display:flex;align-items:center;gap:10px">
+          <span class="kk-badge kk-badge--survived kk-badge--dot">All sanity checks passed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer style="background:var(--ink-900);border-top:2px solid var(--ink-700);color:var(--paper-400)">
+  <div class="kk-footer__inner">
+    <div class="kk-footer__brand">
+      <img src="assets/logo-mark-knockout.png" alt="" style="height:40px">
+      <span>Kwant Klubben · SDU Quantitative Finance</span>
+      <!-- TODO(content): confirm the club's LinkedIn page exists/URL before publishing -->
+      <a href="https://www.linkedin.com/company/REPLACE_ME" style="color:inherit">LinkedIn</a>
+    </div>
+    <span>Paper trading only. Nothing here is investment advice. Especially the winners.</span>
+  </div>
+</footer>
+
+<script src="js/kk-motion.js" defer></script>
+</body>
+</html>
