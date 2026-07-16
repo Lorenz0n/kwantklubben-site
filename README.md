@@ -1,6 +1,6 @@
 # kwantklubben-site
 
-The public recruiting site for **Kwant Klubben**, a student quant-finance club at SDU Odense. Plain static HTML/CSS/vanilla-JS — no build step, no framework. Deployed via GitHub Pages at `kwantklubben.com`.
+The public recruiting site for **Kwant Klubben**, a student quant-finance club at SDU Odense. Plain static HTML/CSS/vanilla-JS. Deployed via GitHub Pages at `kwantklubben.com`.
 
 This repo is intentionally separate from the club's private research repo (`kwantklubben`, not public). Nothing sensitive lives here — brand assets, marketing copy, and a link out to the application form.
 
