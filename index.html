@@ -6,31 +6,46 @@
 <title>Kwant Klubben — SDU Quantitative Finance</title>
 <meta name="description" content="A student quant-finance club at SDU Odense. Paper-trading only, hypotheses pre-registered, every trial logged. We have fun with fat tails.">
 
-<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16.png">
-<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/favicon-180.png">
+<!-- ============ HEAD-COMMON ============ -->
+<!-- COPY-PASTE BLOCK — byte-identical in index.html, projects/index.html and
+     sponsors/index.html. Paths are root-relative precisely so it can be. Edit one,
+     paste into the other two, then run `python tools/check-partials.py`.
+     Per-page <title>/<meta description> stay ABOVE this block, outside it. -->
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/favicon-180.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Chewy&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="/css/styles.css">
 <script>document.documentElement.classList.add('js')</script>
+<!-- ============ /HEAD-COMMON ============ -->
 </head>
 <body>
 
 <!-- ============ NAV ============ -->
+<!-- COPY-PASTE BLOCK — byte-identical in all three pages. See HEAD-COMMON above.
+     aria-current is set by js/kk-nav.js rather than hardcoded here, so this block
+     can stay identical across files. -->
 <header class="kk-nav">
   <div class="kk-nav__inner">
-    <img src="assets/logo-primary.png" alt="Kwant Klubben" style="height:72px">
-    <nav class="kk-nav__links">
-      <a href="#manifesto" style="font-family:var(--font-mono);font-size:13px;letter-spacing:.04em;color:var(--ink-700);text-decoration:none">Manifesto</a>
-      <a href="#projects" style="font-family:var(--font-mono);font-size:13px;letter-spacing:.04em;color:var(--ink-700);text-decoration:none">Projects</a>
-      <a href="#join" style="font-family:var(--font-mono);font-size:13px;letter-spacing:.04em;color:var(--ink-700);text-decoration:none">Join</a>
-      <a class="kk-btn kk-btn--primary kk-btn--sm" href="#join">Join the klub</a>
+    <a class="kk-nav__logo" href="/"><img src="/assets/logo-primary.png" alt="Kwant Klubben — home" style="height:72px"></a>
+    <nav class="kk-nav__links" aria-label="Main">
+      <div class="kk-nav__panel" id="kk-nav-panel" hidden>
+        <a href="/#about">About</a>
+        <a href="/projects/">Projects</a>
+        <a href="/sponsors/">Sponsors</a>
+      </div>
+      <a class="kk-btn kk-btn--primary kk-btn--sm" href="/#join">Join the klub</a>
+      <button class="kk-nav__toggle" type="button" aria-label="Menu" aria-controls="kk-nav-panel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </nav>
   </div>
 </header>
+<!-- ============ /NAV ============ -->
 
 <!-- ============ HERO ============ -->
 <section class="kk-gridpaper" style="border-bottom:2px solid var(--ink-800)">
@@ -47,14 +62,14 @@
         A student quant-finance club that treats backtests like crime scenes. We pre-register hypotheses, log every trial, and KILL the strategies that can't survive an honest validation battery — because a clean negative result is still a finished project.
       </p>
       <div style="display:flex;gap:14px;flex-wrap:wrap">
-        <a class="kk-btn kk-btn--primary kk-btn--lg" href="#join">Join the klub →</a>
-        <a class="kk-btn kk-btn--secondary kk-btn--lg" href="#manifesto">Read the manifesto</a>
+        <a class="kk-btn kk-btn--primary kk-btn--lg" href="/#join">Join the klub →</a>
+        <a class="kk-btn kk-btn--secondary kk-btn--lg" href="/#about">Read the manifesto</a>
       </div>
     </div>
     <div style="display:flex;flex-direction:column;gap:14px">
       <div class="kk-card kk-card--pad-lg">
         <div class="kk-overline" style="margin-bottom:10px">Empirical return distribution · NVO daily</div>
-        <img src="assets/hero-distribution.svg" alt="Return distribution with fat tails" style="width:100%;display:block">
+        <img src="/assets/hero-distribution.svg" alt="Return distribution with fat tails" style="width:100%;display:block">
         <div style="display:flex;justify-content:space-between;margin-top:12px;font-family:var(--font-mono);font-size:12px;color:var(--ink-400)">
           <span>−3σ</span><span style="color:var(--coral-600);font-weight:700">the tails the Gaussian swears can't happen</span><span>+3σ</span>
         </div>
@@ -63,8 +78,8 @@
   </div>
 </section>
 
-<!-- ============ MANIFESTO ============ -->
-<section id="manifesto" style="background:var(--lime-500);border-bottom:2px solid var(--ink-800)">
+<!-- ============ ABOUT ============ -->
+<section id="about" style="background:var(--lime-500);border-bottom:2px solid var(--ink-800)">
   <div class="kk-section" style="padding-top:56px;padding-bottom:56px">
     <div class="kk-overline" style="color:var(--ink-700);margin-bottom:8px">House rules</div>
     <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0 0 36px;max-width:18ch">How we keep ourselves honest.</h2>
@@ -139,7 +154,9 @@
     <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:34px;flex-wrap:wrap;gap:16px">
       <div>
         <div class="kk-overline" style="margin-bottom:8px">The library</div>
-        <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0">Every project, honest outcome and all.</h2>
+        <!-- Placeholder copy — Alfred's to edit. "Every project, honest outcome and all."
+             moved to /projects/, where it's literally true; above 3 of 6 cards it isn't. -->
+        <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0">From the library.</h2>
       </div>
       <div style="font-family:var(--font-mono);font-size:13px;color:var(--ink-400);max-width:30ch">The repo is the portfolio. SPEC → code → trials.csv → honesty card → write-up.</div>
     </div>
@@ -158,21 +175,6 @@
         </div>
         <div style="border-top:1.5px solid var(--paper-300);padding-top:12px">
           <div class="kk-stat"><span class="kk-stat__label">Net Sharpe</span><span class="kk-stat__value"><span class="kk-stat__num kk-stat__num--sm">0.71</span></span></div>
-        </div>
-      </div>
-
-      <!-- TODO(content): unverified placeholder — no strategies/options-pricer folder exists in the repo yet (this is currently just a catalog idea in PROJECTS.md, not completed work). Drop this card or replace before publishing. -->
-      <div class="kk-card kk-card--pad-md kk-card--hover">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
-          <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:12ch">Options pricer + Greeks</h3>
-          <span class="kk-stamp kk-stamp--survived kk-stamp--sm">Survived</span>
-        </div>
-        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:84px">Closed-form BS pricer cross-checked against Monte Carlo, then run on a live NVO/LLY chain to map the skew the model can’t explain.</p>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
-          <span class="kk-tag">options</span><span class="kk-tag">black-scholes</span><span class="kk-tag">monte-carlo</span>
-        </div>
-        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px">
-          <div class="kk-stat"><span class="kk-stat__label">IV error</span><span class="kk-stat__value"><span class="kk-stat__num kk-stat__num--sm">1.2%</span></span></div>
         </div>
       </div>
 
@@ -206,36 +208,12 @@
         </div>
       </div>
 
-      <!-- TODO(content): unverified placeholder — no matching strategies/ folder or docs/DEVLOG.md entry found. Drop this card or replace before publishing. -->
-      <div class="kk-card kk-card--pad-md kk-card--hover">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
-          <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:12ch">Stylized facts &amp; fractals</h3>
-          <span class="kk-stamp kk-stamp--survived kk-stamp--sm">Survived</span>
-        </div>
-        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:84px">Return distributions vs normal across timescales: QQ-plots, tail indices, and the shuffle test that proves clustering is real and fat tails are forever.</p>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
-          <span class="kk-tag">research</span><span class="kk-tag">hurst</span><span class="kk-tag">hill</span>
-        </div>
-        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px">
-          <div class="kk-stat"><span class="kk-stat__label">Hurst</span><span class="kk-stat__value"><span class="kk-stat__num kk-stat__num--sm">0.58</span></span></div>
-        </div>
-      </div>
+    </div>
 
-      <!-- TODO(content): unverified placeholder — no matching strategies/ folder or docs/DEVLOG.md entry found. Drop this card or replace before publishing. -->
-      <div class="kk-card kk-card--pad-md kk-card--hover">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
-          <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:12ch">Markov regime model</h3>
-          <span class="kk-stamp kk-stamp--review kk-stamp--sm">In review</span>
-        </div>
-        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:84px">Vol/trend state classification on weekly returns, conditioning an existing strategy and permutation-testing whether it honestly improves anything.</p>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
-          <span class="kk-tag">regime</span><span class="kk-tag">HMM</span>
-        </div>
-        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px">
-          <div class="kk-stat"><span class="kk-stat__label">States</span><span class="kk-stat__value"><span class="kk-stat__num kk-stat__num--sm">3</span></span></div>
-        </div>
-      </div>
-
+    <!-- Sits OUTSIDE .kk-projects-grid on purpose: inside, it would become a 4th
+         grid item — a second row at 1/3 width, tied to the grid's 18px gap. -->
+    <div style="margin-top:28px;display:flex;justify-content:center">
+      <a class="kk-btn kk-btn--secondary kk-btn--md" href="/projects/">See all projects →</a>
     </div>
   </div>
 </section>
@@ -268,17 +246,25 @@ $ python -m honesty.test_honesty</pre>
 </section>
 
 <!-- ============ FOOTER ============ -->
+<!-- COPY-PASTE BLOCK — byte-identical in all three pages. See HEAD-COMMON. -->
 <footer style="background:var(--ink-900);border-top:2px solid var(--ink-700);color:var(--paper-400)">
   <div class="kk-footer__inner">
     <div class="kk-footer__brand">
-      <img src="assets/logo-mark-knockout.png" alt="" style="height:40px">
+      <img src="/assets/logo-mark-knockout.png" alt="" style="height:40px">
       <span>Kwant Klubben · SDU Quantitative Finance Club</span>
       <a href="https://www.linkedin.com/company/kwant-klubben" style="color:inherit">LinkedIn</a>
     </div>
   </div>
   <div class="kk-footer-word kk-onview"><span>KWANT</span></div>
 </footer>
+<!-- ============ /FOOTER ============ -->
 
-<script src="js/kk-motion.js" defer></script>
+<!-- ============ SCRIPTS ============ -->
+<!-- COPY-PASTE BLOCK — byte-identical in all three pages. kk-motion.js is needed
+     on every page: the footer's .kk-onview reveal depends on it, not just the
+     home page's count-up stats. -->
+<script src="/js/kk-motion.js" defer></script>
+<script src="/js/kk-nav.js" defer></script>
+<!-- ============ /SCRIPTS ============ -->
 </body>
 </html>

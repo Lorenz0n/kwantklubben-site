@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sponsors — Kwant Klubben</title>
+<meta name="description" content="Sponsor a student quant-finance club at SDU Odense: recruiting access, a workshop slot, and your mark on our site and campus posters.">
+
+<!-- ============ HEAD-COMMON ============ -->
+<!-- COPY-PASTE BLOCK — byte-identical in index.html, projects/index.html and
+     sponsors/index.html. Paths are root-relative precisely so it can be. Edit one,
+     paste into the other two, then run `python tools/check-partials.py`.
+     Per-page <title>/<meta description> stay ABOVE this block, outside it. -->
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/favicon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Chewy&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/css/styles.css">
+<script>document.documentElement.classList.add('js')</script>
+<!-- ============ /HEAD-COMMON ============ -->
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<!-- COPY-PASTE BLOCK — byte-identical in all three pages. See HEAD-COMMON above.
+     aria-current is set by js/kk-nav.js rather than hardcoded here, so this block
+     can stay identical across files. -->
+<header class="kk-nav">
+  <div class="kk-nav__inner">
+    <a class="kk-nav__logo" href="/"><img src="/assets/logo-primary.png" alt="Kwant Klubben — home" style="height:72px"></a>
+    <nav class="kk-nav__links" aria-label="Main">
+      <div class="kk-nav__panel" id="kk-nav-panel" hidden>
+        <a href="/#about">About</a>
+        <a href="/projects/">Projects</a>
+        <a href="/sponsors/">Sponsors</a>
+      </div>
+      <a class="kk-btn kk-btn--primary kk-btn--sm" href="/#join">Join the klub</a>
+      <button class="kk-nav__toggle" type="button" aria-label="Menu" aria-controls="kk-nav-panel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </div>
+</header>
+<!-- ============ /NAV ============ -->
+
+<!-- ============ CURRENT SPONSORS (future) ============ -->
+<!-- The "Current sponsors" logo strip lands HERE, above the pitch, once the first
+     sponsor signs — same URL, so posters and LinkedIn never need reprinting.
+     Deliberately absent at launch: an empty "our sponsors" strip is worse than none.
+     NOTE: this is the one part of the page that WILL need new CSS — a logo wall has
+     no equivalent among the six bundled component families. Budget for it then. -->
+
+<!-- ============ PITCH HEADER ============ -->
+<!-- Copies HERO's gridpaper pattern (class on the <section>), NOT JOIN's nested
+     div — JOIN's inline background:transparent shorthand wipes the grid image, so
+     that div renders nothing. Don't propagate it. -->
+<section class="kk-gridpaper" style="border-bottom:2px solid var(--ink-800)">
+  <div class="kk-section" style="padding-top:68px;padding-bottom:40px">
+    <div style="display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap">
+      <span class="kk-badge kk-badge--solid">SDU · Odense</span>
+    </div>
+    <h1 style="font:var(--weight-bold) 52px/1.0 var(--font-display);letter-spacing:-.03em;color:var(--ink-900);margin:0 0 20px;max-width:16ch">Sponsor Kwant Klubben.</h1>
+    <p style="font:var(--type-body);font-size:19px;color:var(--ink-700);max-width:52ch;margin:0">
+      We're a student quant-finance club at SDU Odense, building a public track record of honest research. If you hire quantitative people — or want them to know your name before they graduate — let's talk.
+    </p>
+  </div>
+</section>
+
+<!-- ============ WHO WE ARE ============ -->
+<section id="who" style="background:var(--lime-500);border-bottom:2px solid var(--ink-800)">
+  <div class="kk-section" style="padding-top:56px;padding-bottom:56px">
+    <div class="kk-overline" style="color:var(--ink-700);margin-bottom:8px">Who we are</div>
+    <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0 0 20px;max-width:20ch">A student quant club that publishes its failures.</h2>
+    <p style="font:var(--type-body);font-size:18px;color:var(--ink-800);max-width:60ch;margin:0">
+      Kwant Klubben pre-registers every hypothesis, logs every trial, and kills the strategies that can't survive an honest validation battery — because a clean negative result is still a finished project. Paper trading only: no pooled money, no performance claims.
+    </p>
+  </div>
+</section>
+
+<!-- ============ WHAT A SPONSOR GETS ============ -->
+<section id="offer" style="background:var(--paper-50)">
+  <div class="kk-section" style="padding-top:64px;padding-bottom:64px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:34px;flex-wrap:wrap;gap:16px">
+      <div>
+        <div class="kk-overline" style="margin-bottom:8px">The offer</div>
+        <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0">What a sponsor gets.</h2>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:13px;color:var(--ink-400);max-width:30ch">Draft terms — talk to us and we'll shape them around what you actually need.</div>
+    </div>
+
+    <!-- TODO(content): draft wording — this is the klub making promises to companies,
+         so the exact terms are Alfred's call. Confirm all three before publishing. -->
+    <div class="kk-projects-grid">
+
+      <div class="kk-card kk-card--pad-md">
+        <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0 0 14px;max-width:14ch">Recruiting access</h3>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px">Direct line to SDU students who choose to spend their evenings on quantitative finance — and who have a public repo of real work you can read before you interview them.</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <span class="kk-tag">recruiting</span>
+        </div>
+      </div>
+
+      <div class="kk-card kk-card--pad-md">
+        <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0 0 14px;max-width:14ch">A workshop or talk slot</h3>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px">An evening with the klub — a technical talk, a data set to attack, or a war story about what the textbooks get wrong. We'll fill the room.</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <span class="kk-tag">workshop</span>
+        </div>
+      </div>
+
+      <div class="kk-card kk-card--pad-md">
+        <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0 0 14px;max-width:14ch">Logo on site and posters</h3>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px">Your mark on this site and on the posters that go up across the econ, maths, CS and engineering boards at the start of each semester.</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <span class="kk-tag">brand</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ GET IN TOUCH ============ -->
+<section id="contact" style="background:var(--ink-900);border-top:2px solid var(--ink-900)">
+  <div class="kk-section" style="padding-top:72px;padding-bottom:72px">
+    <div class="kk-overline" style="color:var(--paper-400);margin-bottom:8px">Get in touch</div>
+    <h2 style="font:var(--weight-bold) 52px/1.0 var(--font-display);letter-spacing:-.03em;color:#fff;margin:0 0 18px;max-width:18ch">Let's talk.</h2>
+    <p style="font:var(--type-body);font-size:18px;color:var(--paper-300);max-width:48ch;margin:0 0 28px">
+      No deck required. Tell us what you're after and we'll tell you honestly whether we can deliver it.
+    </p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap">
+      <!-- TODO(content): personal mailto:, consistent with the Join section's fallback.
+           Replace with a dedicated klub sponsor contact route if wanted before posters
+           go up 2026-08-31. -->
+      <a class="kk-btn kk-btn--primary kk-btn--lg" href="mailto:alfredbirkelund@gmail.com?subject=Kwant%20Klubben%20-%20sponsorship">Email the klub</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<!-- COPY-PASTE BLOCK — byte-identical in all three pages. See HEAD-COMMON. -->
+<footer style="background:var(--ink-900);border-top:2px solid var(--ink-700);color:var(--paper-400)">
+  <div class="kk-footer__inner">
+    <div class="kk-footer__brand">
+      <img src="/assets/logo-mark-knockout.png" alt="" style="height:40px">
+      <span>Kwant Klubben · SDU Quantitative Finance Club</span>
+      <a href="https://www.linkedin.com/company/kwant-klubben" style="color:inherit">LinkedIn</a>
+    </div>
+  </div>
+  <div class="kk-footer-word kk-onview"><span>KWANT</span></div>
+</footer>
+<!-- ============ /FOOTER ============ -->
+
+<!-- ============ SCRIPTS ============ -->
+<!-- COPY-PASTE BLOCK — byte-identical in all three pages. kk-motion.js is needed
+     on every page: the footer's .kk-onview reveal depends on it, not just the
+     home page's count-up stats. -->
+<script src="/js/kk-motion.js" defer></script>
+<script src="/js/kk-nav.js" defer></script>
+<!-- ============ /SCRIPTS ============ -->
+</body>
+</html>

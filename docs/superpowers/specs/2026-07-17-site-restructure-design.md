@@ -43,9 +43,16 @@ Recorded so it isn't lost:
   teaser with zero fabrication: `tsmom-multiasset` (perm p 0.112),
   `xs-momentum` (net SR −0.08 at 24.5× turnover), `pairs-twins` (net SR −0.69).
 - Four cards are unbacked, for two different reasons. **Three have no repo
-  folder at all** — Options pricer, Stylized facts, Markov regime. **One is
-  superseded** — NVO/LLY pairs, which the real pairs-twins KILL now covers
-  (NVO/LLY took 18 divergence stops, mostly selling LLY's GLP-1 repricing).
+  folder at all** — Options pricer, Stylized facts, Markov regime. **The
+  fourth, NVO/LLY pairs, IS `pairs-twins`** — its own TODO names
+  `strategies/pairs-twins/SPEC.md`. The folder is real and now carries a KILL;
+  only the card's `Live paper` stamp and `0.71` Sharpe are fabricated (NVO/LLY
+  took 18 divergence stops, mostly selling LLY's GLP-1 repricing).
+
+  *(Corrected 2026-07-17 during implementation: an earlier draft of this section
+  described NVO/LLY as a separate card "superseded by" pairs-twins. It isn't a
+  separate card — it is that strategy, mislabelled. So of the 6 cards, 3 map to
+  real strategy folders and 3 are wholly invented.)*
 - `strategies/pairs-twins/SPEC.md` still says `Status | in validation`
   despite the KILL (private repo hygiene, not a site issue).
 - `strategies/low-beta/` and `strategies/vix-carry/` contain only
