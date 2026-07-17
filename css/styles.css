@@ -417,6 +417,49 @@ code, kbd, samp { font-family: var(--font-mono); }
 }
 .kk-nav__links{ display:flex; align-items:center; gap:26px; }
 
+/* Blockifies the <img>. As a direct flex child it contributed exactly 72px, but
+   wrapping it in <a href="/"> makes the <a> the flex item and the img inside
+   goes back to being inline — it then sits on a baseline and the strut's
+   descender adds ~4px, silently growing the 100px bar to ~105px. */
+.kk-nav__logo{ display:flex; color:inherit; }
+
+/* Desktop: the panel is just a run of links in the bar. Same 26px gap as its
+   parent so [About Projects Sponsors] [Join the klub] reads as one even row.
+   On mobile it becomes the drawer — see the media block below. */
+.kk-nav__panel{ display:flex; align-items:center; gap:26px; }
+.kk-nav__panel a{
+  font-family:var(--font-mono); font-size:13px; letter-spacing:.04em;
+  color:var(--ink-700); text-decoration:none;
+}
+.kk-nav__panel a:hover{ color:var(--ink-900); }
+.kk-nav__panel a[aria-current="page"]{
+  color:var(--ink-900); text-decoration:underline; text-underline-offset:5px;
+}
+
+/* Hand-drawn ☰ — the brand vendors no menu glyph and U+2630 isn't in Space
+   Mono, so the bars are three square divs rather than a character or an icon
+   font. display:none here and switched on under .js in the mobile block: there
+   is nothing to open without the script. */
+.kk-nav__toggle{
+  display:none;
+  flex-direction:column; align-items:center; justify-content:center; gap:4px;
+  width:44px; min-height:44px; padding:0;   /* 44px tap target is free — the 72px logo sets the bar height */
+  background:var(--surface-card); color:var(--ink-900);
+  border:var(--border-bold) solid var(--ink-800); border-radius:var(--radius-sm);
+  box-shadow:var(--pop-2); cursor:pointer;
+}
+.kk-nav__toggle span{
+  display:block; width:18px; height:2px; background:currentColor;
+  border-radius:0;   /* Win95-squared: no rounded caps */
+}
+.kk-nav__toggle:active{ transform:translate(1px,1px); box-shadow:none; }
+
+/* The bar is sticky and ~100–108px tall, so a fragment jump parks the target's
+   first ~108px underneath it. Latent while everything lived on one page; now
+   every "About" click from /projects/ or /sponsors/ is a cross-page fragment
+   jump on a top-3 nav item. 108 = 72 logo + 2×18 padding (desktop). */
+section[id]{ scroll-margin-top:112px; }
+
 /* Vertical padding is left to each section instance (varies 44–72px in the
    original, on purpose, for rhythm) — only horizontal padding + max-width
    are shared, so the mobile query below can target them without fighting
@@ -458,9 +501,48 @@ code, kbd, samp { font-family: var(--font-mono); }
 }
 
 @media (max-width: 700px){
-  .kk-nav__inner{ padding:14px 16px; }
-  .kk-nav__links{ gap:14px; }
-  .kk-nav__links a:not(:last-child){ display:none; } /* keep only the primary CTA on very small nav bars */
+  /* flex-wrap is the no-JS fallback: without .js the links stay inline in the
+     bar and it grows to two rows rather than overflowing the page sideways. */
+  .kk-nav__inner{ padding:14px 16px; flex-wrap:wrap; }
+  .kk-nav__links{ gap:14px; flex-wrap:wrap; }
+
+  .js .kk-nav__toggle{ display:inline-flex; }
+
+  /* The one rule that hides the drawer. Everything else falls out of the cascade:
+       desktop, JS      -> .kk-nav__panel{display:flex} beats the UA's
+                           [hidden]{display:none}, and kk-nav.js drops the
+                           attribute on init so the DOM stops lying about state.
+       desktop, no JS   -> same; attribute overridden and never removed. A
+                           documented lie that affects nobody — there is no
+                           drawer above 700px.
+       mobile, no JS    -> needs .js, so it doesn't match; links stay in the bar
+                           and flex-wrap gives two rows. Every destination stays
+                           reachable. Same guard idiom as `.js .kk-onview`.
+       mobile, JS       -> bites; kk-nav.js owns the attribute from here on. */
+  .js .kk-nav__panel[hidden]{ display:none; }
+
+  .js .kk-nav__panel{
+    /* Positioned against .kk-nav, which is already sticky + z-index:10 and so is
+       both the containing block and the stacking context. Do NOT add
+       position:relative to .kk-nav__inner — the drawer would lose its full bleed. */
+    position:absolute; top:100%; left:0; right:0;
+    flex-direction:column; align-items:stretch; gap:0;
+    padding:4px 16px 12px;
+    /* Opaque on purpose: the bar's backdrop-filter only blurs its own box, so a
+       translucent drawer would show unblurred page content through it. */
+    background:var(--paper-50);
+    border-bottom:var(--border-bold) solid var(--ink-800);
+    /* NB: no `display` here. `.js .kk-nav__panel` and `.kk-nav__panel[hidden]`
+       are both (0,2,0), and this block is later in source — declaring display
+       here would win and make `hidden` inert, rendering the drawer open and
+       leaving it in the tab order. Landmine. Leave display out. */
+  }
+  .js .kk-nav__panel a{
+    display:flex; align-items:center; min-height:44px; font-size:15px;
+    border-top:var(--border-thin) solid var(--paper-300);
+  }
+  .js .kk-nav__panel a:first-child{ border-top:none; }
+
   .kk-section{ padding-left:16px; padding-right:16px; }
   .kk-two-col, .kk-two-col--join{ grid-template-columns:1fr; gap:32px; }
   .kk-manifesto-grid{ grid-template-columns:repeat(2,1fr); }
@@ -469,4 +551,11 @@ code, kbd, samp { font-family: var(--font-mono); }
   .kk-projects-grid{ grid-template-columns:1fr; }
   h1{ font-size:2.5rem !important; }
   .kk-footer__inner{ flex-direction:column; align-items:flex-start; }
+}
+
+/* Reuses the existing kk-reveal keyframe rather than inventing new motion. Re-fires
+   on every open because the panel leaves display:none. Under `reduce` no rule here
+   matches at all and the drawer simply appears. */
+@media (max-width: 700px) and (prefers-reduced-motion: no-preference){
+  .js .kk-nav__panel:not([hidden]){ animation: kk-reveal var(--dur-base) var(--ease-out) both; }
 }
