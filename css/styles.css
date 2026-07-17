@@ -280,6 +280,18 @@ code, kbd, samp { font-family: var(--font-mono); }
   .kk-draw { stroke-dasharray:none; stroke-dashoffset:0; }
 }
 
+/* Scroll-triggered reveal wiring — kk-motion.js's IntersectionObserver adds
+   .kk-go to .kk-onview elements once they scroll into view; this is what
+   actually gates the fade-up rather than letting it fire on page load.
+   Hiding is scoped to .js (set by the inline script in <head>) so the element
+   stays visible if the script never runs, and the whole block sits inside
+   no-preference — same idiom as .kk-reveal above — because .kk-onview.kk-go
+   would otherwise out-specify a reduce-branch override and animate anyway. */
+@media (prefers-reduced-motion: no-preference) {
+  .js .kk-onview{ opacity:0; }
+  .js .kk-onview.kk-go{ opacity:1; animation: kk-reveal var(--dur-slow) var(--ease-out) both; }
+}
+
 /* --- source: components/core/Button.jsx --- */
 .kk-btn{
   --_bg: var(--ink-800); --_fg: var(--paper-50); --_bd: var(--ink-800);
@@ -427,6 +439,23 @@ code, kbd, samp { font-family: var(--font-mono); }
   font-family:var(--font-mono); font-size:12px;
 }
 .kk-footer__brand{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+
+/* Oversized wordmark bleeding off the bottom edge. Everything is vw-based so a
+   single rule holds at every width — no mobile override. The height is set
+   below the letterforms' own height (37vw font ≈ 29vw of actual ink) so the
+   bottom of the word is clipped by the page edge; flex-start keeps the tops
+   intact rather than centring and cutting both ends. */
+.kk-footer-word{
+  overflow:hidden;
+  display:flex; align-items:flex-start; justify-content:center;
+  height:24.5vw;
+  padding:.5vw 0 0;
+}
+.kk-footer-word span{
+  font-family:'Chewy',cursive; font-weight:400;
+  color:var(--paper-50); opacity:.14;
+  font-size:37vw; line-height:1; white-space:nowrap;
+}
 
 @media (max-width: 700px){
   .kk-nav__inner{ padding:14px 16px; }
