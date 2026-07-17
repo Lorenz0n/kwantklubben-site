@@ -491,13 +491,18 @@ section[id]{ scroll-margin-top:112px; }
 .kk-footer-word{
   overflow:hidden;
   display:flex; align-items:flex-start; justify-content:center;
-  height:24.5vw;
-  padding:.5vw 0 0;
+  height:20.7vw;
 }
 .kk-footer-word span{
   font-family:'Chewy',cursive; font-weight:400;
   color:var(--paper-50); opacity:.14;
   font-size:37vw; line-height:1; white-space:nowrap;
+  /* Chewy reserves ~3.3vw of internal leading above its cap height (at 37vw), which
+     is most of the gap under the footer text — far more than any padding here. The
+     negative margin cancels it so the letter tops sit flush with the top of the box.
+     Paired with the height above: both were cut by the same amount, so the bottom
+     bleed stays at 8.2vw / 72% of the letterforms visible. Change them together. */
+  margin-top:-3.3vw;
 }
 
 @media (max-width: 700px){
