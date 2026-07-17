@@ -476,6 +476,19 @@ section[id]{ scroll-margin-top:112px; }
 
 .kk-projects-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
 
+/* The footer stacks its brand line and the wordmark into the SAME grid cell, so the
+   wordmark starts at the footer's top edge and the brand line sits over it.
+   Grid rather than a negative margin, for two reasons: the footer's height must still
+   be driven by whichever child is taller, and a margin big enough to reach the top
+   would drag the wordmark clean out of the ink band on /projects/, whose last section
+   is --paper-50 (the footer block is byte-identical across all three pages, so one
+   value has to serve all of them). */
+footer{ display:grid; }
+/* align-self:start on BOTH — as grid items they'd otherwise stretch to the row height
+   (298px at 1440), and .kk-footer__inner's own align-items:center would then float the
+   brand line into the middle of the footer instead of leaving it at the top. */
+.kk-footer__inner{ grid-area:1/1; align-self:start; position:relative; z-index:1; }
+
 .kk-footer__inner{
   max-width:1200px; margin:0 auto; padding:28px;
   display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
@@ -489,6 +502,7 @@ section[id]{ scroll-margin-top:112px; }
    bottom of the word is clipped by the page edge; flex-start keeps the tops
    intact rather than centring and cutting both ends. */
 .kk-footer-word{
+  grid-area:1/1; align-self:start;   /* same cell as .kk-footer__inner — see footer{} above */
   overflow:hidden;
   display:flex; align-items:flex-start; justify-content:center;
   height:20.7vw;
@@ -506,6 +520,13 @@ section[id]{ scroll-margin-top:112px; }
 }
 
 @media (max-width: 700px){
+  /* Undo the footer overlay below 700px. The brand line stacks to a column here and
+     runs ~176px tall — taller than the wordmark's entire 113px of ink — so overlaying
+     them strands the letters ~62px above the page bottom with no bleed at all. Under
+     the text it still runs off the bottom edge, which is the point of it. */
+  footer{ display:block; }
+  .kk-footer-word{ align-self:auto; }
+
   /* flex-wrap is the no-JS fallback: without .js the links stay inline in the
      bar and it grows to two rows rather than overflowing the page sideways. */
   .kk-nav__inner{ padding:14px 16px; flex-wrap:wrap; }
