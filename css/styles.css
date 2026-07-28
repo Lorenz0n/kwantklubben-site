@@ -677,3 +677,13 @@ footer a:hover{ color:var(--lime-400); }
 @media (max-width: 700px) and (prefers-reduced-motion: no-preference){
   .js .kk-nav__panel:not([hidden]){ animation: kk-reveal var(--dur-base) var(--ease-out) both; }
 }
+
+/* Interior page head — the hero's composition without the canvas. Not a
+   .kk-band, so the first real .kk-band after it does not draw a second rule on
+   top of this one's border-bottom. */
+.kk-pagehead{
+  padding-top:clamp(44px,6.4vw,86px); padding-bottom:clamp(38px,5.6vw,72px);
+  border-bottom:var(--hair);
+}
+.kk-pagehead__head{ margin-top:clamp(22px,5vh,58px); }
+.kk-pagehead .kk-lede{ margin-top:clamp(16px,2.4vh,24px); }
