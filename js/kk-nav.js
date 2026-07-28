@@ -59,13 +59,10 @@
   mq.addEventListener('change', sync);
   sync();
 
-  // Marked here rather than in the markup so the NAV block stays byte-identical
-  // across the three files. `!a.hash` keeps /#about from matching "/" on the home
-  // page — About is a section, not a page.
-  var here = location.pathname.replace(/index\.html$/, '');
+  // Mark the current page while keeping the navigation markup reusable.
+  var here = location.pathname.replace(/index\.html$/, '').replace(/\/$/, '') || '/';
   Array.prototype.forEach.call(panel.querySelectorAll('a'), function(a){
-    if (!a.hash && a.pathname.replace(/index\.html$/, '') === here){
-      a.setAttribute('aria-current', 'page');
-    }
+    var target = a.pathname.replace(/index\.html$/, '').replace(/\/$/, '') || '/';
+    if (!a.hash && target === here) a.setAttribute('aria-current', 'page');
   });
 })();
