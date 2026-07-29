@@ -1,37 +1,61 @@
 # kwantklubben-site
 
-The public recruiting site for **Kwant Klubben**, a student quant-finance club at SDU Odense. Plain static HTML/CSS/vanilla-JS. Deployed via GitHub Pages at `kwantklubben.com`.
+The public site for **Kwant Klubben**, an independent student club at the University of Southern Denmark. Plain static HTML/CSS/vanilla-JS, no build step. Deployed via GitHub Pages at `kwantklubben.com`.
 
-This repo is intentionally separate from the club's private research repo (`kwantklubben`, not public). Nothing sensitive lives here — brand assets, marketing copy, and a link out to the application form.
+This repo is intentionally separate from the club's private research repo (`kwantklubben`, not public) and from the public project mirror (`kwantklubben-projects`). Nothing sensitive lives here — brand assets, marketing copy, and a link out to the application form.
 
 ## Structure
 
 ```
-index.html            home — hero, about, stats, projects teaser (3 cards), join
-projects/index.html   the full project library (6 cards)
-sponsors/index.html   the sponsor pitch
-css/styles.css        bundled brand tokens + component CSS + site layout (single file, single request)
-js/kk-motion.js       count-up + scroll-reveal, vanilla JS, no dependencies
-js/kk-nav.js          mobile nav disclosure (the ☰ drawer)
-assets/               logos, favicon set, hero illustration
-tools/                check-partials.py — drift check, see below
+index.html            landing — hero canvas, what we do, the loop, projects teaser, join
+about/index.html      what the club is, the loop, AI with human ownership, who it's for
+projects/index.html   the library — one Example Project card, how publishing works
+partners/index.html   collaboration, talks, mentorship, co-designed events
+contact/index.html    email primary, LinkedIn secondary
+sponsors/index.html   redirect stub -> /partners/  (the old URL is on LinkedIn)
+
+css/styles.css        brand tokens (unchanged, from the design system) + the site's
+                      own editorial component layer. Single file, single request.
+js/kk-motion.js       count-up + scroll-reveal. A verbatim copy of the design-system
+                      original — do not edit it here.
+js/kk-nav.js          the mobile drawer. Drives the `hidden` ATTRIBUTE, not a class.
+js/kk-surface.js      the hero's dot-matrix halftone canvas. Inert on any page with
+                      no #kk-surface, which is why it can sit in the shared block.
+assets/               logos, favicon set
+tools/check-site.py   the drift + invariant check. Read the next section.
 ```
 
-## Editing copy
+## The check
 
-Every section is wrapped in an HTML comment banner (`<!-- ============ HERO ============ -->` etc.) — search for the section name to find it. Content is plain inline-styled HTML, no templating, no build step: edit the text and reload.
+There is no build step and no templating, so `HEAD-COMMON`, `NAV`, `FOOTER` and `SCRIPTS` are **literally duplicated** in all five pages. Every path inside them is root-relative precisely so they can be byte-identical.
 
-### The four shared blocks
-
-There is no build step, so `HEAD-COMMON`, `NAV`, `FOOTER` and `SCRIPTS` are **literally duplicated** in all three HTML files. Every path in them is root-relative (`/css/styles.css`) precisely so they can be byte-identical.
-
-**To change the nav or footer: edit one file, paste into the other two, then run the check.**
+**To change the nav, footer, head or scripts: edit `index.html`, paste into the other four, then run the check.**
 
 ```
-python tools/check-partials.py     # -> "ok: 4 blocks identical across 3 files"
+python tools/check-site.py     # -> "ok: 4 blocks identical and invariants hold across 5 pages"
 ```
 
-It is not a build step — it produces nothing and the site works without it. It just catches the copies drifting apart.
+It also runs in CI on every push and pull request (`.github/workflows/check.yml`).
+
+It is not a build step — it produces nothing and the site works without it. It exists because the July 2026 relaunch grew the site from three pages to five, hand-edited the old script's hardcoded three-file list, and shipped three pages whose font URL had lost `&family=Chewy`. So beyond comparing the blocks, it asserts things a diff cannot see, on every page it finds by glob:
+
+| Invariant | Why it is checked |
+|---|---|
+| `&family=Chewy` in the font URL | The footer wordmark is Chewy at 37vw with a `-3.3vw` nudge tuned to its metrics. Without the font it falls back to system cursive and clips out of its own box. |
+| `.kk-footer-word` present | Same wordmark, absent entirely. |
+| `#kk-nav-panel` ships with `hidden` | `kk-nav.js` is deferred and owns that attribute. Without it the drawer renders **open** on a cold mobile cache until the script lands. |
+| The application form URL matches | A mistyped `forms.gle` link is the most expensive copy bug on the site — it is on every poster. |
+| No `TODO(content)` / `REPLACE_ME` | Placeholders must not reach production. |
+| Every root-relative nav `href` resolves | A nav pointing at a directory that does not exist. |
+
+Pages opt out by containing a `REDIRECT` marker — that is how `sponsors/index.html` is excluded.
+
+### Two rules the CSS depends on
+
+Both of these broke in July 2026 and both are cheap to break again:
+
+- **No class on the `<footer>` element.** The mobile override that undoes the wordmark overlay is `footer{display:block}` (0,0,1). Any class selector out-specifies it and strands the letters behind the footer text on phones.
+- **The nav drawer is driven by the `hidden` attribute**, never by an `.is-open` class. `css/styles.css` has a long comment explaining why declaring `display` in the mobile `.kk-nav__panel` block makes `hidden` inert. Read it before touching that block.
 
 ## Local preview
 
@@ -45,20 +69,16 @@ then open `http://localhost:8000`.
 
 Paths are root-relative, so under `file://` they resolve against your filesystem root — the page renders as unstyled HTML with broken images. That is the expected result of double-clicking the file, not a broken site.
 
-## Before a poster goes up
+## The hero canvas
 
-```
-grep -rn "TODO(content)\|REPLACE_ME" .
-```
+`js/kk-surface.js` plots the signed excess `f = mixture − fitted_normal` of a fat-tailed bivariate density over the axis-aligned normal fitted to it, on a fixed halftone lattice. Dot positions never move; only radius carries information. Lime marks `f > 0` — the peak and the tails, where the normal understates real mass.
 
-Every hit needs a real answer (verified stats, the live Google Form URL, the sponsor terms) before this goes on a poster.
-
-**Check the markers, not the count.** There are currently **12** hits, not 9 — the projects teaser card also exists on `/projects/`, so its marker is counted twice, and `/sponsors/` adds two of its own. A rising count is not automatically a regression.
+It draws one frame at boot, then runs a `requestAnimationFrame` loop that pauses when the canvas is off-screen or the tab is hidden. Under `prefers-reduced-motion: reduce` it draws a single static frame, binds no pointer listeners, and never calls `requestAnimationFrame` at all.
 
 ## Deploy
 
-Push to `main`. GitHub Pages is configured to deploy from `main` / root — no Actions workflow needed. Custom domain (`kwantklubben.com`) is set in repo Settings → Pages, which manages the `CNAME` file automatically.
+Push to `main`. GitHub Pages deploys from `main` / root. The custom domain is set in repo Settings → Pages, which manages the `CNAME` file automatically.
 
 ## Provenance
 
-Brand system (tokens, components, the original interactive mockup this was ported from) lives in the private `kwantklubben` repo under `design-system/`. Re-sync against that source if the brand changes — each CSS block in `css/styles.css` is labeled with its origin file.
+Brand tokens (colour, type, spacing, effects, motion) live in the private `kwantklubben` repo under `design-system/` and are copied verbatim into the top of `css/styles.css`. Everything below the tokens is this site's own editorial layer and deliberately does **not** use the design system's dashboard component idiom — no pop shadows, no 2px borders, lime as an accent rather than a fill.
