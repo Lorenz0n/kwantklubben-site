@@ -315,12 +315,39 @@ code, kbd, samp { font-family: var(--font-mono); }
 
 :root {
   /* The sticky bar's height, so the hero can subtract it from 100svh and the
-     fragment-jump scroll-margin can match it. Nav padding (2 x 16) + logo (40).
-     Change all three together. */
+     fragment-jump scroll-margin can match it.
+     Desktop: nav padding (2 x 16) + logo (40) = 72. The logo is the tallest
+     item. Below 700px the padding drops to 2 x 14 but the hamburger appears at
+     min-height 44, so the toggle becomes the tallest item and the bar is
+     14 + 44 + 14 = 72 again — see the override in the mobile block, which
+     documents why the number does NOT change even though the padding does. */
   --nav-h: 72px;
   --hair: 1px solid var(--paper-300);
   --hair-ink: 1px solid var(--ink-900);
+
+  /* The token layer sets --focus-ring to --blue-500. This site has no blue in
+     it: the accent carries every interactive affordance, and a 3px ultramarine
+     ring on the nav links, the drawer toggle and every inline link is the one
+     place the palette leaked. Overridden here rather than in the token block so
+     the tokens stay a verbatim copy of the design system. */
+  --focus-ring: var(--ink-900);
 }
+
+/* On ink sections the ink ring is invisible, so the accent takes over. Same
+   idea as .kk-cta's own override below. */
+.kk-invert :focus-visible,
+.kk-band--ink :focus-visible { outline-color: var(--lime-500); }
+
+/* Keyboard bypass for the six tabbable controls in the sticky header. Off-screen
+   until focused, then it lands as a normal button at the top-left. */
+.kk-skip {
+  position: absolute; left: -9999px; top: 0; z-index: 20;
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em;
+  text-transform: uppercase; text-decoration: none;
+  color: var(--ink-900); background: var(--paper-50);
+  border: 1px solid var(--ink-900); padding: 12px 18px;
+}
+.kk-skip:focus { left: 0; }
 
 /* --------------------------------------------------------------------------
    Primitives
@@ -621,7 +648,12 @@ footer a:hover{ color:var(--lime-400); }
 }
 
 @media (max-width: 700px){
-  :root{ --nav-h: 68px; }
+  /* NOT 68px. The padding drops to 2 x 14 here, which would make the bar
+     14 + 40 + 14 = 68 on the logo alone — but `.js .kk-nav__toggle` turns on
+     below this breakpoint at min-height:44px, and as a flex sibling it is then
+     the tallest item: 14 + 44 + 14 = 72. Declaring 68 made the hero's
+     `calc(100svh - var(--nav-h))` overshoot the viewport by 4px on every phone. */
+  :root{ --nav-h: 72px; }
 
   /* Undo the footer overlay below 700px. The brand line stacks to a column here and
      runs taller than the wordmark's entire band of ink, so overlaying them strands

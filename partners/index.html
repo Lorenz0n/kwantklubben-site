@@ -33,7 +33,10 @@
      block can stay identical across files.
      The `hidden` attribute on the panel is load-bearing: kk-nav.js is deferred,
      so without it the drawer renders OPEN on a cold mobile cache until the
-     script lands. check-site.py asserts it. Do not switch to a class. -->
+     script lands. check-site.py asserts it. Do not switch to a class.
+     The skip link is first in the document on purpose: six tabbable controls
+     sit in this sticky bar ahead of <main> on every page. -->
+<a class="kk-skip" href="#main">Skip to content</a>
 <header class="kk-nav">
   <div class="kk-nav__inner">
     <a class="kk-nav__logo" href="/"><img src="/assets/logo-primary.png" alt="Kwant Klubben — home" style="height:40px"></a>
@@ -53,7 +56,7 @@
 </header>
 <!-- ============ /NAV ============ -->
 
-<main>
+<main id="main">
 
 <!-- ============ PAGE HEAD ============ -->
 <section class="kk-pagehead">
@@ -149,7 +152,10 @@
       <a href="https://www.linkedin.com/company/kwant-klubben" target="_blank" rel="noopener">LinkedIn</a>
     </div>
   </div>
-  <div class="kk-footer-word kk-onview"><span>KWANT</span></div>
+  <!-- Ornamental only: 37vw, 14% opacity, and deliberately clipped so a quarter
+       of the letterforms bleed off the page. As real text it was announced as a
+       stray "KWANT" after the footer content on every page. -->
+  <div class="kk-footer-word kk-onview" aria-hidden="true"><span>KWANT</span></div>
 </footer>
 <!-- ============ /FOOTER ============ -->
 

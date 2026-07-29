@@ -43,8 +43,25 @@ REFERENCE = ROOT / "index.html"
 # Redirect stubs carry no shared blocks by design. They opt out with a REDIRECT
 # marker in an HTML comment — a marker in the file itself, so the opt-out is
 # visible when you read the page rather than buried in this script.
+#
+# The marker must be an actual comment near the top AND the page must really be
+# a redirect. A bare `"REDIRECT" in text` test (the first version of this) let
+# any page opt out of every check by containing that word anywhere at all — in
+# prose, in a URL, in a comment — with nothing in the output to show it had.
+REDIRECT_MARKER = re.compile(r"<!--\s*REDIRECT\b")
+SKIPPED = []
+
+
 def _is_redirect(path):
-    return "REDIRECT" in path.read_text(encoding="utf-8")
+    text = path.read_text(encoding="utf-8", errors="replace")
+    if not REDIRECT_MARKER.search(text[:800]):
+        return False
+    if 'http-equiv="refresh"' not in text:
+        return False
+    if 'id="kk-nav-panel"' in text:   # a real page wearing the marker
+        return False
+    SKIPPED.append(path)
+    return True
 
 
 def _discover():
@@ -117,18 +134,37 @@ def check_invariants(sources):
                   % rel(path))
             failures += 1
 
+        # A class on the <footer> ELEMENT is the 2026-07-29 mobile bug. The
+        # override that undoes the wordmark overlay is `footer{display:block}`
+        # at (0,0,1); any class selector out-specifies it. Guarded on both
+        # sides — here in the markup, and in check_css() for the stylesheet.
+        if re.search(r"<footer[^>]*\sclass=", text):
+            print("FAIL %s: <footer> carries a class — it out-specifies the "
+                  "mobile `footer{display:block}` override and strands the "
+                  "KWANT wordmark behind the footer text" % rel(path))
+            failures += 1
+
         # kk-nav.js owns the `hidden` attribute and drops it on init. Markup
         # that ships without it renders the drawer OPEN on the poster-QR path
         # (mobile data, cold cache) until the deferred script lands.
-        nav_panel = re.search(r'<div[^>]*id="kk-nav-panel"[^>]*>', text)
+        #
+        # Matched at attribute position, not as the substring " hidden": a class
+        # list like class="kk-nav__panel hidden" satisfies a substring test while
+        # being exactly the class-instead-of-attribute swap this check exists to
+        # catch, and `hidden` is a real utility class name in common frameworks.
+        nav_panel = re.search(r'<\w+[^>]*id=["\']kk-nav-panel["\'][^>]*>', text)
         if nav_panel is None:
             print("FAIL %s: no #kk-nav-panel — the mobile drawer is missing"
                   % rel(path))
             failures += 1
-        elif " hidden" not in nav_panel.group(0):
-            print("FAIL %s: #kk-nav-panel must ship with the `hidden` attribute "
-                  "— kk-nav.js drives the attribute, not a class" % rel(path))
-            failures += 1
+        else:
+            tag = nav_panel.group(0)
+            attrs = re.sub(r'=\s*("[^"]*"|\'[^\']*\')', "", tag)  # drop values
+            if not re.search(r'(?<=[\s])hidden(?=[\s>/])', attrs):
+                print("FAIL %s: #kk-nav-panel must ship with the `hidden` "
+                      "ATTRIBUTE — kk-nav.js drives the attribute, not a class"
+                      % rel(path))
+                failures += 1
 
         if "TODO(content)" in text or "REPLACE_ME" in text:
             print("FAIL %s: unresolved TODO(content)/REPLACE_ME marker" % rel(path))
@@ -136,11 +172,71 @@ def check_invariants(sources):
 
         # A stale or mistyped application link is the single most expensive copy
         # bug on the site — every poster and every LinkedIn post points at it.
-        for found in re.findall(r'https://forms\.gle/[A-Za-z0-9]+', text):
+        #
+        # Match any application-link SHAPE, not just already-correct ones. The
+        # first version only compared strings that already looked like
+        # `https://forms.gle/...`, so an http:// link, a docs.google.com/forms
+        # link, or a silently deleted CTA all passed.
+        links = re.findall(
+            r'https?://(?:forms\.gle|docs\.google\.com/forms)[^"\s<]*', text)
+        for found in links:
             if found != FORM_URL:
-                print("FAIL %s: form link %s does not match %s"
+                print("FAIL %s: application link %s is not %s"
                       % (rel(path), found, FORM_URL))
                 failures += 1
+        if not links:
+            print("FAIL %s: no application link at all — every page carries the "
+                  "Join CTA in the shared nav" % rel(path))
+            failures += 1
+    return failures
+
+
+def check_css():
+    """The cascade rules the site's layout depends on, asserted in the stylesheet.
+
+    Both of these broke in 38a783c, and neither is visible to a page-to-page
+    diff — which is the whole reason this file checks more than block drift.
+    """
+    path = ROOT / "css" / "styles.css"
+    if not path.exists():
+        print("FAIL: css/styles.css is missing")
+        return 1
+    raw = path.read_text(encoding="utf-8")
+    # Blank out comments, preserving newlines so reported line numbers still
+    # match the file. The rules below are ABOUT the cascade, and the stylesheet
+    # explains them in prose that necessarily names the very selectors it
+    # forbids — scanning the raw text flags its own documentation.
+    css = re.sub(r"/\*.*?\*/",
+                 lambda m: re.sub(r"[^\n]", " ", m.group(0)), raw, flags=re.S)
+    failures = 0
+
+    # `.kk-footer__inner`, `.kk-footer__links` and `.kk-footer-word` are fine —
+    # they are descendants. A bare `.kk-footer` class selector is not.
+    bare = re.search(r"\.kk-footer(?![\w-])", css)
+    if bare:
+        line = css[:bare.start()].count("\n") + 1
+        print("FAIL css/styles.css:%d: bare `.kk-footer` class selector. At "
+              "(0,1,0) it out-specifies the mobile `footer{display:block}` "
+              "override at (0,0,1). Style the ELEMENT." % line)
+        failures += 1
+
+    if not re.search(r"(?<![\w.\-])footer\s*\{\s*display:\s*block", css):
+        print("FAIL css/styles.css: the mobile `footer{ display:block; }` "
+              "override is gone — the KWANT wordmark will sit behind the "
+              "footer text on phones instead of below it")
+        failures += 1
+
+    # The mobile drawer block must not declare `display`: it ties with
+    # `.kk-nav__panel[hidden]` at (0,2,0) and wins on source order, which makes
+    # `hidden` inert and leaves the drawer open and in the tab order.
+    panel = re.search(r"\.js \.kk-nav__panel\s*\{(.*?)\}", css, re.S)
+    if panel and re.search(r"(?<![\w-])display\s*:", panel.group(1)):
+        line = css[:panel.start()].count("\n") + 1
+        print("FAIL css/styles.css:%d: `.js .kk-nav__panel` declares `display`. "
+              "It ties with `.kk-nav__panel[hidden]` and wins on source order, "
+              "making the `hidden` attribute inert." % line)
+        failures += 1
+
     return failures
 
 
@@ -171,13 +267,19 @@ def main():
     # (git warns "LF will be replaced by CRLF") cannot trigger a false drift.
     sources = {p: p.read_text(encoding="utf-8") for p in PAGES}
 
-    failures = check_blocks(sources) + check_invariants(sources) + check_links(sources)
+    failures = (check_blocks(sources) + check_invariants(sources)
+                + check_links(sources) + check_css())
+
+    # Print what opted out, so a page escaping the checks is visible in CI
+    # rather than silently absent from the count.
+    for p in SKIPPED:
+        print("note: %s skipped (REDIRECT stub)" % rel(p))
 
     if failures:
         print("\n%d failure(s) across %d page(s)" % (failures, len(PAGES)))
         return 1
-    print("ok: %d blocks identical and invariants hold across %d pages"
-          % (len(BLOCKS), len(PAGES)))
+    print("ok: %d blocks identical, invariants and CSS cascade rules hold "
+          "across %d pages" % (len(BLOCKS), len(PAGES)))
     return 0
 
 

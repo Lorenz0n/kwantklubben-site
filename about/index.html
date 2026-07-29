@@ -33,7 +33,10 @@
      block can stay identical across files.
      The `hidden` attribute on the panel is load-bearing: kk-nav.js is deferred,
      so without it the drawer renders OPEN on a cold mobile cache until the
-     script lands. check-site.py asserts it. Do not switch to a class. -->
+     script lands. check-site.py asserts it. Do not switch to a class.
+     The skip link is first in the document on purpose: six tabbable controls
+     sit in this sticky bar ahead of <main> on every page. -->
+<a class="kk-skip" href="#main">Skip to content</a>
 <header class="kk-nav">
   <div class="kk-nav__inner">
     <a class="kk-nav__logo" href="/"><img src="/assets/logo-primary.png" alt="Kwant Klubben — home" style="height:40px"></a>
@@ -53,14 +56,14 @@
 </header>
 <!-- ============ /NAV ============ -->
 
-<main>
+<main id="main">
 
 <!-- ============ PAGE HEAD ============ -->
 <section class="kk-pagehead">
   <div class="kk-shell">
     <div class="kk-hero__top">
       <p class="kk-micro">01 / About</p>
-      <p class="kk-micro">Founded by students, run by students</p>
+      <p class="kk-micro">New at SDU · Odense</p>
     </div>
     <div class="kk-pagehead__head">
       <h1 class="kk-display">A club for people who want to know why.</h1>
@@ -96,18 +99,18 @@
     <div class="kk-steps">
       <div>
         <p class="kk-micro">01 — Ideation</p>
-        <h3 class="kk-h3">Find the question</h3>
-        <p>A paper, a hunch, a dataset, or something a lecture left unfinished. Say it out loud and make it concrete enough to be wrong.</p>
+        <h3 class="kk-h3">Make it falsifiable</h3>
+        <p>Most interesting questions start too vague to answer. The work here is narrowing one until it names what evidence would settle it — which is usually also the moment you find out whether you actually care about it.</p>
       </div>
       <div>
         <p class="kk-micro">02 — Learning process</p>
-        <h3 class="kk-h3">Work it through</h3>
-        <p>Read it, code it, simulate it, argue about it. You will learn more here than the answer is worth, which is the actual reason the club exists.</p>
+        <h3 class="kk-h3">Where the time goes</h3>
+        <p>Finding data, cleaning it, writing the thing, discovering the first version answered a different question, and rewriting. You will learn more here than the answer is worth, which is the actual reason the club exists.</p>
       </div>
       <div>
         <p class="kk-micro">03 — Output</p>
-        <h3 class="kk-h3">Leave something behind</h3>
-        <p>A finding, a tool, a write-up, or a clear negative result. A question that did not work out is still a finished piece of work.</p>
+        <h3 class="kk-h3">Say what it supports</h3>
+        <p>Write down what you did, what came out, and what it does and does not license you to conclude. That last part is the hard one, and it is the difference between a result and a number.</p>
       </div>
     </div>
   </div>
@@ -134,9 +137,9 @@
     <div class="kk-cols">
       <h2 class="kk-h2">All levels,<br>genuinely.</h2>
       <div>
-        <p class="kk-body">Members come from economics, mathematics, computer science and engineering, and arrive with very different amounts of finance and programming behind them. Both ends of that range are welcome, and the club is more useful when both are in the room.</p>
+        <p class="kk-body">The club is open to students from economics, mathematics, computer science and engineering, whatever amount of finance and programming you arrive with. Both ends of that range are wanted, and it will be a better club when both are in the room.</p>
         <p class="kk-body">What it asks for is participation. Turn up, take something on, and tell people what you found. Around exams and when life gets busy, that dips — everyone here is a student and that is understood.</p>
-        <p class="kk-body">Alongside the research there is the ordinary business of a club: talks, workshops, people to ask, and a set of projects you can point at when someone asks what you have actually built.</p>
+        <p class="kk-body">The meeting rhythm is being set with the first members rather than decided in advance, and it will be on campus in Odense. Alongside the research there is the ordinary business of a club: talks, workshops, people to ask, and a set of projects you can point at when someone asks what you have actually built.</p>
       </div>
     </div>
   </div>
@@ -176,7 +179,10 @@
       <a href="https://www.linkedin.com/company/kwant-klubben" target="_blank" rel="noopener">LinkedIn</a>
     </div>
   </div>
-  <div class="kk-footer-word kk-onview"><span>KWANT</span></div>
+  <!-- Ornamental only: 37vw, 14% opacity, and deliberately clipped so a quarter
+       of the letterforms bleed off the page. As real text it was announced as a
+       stray "KWANT" after the footer content on every page. -->
+  <div class="kk-footer-word kk-onview" aria-hidden="true"><span>KWANT</span></div>
 </footer>
 <!-- ============ /FOOTER ============ -->
 
