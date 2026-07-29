@@ -595,7 +595,7 @@ footer{ display:grid; }
    site layout that shipped with it. That idiom IS the brand — the relaunch
    keeps it rather than replacing it.
 
-   Below are only the pieces the relaunch actually needs: the hero canvas frame
+   Below are only the pieces the relaunch actually needs: the hero chart
    that replaced the static distribution SVG, a three-column variant of the
    divided grid for the loop, the footer's second link group, a keyboard skip
    link, and one brand fix.
@@ -612,37 +612,33 @@ footer{ display:grid; }
 .kk-card--ink :focus-visible,
 [style*="--ink-900"] :focus-visible{ outline-color: var(--lime-500); }
 
-/* --- hero canvas --------------------------------------------------------
-   Sits inside the same .kk-card the distribution SVG used to, so the hero keeps
-   its original two-column composition — the card, its 2px border and its pop
-   shadow are unchanged. Only the picture inside it is now alive.
-   aspect-ratio keeps the card the same shape the SVG gave it; the min-height is
-   the floor for browsers that skip the property. */
-.kk-surface-frame{
-  position:relative; width:100%; aspect-ratio:5/4; min-height:120px;
-  background:var(--paper-50);
-  border:var(--border-thin) solid var(--paper-300);
-  border-radius:var(--radius-sm);
-  overflow:hidden;
+/* --- hero chart ---------------------------------------------------------
+   No card, no border, no shadow: the chart sits directly on the gridpaper and
+   runs the full width of the section. The 2px baseline the canvas draws for
+   itself is the only frame it gets, and the gridpaper reads as its graph paper. */
+.kk-tails{ margin-top:clamp(28px,4vw,52px); }
+#kk-tails{
+  display:block; width:100%;
+  height:clamp(230px, 30vw, 400px);
+  touch-action:pan-y;          /* dragging the threshold must not eat page scroll */
+  cursor:ew-resize;
+}
+.kk-tails__readout{
+  margin:14px 0 0; font-family:var(--font-mono);
+  font-size:var(--text-xs); line-height:1.6; color:var(--ink-700);
+  font-variant-numeric:tabular-nums;
+}
+.kk-tails__readout b{ color:var(--ink-900); font-weight:700; }
+.kk-tails__readout .kk-tails__hit{ color:var(--lime-700); }
+.kk-tails__note{
+  margin:8px 0 0; font-family:var(--font-mono);
+  font-size:var(--text-3xs); line-height:1.6; color:var(--ink-400); max-width:74ch;
 }
 
-/* Grid items default to min-width:auto, so a track will refuse to shrink below
-   its content's min-content width. `aspect-ratio` + `min-height` on the frame
-   above gives this card an implied minimum width, which at 375px pushed the
-   whole hero column to 388px and put 44px of the page off-screen to the right.
-   min-width:0 lets the track win instead. The frame's min-height is kept small
-   for the same reason — it is only a floor for engines without aspect-ratio,
-   not a design constraint. */
+/* Grid items default to min-width:auto, so a track refuses to shrink below its
+   content's min-content width — which once pushed the hero column to 388px at a
+   375px viewport and put 44px of the page off-screen. */
 .kk-two-col > *, .kk-two-col--join > *{ min-width:0; }
-#kk-surface{ position:absolute; inset:0; width:100%; height:100%; display:block; }
-.kk-surface-legend{
-  display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
-  margin-top:12px; font-family:var(--font-mono); font-size:var(--text-3xs);
-  color:var(--ink-400);
-}
-.kk-surface-legend b{ color:var(--lime-700); font-weight:700; }
-.kk-surface-readout{
-  margin:8px 0 0; font-family:var(--font-mono); font-size:var(--text-3xs);
   letter-spacing:.06em; color:var(--ink-400); font-variant-numeric:tabular-nums;
 }
 
@@ -688,5 +684,4 @@ footer{ display:grid; }
     border-right:none; border-left:var(--border-bold) solid var(--ink-800);
     padding-bottom:22px;
   }
-  .kk-surface-frame{ aspect-ratio:4/3; }
 }

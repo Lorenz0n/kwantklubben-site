@@ -7,7 +7,7 @@ This repo is intentionally separate from the club's private research repo (`kwan
 ## Structure
 
 ```
-index.html            landing — hero canvas, the loop, projects teaser, join
+index.html            landing — hero chart, the loop, projects teaser, join
 about/index.html      what the klub is, the process in full, AI, joining
 projects/index.html   the library, how publishing works, what counts
 partners/index.html   collaboration, talks, mentorship, co-designed events
@@ -18,8 +18,8 @@ css/styles.css        the original brand stylesheet (tokens + component idiom),
 js/kk-motion.js       count-up + scroll-reveal. A verbatim copy of the
                       design-system original — do not edit it here.
 js/kk-nav.js          the mobile drawer. Drives the `hidden` ATTRIBUTE, not a class.
-js/kk-surface.js      the hero's dot-matrix canvas. Inert on any page with no
-                      #kk-surface, which is why it can sit in the shared block.
+js/kk-tails.js        the hero chart. Inert on any page with no #kk-tails,
+                      which is why it can sit in the shared block.
 assets/               logos, favicon set
 tools/check-site.py   the drift + invariant check. Read the next section.
 ```
@@ -28,7 +28,7 @@ Nav is **About · Projects · Partners**, plus a Contact button (a `mailto:`, no
 
 ## The style
 
-The chunky idiom **is** the brand: 2px ink borders, hard `4px 4px 0` pop shadows, lime section fills, badges, gridpaper. `css/styles.css` is the original stylesheet, unchanged, with a clearly-marked section appended at the bottom for the few things the relaunch actually needed — the hero canvas frame, a three-column variant of the divided grid, the footer's second link group, a skip link, and one brand fix (the token layer's `--focus-ring` was `--blue-500`; the brand has no blue in it).
+The chunky idiom **is** the brand: 2px ink borders, hard `4px 4px 0` pop shadows, lime section fills, badges, gridpaper. `css/styles.css` is the original stylesheet, unchanged, with a clearly-marked section appended at the bottom for the few things the relaunch actually needed — the hero chart, a three-column variant of the divided grid, the footer's second link group, a skip link, and one brand fix (the token layer's `--focus-ring` was `--blue-500`; the brand has no blue in it).
 
 If you are adding to this site, use the existing components. Do not introduce a second visual system.
 
@@ -78,11 +78,39 @@ then open `http://localhost:8000`.
 
 Paths are root-relative, so under `file://` they resolve against your filesystem root — the page renders as unstyled HTML with broken images. That is the expected result of double-clicking the file, not a broken site.
 
-## The hero canvas
+## The hero chart
 
-`js/kk-surface.js` replaced the static `assets/hero-distribution.svg` inside the same card, with the same border and the same pop shadow. It plots the signed excess `f = mixture − fitted_normal` of a fat-tailed bivariate density over the axis-aligned normal fitted to it, on a fixed halftone lattice. Dot positions never move; only radius carries information. Lime marks `f > 0` — the tails, where the normal understates real mass. Pointer warps the sampling coordinates; click sends a decaying annulus.
+`js/kk-tails.js` replaced the static `assets/hero-distribution.svg`. It runs the
+full width of the section with no card around it, so the gridpaper behind it
+doubles as its graph paper.
 
-It draws one frame at boot, then runs a `requestAnimationFrame` loop that pauses when the canvas is off-screen or the tab is hidden. Under `prefers-reduced-motion: reduce` it draws a single static frame, binds no pointer listeners, and never calls `requestAnimationFrame` at all.
+It makes one claim you can check: the normal distribution does not have enough
+mass in its tails to account for how often markets move a lot.
+
+- **bars** — how often a day of each size actually happened
+- **thin line** — how often the fitted normal says it should happen
+- **lime** — the gap between them beyond 2σ
+
+The y axis is **log frequency**, labelled as odds (`1 in 10` … `1 in 10,000`),
+and that is load-bearing rather than decorative: on a linear density axis
+everything past 2σ is sub-pixel and the entire point of the chart is invisible.
+On a log axis the normal falls away as a parabola while the real bars refuse to
+come down with it. Drag anywhere on the chart to move the ±threshold; the readout
+compares what the normal predicts beyond it against what the sample contains.
+
+**The data is simulated and the caption on the page says so** — a Student-t with
+ν=3, standardised to unit variance, from a fixed seed so the picture is identical
+on every load. It is the *shape* real return distributions have, not real market
+data. To swap in a real series, only the sampling block near the top of the file
+changes; everything downstream works off `data`.
+
+There is no animation loop. The chart draws once and redraws only on resize and
+while dragging. A short entrance plays on load, but `entrance` defaults to the
+finished state and is only set to zero once the code knows the animation can
+actually run — `requestAnimationFrame` is throttled to a standstill in a
+background tab, and an earlier version left the chart stuck at 9% height there.
+Under `prefers-reduced-motion: reduce` it draws the finished chart immediately
+and never calls `requestAnimationFrame` at all.
 
 ## Deploy
 

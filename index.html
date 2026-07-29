@@ -61,39 +61,30 @@
 
 <!-- ============ HERO ============ -->
 <section class="kk-gridpaper" style="border-bottom:2px solid var(--ink-800)">
-  <div class="kk-section kk-two-col" style="padding-top:68px;padding-bottom:40px">
-    <div>
-      <div style="display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap">
-        <span class="kk-badge kk-badge--solid">SDU · Odense</span>
-        <span class="kk-badge kk-badge--neutral kk-badge--dot">Independent student club</span>
-      </div>
-      <h1 style="font:var(--weight-bold) 66px/1.0 var(--font-display);letter-spacing:-.03em;color:var(--ink-900);margin:0 0 20px">
-        We have fun<br>with <span style="color:var(--lime-600)">fat tails.</span>
-      </h1>
-      <p style="font:var(--type-body);font-size:19px;color:var(--ink-700);max-width:46ch;margin:0 0 28px">
-        A new student club at SDU for people who want to know why. We take quantitative questions apart with code, data and mathematics — and we're honest about what comes out, including when the answer is nothing.
-      </p>
-      <div style="display:flex;gap:14px;flex-wrap:wrap">
-        <a class="kk-btn kk-btn--primary kk-btn--lg" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Join the klub →</a>
-        <a class="kk-btn kk-btn--secondary kk-btn--lg" href="/about/">About the klub</a>
-      </div>
+  <div class="kk-section" style="padding-top:64px;padding-bottom:52px">
+    <div style="display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap">
+      <span class="kk-badge kk-badge--solid">SDU · Odense</span>
+      <span class="kk-badge kk-badge--neutral kk-badge--dot">Independent student club</span>
     </div>
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <!-- Replaces the static hero-distribution.svg. Same card, same 2px border,
-           same pop shadow — the picture inside it is simply alive now, and it
-           makes the point the SVG was gesturing at: the normal distribution is
-           wrong in a specific, measurable place. -->
-      <div class="kk-card kk-card--pad-lg">
-        <div class="kk-overline" style="margin-bottom:10px">Where the normal gets it wrong</div>
-        <div class="kk-surface-frame">
-          <canvas id="kk-surface" aria-hidden="true"></canvas>
-        </div>
-        <div class="kk-surface-legend">
-          <span>ink — the normal over-states</span>
-          <span><b>lime — the tail it can't see</b></span>
-        </div>
-        <p class="kk-surface-readout" id="kk-surface-readout"></p>
-      </div>
+    <h1 style="font:var(--weight-bold) 66px/1.0 var(--font-display);letter-spacing:-.03em;color:var(--ink-900);margin:0 0 20px;max-width:15ch">
+      Markets break the <span style="color:var(--lime-600)">bell curve.</span>
+    </h1>
+    <p style="font:var(--type-body);font-size:19px;color:var(--ink-700);max-width:52ch;margin:0 0 28px">
+      A new student club at SDU, taking that apart with code, data and mathematics.
+    </p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap">
+      <a class="kk-btn kk-btn--primary kk-btn--lg" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Join the klub →</a>
+      <a class="kk-btn kk-btn--secondary kk-btn--lg" href="/about/">About the klub</a>
+    </div>
+
+    <!-- Full width, no card: the chart sits straight on the gridpaper, which
+         doubles as its graph paper. js/kk-tails.js draws it. -->
+    <div class="kk-tails">
+      <canvas id="kk-tails" role="img" aria-label="A histogram of daily returns with the fitted normal distribution drawn over it. The bars in the tails stand well above the normal curve, shown in lime: the normal cannot account for how often large moves happen."></canvas>
+      <p class="kk-tails__readout" id="kk-tails-readout"></p>
+      <p class="kk-tails__note">
+        Bars: 25,000 simulated daily returns (Student-t, ν=3) — the shape real return distributions have. Line: the normal fitted to the same numbers. Drag the chart to move the threshold.
+      </p>
     </div>
   </div>
 </section>
@@ -214,12 +205,12 @@
 
 <!-- ============ SCRIPTS ============ -->
 <!-- COPY-PASTE BLOCK — byte-identical in every page. kk-motion.js is needed on
-     every page: the footer's .kk-onview reveal depends on it. kk-surface.js
-     returns immediately where there is no #kk-surface, which is what lets this
+     every page: the footer's .kk-onview reveal depends on it. kk-tails.js
+     returns immediately where there is no #kk-tails, which is what lets this
      block stay identical everywhere. -->
 <script src="/js/kk-motion.js" defer></script>
 <script src="/js/kk-nav.js" defer></script>
-<script src="/js/kk-surface.js" defer></script>
+<script src="/js/kk-tails.js" defer></script>
 <!-- ============ /SCRIPTS ============ -->
 </body>
 </html>
