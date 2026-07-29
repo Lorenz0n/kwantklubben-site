@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Projects — Kwant Klubben</title>
-<meta name="description" content="The Kwant Klubben project library. Everything the club chooses to publish goes to a public repository, including the results that did not work out.">
+<meta name="description" content="The Kwant Klubben project library. Everything the klub chooses to publish goes to a public repository, including the questions that went nowhere.">
 <!-- ============ HEAD-COMMON ============ -->
 <!-- COPY-PASTE BLOCK — byte-identical in every page. Paths are root-relative
      precisely so it can be. Edit one, paste into the others, then run
@@ -34,20 +34,20 @@
      The `hidden` attribute on the panel is load-bearing: kk-nav.js is deferred,
      so without it the drawer renders OPEN on a cold mobile cache until the
      script lands. check-site.py asserts it. Do not switch to a class.
-     The skip link is first in the document on purpose: six tabbable controls
-     sit in this sticky bar ahead of <main> on every page. -->
+     Contact is a button rather than a page: there is nothing a contact page
+     would hold that this mailto does not. -->
 <a class="kk-skip" href="#main">Skip to content</a>
 <header class="kk-nav">
   <div class="kk-nav__inner">
-    <a class="kk-nav__logo" href="/"><img src="/assets/logo-primary.png" alt="Kwant Klubben — home" style="height:40px"></a>
+    <a class="kk-nav__logo" href="/"><img src="/assets/logo-primary.png" alt="Kwant Klubben — home" style="height:72px"></a>
     <nav class="kk-nav__links" aria-label="Main">
       <div class="kk-nav__panel" id="kk-nav-panel" hidden>
         <a href="/about/">About</a>
         <a href="/projects/">Projects</a>
         <a href="/partners/">Partners</a>
-        <a href="/contact/">Contact</a>
       </div>
-      <a class="kk-cta" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Join the Klub</a>
+      <a class="kk-btn kk-btn--secondary kk-btn--sm" href="mailto:hello@kwantklubben.com">Contact</a>
+      <a class="kk-btn kk-btn--primary kk-btn--sm" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Join the klub</a>
       <button class="kk-nav__toggle" type="button" aria-label="Menu" aria-controls="kk-nav-panel" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -59,111 +59,91 @@
 <main id="main">
 
 <!-- ============ PAGE HEAD ============ -->
-<section class="kk-pagehead">
-  <div class="kk-shell">
-    <div class="kk-hero__top">
-      <p class="kk-micro">02 / Projects</p>
-      <p class="kk-micro">Published to a public repository</p>
+<section class="kk-gridpaper" style="border-bottom:2px solid var(--ink-800)">
+  <div class="kk-section" style="padding-top:68px;padding-bottom:44px">
+    <div style="display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap">
+      <span class="kk-badge kk-badge--solid">The library</span>
+      <span class="kk-badge kk-badge--neutral kk-badge--dot">Public repo</span>
     </div>
-    <div class="kk-pagehead__head">
-      <h1 class="kk-display">The library.</h1>
-      <p class="kk-lede">Everything the club chooses to publish lands in a public repository — including the questions that did not work out. Our first projects are in progress.</p>
-    </div>
+    <h1 style="font:var(--weight-bold) 56px/1.0 var(--font-display);letter-spacing:-.03em;color:var(--ink-900);margin:0 0 20px;max-width:16ch">Nothing published yet.</h1>
+    <p style="font:var(--type-body);font-size:19px;color:var(--ink-700);max-width:54ch;margin:0">
+      The first projects are still being worked on. When they land they will appear here, in the shape of the card below — including the ones that went nowhere.
+    </p>
   </div>
 </section>
 
 <!-- ============ THE LIBRARY ============ -->
-<section class="kk-band" id="library">
-  <div class="kk-shell">
-    <p class="kk-micro kk-band__label">01 / Published</p>
-    <!-- This h2 is structural as well as editorial: without it the page went
-         h1 -> h3 (the card's title), the only broken heading outline on the
-         site. Every other band carries an h2. -->
-    <div class="kk-heading-row">
-      <div>
-        <h2 class="kk-h2">Nothing published<br>yet.</h2>
-        <p class="kk-lede" style="margin-top:20px">The first projects are still being worked on. This is where they will appear, in the same shape as the card below.</p>
+<section id="library" style="background:var(--paper-50)">
+  <div class="kk-section" style="padding-top:56px;padding-bottom:64px">
+    <div class="kk-overline" style="margin-bottom:22px">01 / Published</div>
+    <div class="kk-projects-grid">
+      <!-- The single placeholder. It must NOT imply a result exists. Replace it
+           with a real entry once the first project is approved for publication;
+           the fields match the project.json contract in the public mirror
+           (title, question, tags, status, summary, author, date, source). -->
+      <div class="kk-card kk-card--pad-md kk-card--placeholder">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
+          <h2 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:18ch">Example Project</h2>
+          <span class="kk-badge kk-badge--neutral">In progress</span>
+        </div>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:60px">Results coming soon.</p>
+        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px;font-family:var(--font-mono);font-size:12px;color:var(--ink-400)">
+          Kwant Klubben
+        </div>
       </div>
-    </div>
-    <div class="kk-projects">
-
-      <!-- The single placeholder card. It must NOT imply a result exists.
-           Replace it with a real entry the moment the first project is approved
-           for publication; the fields below already match the project.json
-           contract in the public mirror's PROJECT_FORMAT.md (title, question,
-           tags, status, summary, author, date, source) so a real card drops
-           straight in. -->
-      <article class="kk-project kk-project--placeholder">
-        <div class="kk-project__top">
-          <h3 class="kk-h3">Example Project</h3>
-          <p class="kk-micro">In progress</p>
-        </div>
-        <p class="kk-project__body">Results coming soon.</p>
-        <div class="kk-project__meta">
-          <span class="kk-micro">Kwant Klubben</span>
-        </div>
-      </article>
-
     </div>
   </div>
 </section>
 
 <!-- ============ HOW PUBLISHING WORKS ============ -->
-<section class="kk-band" id="publishing">
-  <div class="kk-shell">
-    <p class="kk-micro kk-band__label">02 / How publishing works</p>
-    <div class="kk-heading-row">
+<section id="publishing" style="background:var(--lime-500);border-top:2px solid var(--ink-800);border-bottom:2px solid var(--ink-800)">
+  <div class="kk-section" style="padding-top:60px;padding-bottom:64px">
+    <div class="kk-overline" style="color:var(--ink-700);margin-bottom:8px">02 / How publishing works</div>
+    <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0 0 12px;max-width:20ch">Nothing goes public by accident.</h2>
+    <p style="font:var(--type-body);font-size:18px;color:var(--ink-800);max-width:56ch;margin:0 0 34px">Work happens in a private repository. Publication is a deliberate, manual step, and only the approved parts of a project ever leave it.</p>
+    <div class="kk-loop-grid">
       <div>
-        <h2 class="kk-h2">Nothing goes public<br>by accident.</h2>
-        <p class="kk-lede" style="margin-top:20px">Work happens in a private repository. Publication is a deliberate, manual step, and only the approved parts of a project ever leave it.</p>
-      </div>
-    </div>
-    <div class="kk-steps">
-      <div>
-        <p class="kk-micro">01 — Work</p>
-        <h3 class="kk-h3">In the private repo</h3>
-        <p>Projects live and develop in the club's own repository, where drafts, dead ends and half-finished code are allowed to be exactly that.</p>
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-800);margin-bottom:14px">01</div>
+        <div style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin-bottom:10px">In the private repo</div>
+        <div style="font:var(--type-body-sm);color:var(--ink-700)">Projects live and develop in the klub's own repository, where drafts, dead ends and half-finished code are allowed to be exactly that.</div>
       </div>
       <div>
-        <p class="kk-micro">02 — Approve</p>
-        <h3 class="kk-h3">Marked for publication</h3>
-        <p>A project is published only once it is explicitly marked for it and a maintainer runs the publishing step by hand. There is no automatic path out.</p>
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-800);margin-bottom:14px">02</div>
+        <div style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin-bottom:10px">Marked for publication</div>
+        <div style="font:var(--type-body-sm);color:var(--ink-700)">A project is published only once it is explicitly marked for it and a maintainer runs the publishing step by hand. There is no automatic path out.</div>
       </div>
       <div>
-        <p class="kk-micro">03 — Mirror</p>
-        <h3 class="kk-h3">Copied to the public repo</h3>
-        <p>The approved folder and its write-up are copied to a public mirror, which this page indexes. The private repository is never exposed.</p>
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-800);margin-bottom:14px">03</div>
+        <div style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin-bottom:10px">Copied to the public repo</div>
+        <div style="font:var(--type-body-sm);color:var(--ink-700)">The approved folder and its write-up are copied to a public mirror, which this page indexes. The private repository is never exposed.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ WHAT COUNTS AS A PROJECT ============ -->
-<section class="kk-band" id="shape">
-  <div class="kk-shell">
-    <p class="kk-micro kk-band__label">03 / What counts as a project</p>
-    <div class="kk-cols">
-      <h2 class="kk-h2">Findings, tools,<br>and dead ends.</h2>
-      <div>
-        <p class="kk-body">A project can be a piece of strategy research, a simulation, a small library other members can use, an educational write-up, or an investigation that ended in nothing. All of them belong here.</p>
-        <p class="kk-body">Publishing the ones that failed is not modesty. A question you can rule out is a real result, and a library that only contains successes is not describing the work honestly.</p>
-      </div>
+<!-- ============ WHAT COUNTS ============ -->
+<section id="shape" style="background:var(--paper-50)">
+  <div class="kk-section kk-two-col" style="padding-top:64px;padding-bottom:64px;align-items:start">
+    <div>
+      <div class="kk-overline" style="margin-bottom:8px">03 / What counts</div>
+      <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0;max-width:14ch">Findings, tools, and dead ends.</h2>
+    </div>
+    <div>
+      <p style="font:var(--type-body);color:var(--ink-700);margin:0 0 18px">A project can be a piece of strategy research, a simulation, a small library other members can use, an educational write-up, or an investigation that ended in nothing. All of them belong here.</p>
+      <p style="font:var(--type-body);color:var(--ink-700);margin:0">Publishing the ones that failed is not modesty. A question you can rule out is a real result, and a library that only contains successes is not describing the work honestly.</p>
     </div>
   </div>
 </section>
 
 <!-- ============ JOIN ============ -->
-<section class="kk-band kk-band--ink kk-invert" id="join">
-  <div class="kk-shell">
-    <p class="kk-micro kk-micro--invert kk-band__label">04 / Join</p>
-    <div class="kk-cols">
-      <h2 class="kk-h2">Put something<br>in the library.</h2>
-      <div>
-        <p class="kk-body">Applications are open continuously, mainly to students at SDU. All levels are welcome — bring the question and the club will help you get it somewhere.</p>
-        <p style="margin-top:30px">
-          <a class="kk-cta kk-cta--lg" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Join the Klub ↗</a>
-        </p>
-      </div>
+<section id="join" style="background:var(--ink-900);border-top:2px solid var(--ink-900)">
+  <div class="kk-gridpaper" style="background:transparent">
+    <div class="kk-section" style="padding-top:64px;padding-bottom:68px">
+      <h2 style="font:var(--weight-bold) 46px/1.0 var(--font-display);letter-spacing:-.03em;color:#fff;margin:0 0 18px">Put something in the library.</h2>
+      <p style="font:var(--type-body);font-size:18px;color:var(--paper-300);max-width:48ch;margin:0 0 28px">
+        Applications are open continuously, mainly to students at SDU. All levels are welcome — bring the question and the klub will help you get it somewhere.
+      </p>
+      <a class="kk-btn kk-btn--primary kk-btn--lg" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Apply to join →</a>
     </div>
   </div>
 </section>
@@ -175,10 +155,10 @@
      No class on the <footer> element: the mobile override that undoes the
      wordmark overlay is `footer{display:block}`, and any class selector here
      would out-specify it. That is exactly how 38a783c broke the phone layout. -->
-<footer style="background:var(--ink-900);border-top:1px solid var(--ink-700);color:var(--paper-400)">
+<footer style="background:var(--ink-900);border-top:2px solid var(--ink-700);color:var(--paper-400)">
   <div class="kk-footer__inner">
     <div class="kk-footer__brand">
-      <img src="/assets/logo-mark-knockout.png" alt="" style="height:32px">
+      <img src="/assets/logo-mark-knockout.png" alt="" style="height:40px">
       <span>Kwant Klubben · Independent student club at the University of Southern Denmark</span>
     </div>
     <div class="kk-footer__links">

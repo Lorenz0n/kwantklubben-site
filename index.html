@@ -35,20 +35,20 @@
      The `hidden` attribute on the panel is load-bearing: kk-nav.js is deferred,
      so without it the drawer renders OPEN on a cold mobile cache until the
      script lands. check-site.py asserts it. Do not switch to a class.
-     The skip link is first in the document on purpose: six tabbable controls
-     sit in this sticky bar ahead of <main> on every page. -->
+     Contact is a button rather than a page: there is nothing a contact page
+     would hold that this mailto does not. -->
 <a class="kk-skip" href="#main">Skip to content</a>
 <header class="kk-nav">
   <div class="kk-nav__inner">
-    <a class="kk-nav__logo" href="/"><img src="/assets/logo-primary.png" alt="Kwant Klubben — home" style="height:40px"></a>
+    <a class="kk-nav__logo" href="/"><img src="/assets/logo-primary.png" alt="Kwant Klubben — home" style="height:72px"></a>
     <nav class="kk-nav__links" aria-label="Main">
       <div class="kk-nav__panel" id="kk-nav-panel" hidden>
         <a href="/about/">About</a>
         <a href="/projects/">Projects</a>
         <a href="/partners/">Partners</a>
-        <a href="/contact/">Contact</a>
       </div>
-      <a class="kk-cta" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Join the Klub</a>
+      <a class="kk-btn kk-btn--secondary kk-btn--sm" href="mailto:hello@kwantklubben.com">Contact</a>
+      <a class="kk-btn kk-btn--primary kk-btn--sm" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Join the klub</a>
       <button class="kk-nav__toggle" type="button" aria-label="Menu" aria-controls="kk-nav-panel" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -60,119 +60,127 @@
 <main id="main">
 
 <!-- ============ HERO ============ -->
-<section class="kk-hero">
-  <div class="kk-shell kk-hero__inner">
-
-    <div class="kk-hero__top">
-      <p class="kk-micro">Independent student club · University of Southern Denmark</p>
-      <p class="kk-micro">Odense, DK</p>
+<section class="kk-gridpaper" style="border-bottom:2px solid var(--ink-800)">
+  <div class="kk-section kk-two-col" style="padding-top:68px;padding-bottom:40px">
+    <div>
+      <div style="display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap">
+        <span class="kk-badge kk-badge--solid">SDU · Odense</span>
+        <span class="kk-badge kk-badge--neutral kk-badge--dot">Independent student club</span>
+      </div>
+      <h1 style="font:var(--weight-bold) 66px/1.0 var(--font-display);letter-spacing:-.03em;color:var(--ink-900);margin:0 0 20px">
+        We have fun<br>with <span style="color:var(--lime-600)">fat tails.</span>
+      </h1>
+      <p style="font:var(--type-body);font-size:19px;color:var(--ink-700);max-width:46ch;margin:0 0 28px">
+        A new student club at SDU for people who want to know why. We take quantitative questions apart with code, data and mathematics — and we're honest about what comes out, including when the answer is nothing.
+      </p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <a class="kk-btn kk-btn--primary kk-btn--lg" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Join the klub →</a>
+        <a class="kk-btn kk-btn--secondary kk-btn--lg" href="/about/">About the klub</a>
+      </div>
     </div>
-
-    <div class="kk-hero__head">
-      <h1 class="kk-display">Curiosity, quantified.</h1>
-      <p class="kk-lede kk-hero__lede">Kwant Klubben is an independent student club at the University of Southern Denmark exploring quantitative finance through code, data, mathematics, and discussion.</p>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <!-- Replaces the static hero-distribution.svg. Same card, same 2px border,
+           same pop shadow — the picture inside it is simply alive now, and it
+           makes the point the SVG was gesturing at: the normal distribution is
+           wrong in a specific, measurable place. -->
+      <div class="kk-card kk-card--pad-lg">
+        <div class="kk-overline" style="margin-bottom:10px">Where the normal gets it wrong</div>
+        <div class="kk-surface-frame">
+          <canvas id="kk-surface" aria-hidden="true"></canvas>
+        </div>
+        <div class="kk-surface-legend">
+          <span>ink — the normal over-states</span>
+          <span><b>lime — the tail it can't see</b></span>
+        </div>
+        <p class="kk-surface-readout" id="kk-surface-readout"></p>
+      </div>
     </div>
-
-    <nav class="kk-index" aria-label="Sections">
-      <a href="/about/"><span class="kk-index__num">01</span>About</a>
-      <a href="/projects/"><span class="kk-index__num">02</span>Projects</a>
-      <a href="/partners/"><span class="kk-index__num">03</span>Partners</a>
-      <a href="/contact/"><span class="kk-index__num">04</span>Contact</a>
-      <a class="kk-index__end" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Join the Klub ↗</a>
-    </nav>
-
-    <!-- The dot-matrix surface. js/kk-surface.js draws a mixture density and
-         colours the dots that sit in the fat tail; it is inert on every page
-         that has no #kk-surface, which is why it can live in the shared
-         SCRIPTS block. -->
-    <div class="kk-hero__stage">
-      <canvas id="kk-surface" aria-hidden="true"></canvas>
-      <p class="kk-micro kk-hero__readout" id="kk-surface-readout"></p>
-    </div>
-
   </div>
 </section>
 <!-- ============ /HERO ============ -->
 
-<!-- ============ 01 WHAT WE DO ============ -->
-<section class="kk-band" id="what">
-  <div class="kk-shell">
-    <p class="kk-micro kk-band__label">01 / The klub</p>
-    <div class="kk-cols">
-      <h2 class="kk-h2">Ideas,<br>tested.</h2>
+<!-- ============ THE LOOP ============ -->
+<section id="loop" style="background:var(--lime-500);border-bottom:2px solid var(--ink-800)">
+  <div class="kk-section" style="padding-top:56px;padding-bottom:56px">
+    <div class="kk-overline" style="color:var(--ink-700);margin-bottom:8px">How it works</div>
+    <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0 0 36px;max-width:18ch">From a question to something real.</h2>
+    <div class="kk-loop-grid">
       <div>
-        <p class="kk-body">Come with any background and any question — a strategy idea, a paper, a piece of mathematics, a chart that looks wrong. The club is where you work it through properly instead of letting it go, alongside people who find the same things interesting.</p>
-        <p class="kk-body">We work in code, data and simulation. Nothing here is traded: the club researches and simulates, and that is the whole of it at this stage.</p>
-        <p class="kk-body" style="margin-top:1.6em"><a href="/about/">More about the club</a></p>
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-800);margin-bottom:14px">01</div>
+        <div style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin-bottom:10px">Ideation</div>
+        <div style="font:var(--type-body-sm);color:var(--ink-700)">A paper, a hunch, a dataset, or something a lecture left unfinished. Narrow it until it names what would settle it.</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-800);margin-bottom:14px">02</div>
+        <div style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin-bottom:10px">Learning process</div>
+        <div style="font:var(--type-body-sm);color:var(--ink-700)">Read it, code it, simulate it, argue about it. Most of the time goes here, and that is the point of the club.</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-800);margin-bottom:14px">03</div>
+        <div style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin-bottom:10px">Output</div>
+        <div style="font:var(--type-body-sm);color:var(--ink-700)">A finding, a tool, a write-up, or a clear negative result. All four count as finished work.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ 02 THE LOOP ============ -->
-<section class="kk-band" id="loop">
-  <div class="kk-shell">
-    <p class="kk-micro kk-band__label">02 / The loop</p>
-    <div class="kk-heading-row">
-      <h2 class="kk-h2">How a question<br>becomes something.</h2>
+<!-- ============ PROJECTS ============ -->
+<section id="projects" style="background:var(--paper-50)">
+  <div class="kk-section" style="padding-top:64px;padding-bottom:64px">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:34px;flex-wrap:wrap;gap:16px">
+      <div>
+        <div class="kk-overline" style="margin-bottom:8px">The library</div>
+        <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0">Nothing published yet.</h2>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:13px;color:var(--ink-400);max-width:32ch">Everything the klub chooses to publish goes to a public repo — including the questions that went nowhere.</div>
     </div>
-    <div class="kk-steps">
-      <div>
-        <p class="kk-micro">01 — Ideation</p>
-        <h3 class="kk-h3">Find the question</h3>
-        <p>A question worth spending time on. A paper, a hunch, a dataset, or something a lecture left unfinished.</p>
-      </div>
-      <div>
-        <p class="kk-micro">02 — Learning process</p>
-        <h3 class="kk-h3">Work it through</h3>
-        <p>Read it, code it, simulate it, argue about it. This is where most of the time goes, and that is the point.</p>
-      </div>
-      <div>
-        <p class="kk-micro">03 — Output</p>
-        <h3 class="kk-h3">Leave something behind</h3>
-        <p>A finding, a tool, a write-up, or a clear negative result. All four count.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- ============ 03 PROJECTS ============ -->
-<section class="kk-band" id="projects">
-  <div class="kk-shell">
-    <p class="kk-micro kk-band__label">03 / Projects</p>
-    <div class="kk-heading-row">
-      <div>
-        <h2 class="kk-h2">The library<br>is open.</h2>
-        <p class="kk-lede" style="margin-top:20px">Everything the club chooses to publish lands in a public repository. Our first projects are in progress.</p>
-      </div>
-      <p class="kk-micro"><a href="/projects/">All projects ↗</a></p>
-    </div>
-    <div class="kk-projects">
-      <article class="kk-project kk-project--placeholder">
-        <div class="kk-project__top">
-          <h3 class="kk-h3">Example Project</h3>
-          <p class="kk-micro">In progress</p>
+    <div class="kk-projects-grid">
+      <!-- The single placeholder. It must NOT imply a result exists. Replace it
+           with a real entry once the first project is approved for publication;
+           the fields match the project.json contract in the public mirror. -->
+      <div class="kk-card kk-card--pad-md kk-card--placeholder">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
+          <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:18ch">Example Project</h3>
+          <span class="kk-badge kk-badge--neutral">In progress</span>
         </div>
-        <p class="kk-project__body">Results coming soon.</p>
-        <div class="kk-project__meta">
-          <span class="kk-micro">Kwant Klubben</span>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:60px">Results coming soon.</p>
+        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px;font-family:var(--font-mono);font-size:12px;color:var(--ink-400)">
+          Kwant Klubben
         </div>
-      </article>
+      </div>
+    </div>
+
+    <div style="margin-top:28px;display:flex;justify-content:center">
+      <a class="kk-btn kk-btn--secondary kk-btn--md" href="/projects/">How publishing works →</a>
     </div>
   </div>
 </section>
 
-<!-- ============ 04 JOIN ============ -->
-<section class="kk-band kk-band--ink kk-invert" id="join">
-  <div class="kk-shell">
-    <p class="kk-micro kk-micro--invert kk-band__label">04 / Join</p>
-    <div class="kk-cols">
-      <h2 class="kk-h2">Bring a<br>question.</h2>
+<!-- ============ JOIN ============ -->
+<section id="join" style="background:var(--ink-900);border-top:2px solid var(--ink-900)">
+  <div class="kk-gridpaper" style="background:transparent">
+    <div class="kk-section kk-two-col--join" style="padding-top:72px;padding-bottom:72px">
       <div>
-        <p class="kk-body">Applications are open continuously, mainly to students at SDU. All levels are welcome — we ask about your background so we can point you somewhere useful, not to filter you out. Active participation is expected; exams and life are understood.</p>
-        <p style="margin-top:30px">
-          <a class="kk-cta kk-cta--lg" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Join the Klub ↗</a>
+        <h2 style="font:var(--weight-bold) 52px/1.0 var(--font-display);letter-spacing:-.03em;color:#fff;margin:0 0 18px">Bring a question.</h2>
+        <p style="font:var(--type-body);font-size:18px;color:var(--paper-300);max-width:44ch;margin:0 0 28px">
+          Applications are open continuously, mainly to students at SDU. All levels are welcome — we ask about your background so we can point you somewhere useful, not to filter you out. Active participation is expected; exams and life are understood.
         </p>
+        <div style="display:flex;gap:14px;flex-wrap:wrap">
+          <a class="kk-btn kk-btn--primary kk-btn--lg" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Apply to join →</a>
+        </div>
+      </div>
+      <div class="kk-card kk-card--ink kk-card--pad-lg" style="background:var(--ink-700)">
+        <div class="kk-overline" style="margin-bottom:14px">What the form asks</div>
+        <ul style="font:var(--type-body-sm);color:var(--paper-100);margin:0;padding-left:18px;line-height:1.9">
+          <li>What you study, and how far in</li>
+          <li>Roughly where you are with finance</li>
+          <li>Roughly where you are with code</li>
+          <li>What you'd like to explore</li>
+        </ul>
+        <div style="margin-top:16px;font-family:var(--font-mono);font-size:12px;color:var(--paper-400)">
+          Five minutes. No CV, no motivation essay.
+        </div>
       </div>
     </div>
   </div>
@@ -185,10 +193,10 @@
      No class on the <footer> element: the mobile override that undoes the
      wordmark overlay is `footer{display:block}`, and any class selector here
      would out-specify it. That is exactly how 38a783c broke the phone layout. -->
-<footer style="background:var(--ink-900);border-top:1px solid var(--ink-700);color:var(--paper-400)">
+<footer style="background:var(--ink-900);border-top:2px solid var(--ink-700);color:var(--paper-400)">
   <div class="kk-footer__inner">
     <div class="kk-footer__brand">
-      <img src="/assets/logo-mark-knockout.png" alt="" style="height:32px">
+      <img src="/assets/logo-mark-knockout.png" alt="" style="height:40px">
       <span>Kwant Klubben · Independent student club at the University of Southern Denmark</span>
     </div>
     <div class="kk-footer__links">

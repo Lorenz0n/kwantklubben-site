@@ -171,9 +171,14 @@
     fieldPerPxY = yStep / pitch;
 
     // Dots must never touch: keep the largest radius well under half a pitch.
-    dotScale = pitch / 22;
-    if (dotScale < 0.62) { dotScale = 0.62; }
-    if (dotScale > 1.15) { dotScale = 1.15; }
+    // Weighted up from pitch/22 so the plate holds its own against the brand's
+    // 2px borders and hard pop shadows — at pitch/22 it read as a delicate
+    // stipple next to them. Largest radius is (0.6 + 3.6*1.4) * dotScale, so at
+    // the 1.3 ceiling that is 7.3px against a pitch of at least 14: still a
+    // clear gap between neighbours.
+    dotScale = pitch / 18;
+    if (dotScale < 0.78) { dotScale = 0.78; }
+    if (dotScale > 1.3) { dotScale = 1.3; }
 
     count = cols * rows;
     px.length = py.length = fx.length = fy.length = vals.length = amp.length = count;

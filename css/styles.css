@@ -292,269 +292,148 @@ code, kbd, samp { font-family: var(--font-mono); }
   .js .kk-onview.kk-go{ opacity:1; animation: kk-reveal var(--dur-slow) var(--ease-out) both; }
 }
 
+/* --- source: components/core/Button.jsx --- */
+.kk-btn{
+  --_bg: var(--ink-800); --_fg: var(--paper-50); --_bd: var(--ink-800);
+  display:inline-flex; align-items:center; justify-content:center; gap:.5em;
+  font-family:var(--font-display); font-weight:600; letter-spacing:-.01em;
+  border:var(--border-bold) solid var(--_bd); background:var(--_bg); color:var(--_fg);
+  border-radius:var(--radius-md); cursor:pointer; white-space:nowrap;
+  box-shadow:var(--pop-3); transition:transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+  text-decoration:none;
+}
+.kk-btn:hover{ transform:translate(-1px,-1px); box-shadow:var(--pop-4); }
+.kk-btn:active{ transform:translate(2px,2px); box-shadow:var(--pop-1, 1px 1px 0 var(--ink-800)); }
+.kk-btn:focus-visible{ outline:var(--focus-width) solid var(--focus-ring); outline-offset:var(--focus-offset); }
+.kk-btn[disabled]{ cursor:not-allowed; opacity:.45; box-shadow:none; transform:none; }
+
+.kk-btn--sm{ font-size:var(--text-xs); padding:.42em .85em; border-radius:var(--radius-sm); }
+.kk-btn--md{ font-size:var(--text-sm); padding:.6em 1.1em; }
+.kk-btn--lg{ font-size:var(--text-md); padding:.72em 1.4em; }
+
+.kk-btn--primary{ --_bg:var(--lime-500); --_fg:var(--ink-900); --_bd:var(--ink-800); }
+.kk-btn--primary:hover{ --_bg:var(--lime-400); }
+.kk-btn--secondary{ --_bg:var(--surface-card); --_fg:var(--ink-900); --_bd:var(--ink-800); }
+.kk-btn--secondary:hover{ --_bg:var(--paper-100); }
+.kk-btn--danger{ --_bg:var(--coral-500); --_fg:#fff; --_bd:var(--ink-800); }
+.kk-btn--danger:hover{ --_bg:var(--coral-400); }
+.kk-btn--ghost{ --_bg:transparent; --_fg:var(--ink-900); --_bd:transparent; box-shadow:none; }
+.kk-btn--ghost:hover{ --_bg:var(--paper-100); transform:none; box-shadow:none; }
+.kk-btn--ghost:active{ transform:none; box-shadow:none; }
+
+/* --- source: components/core/Card.jsx --- */
+.kk-card{
+  background:var(--surface-card); border:var(--border-bold) solid var(--ink-800);
+  border-radius:var(--radius-lg); box-shadow:var(--pop-4); overflow:hidden;
+}
+.kk-card--flat{ box-shadow:none; border-color:var(--border-default); border-width:var(--border-thin); }
+.kk-card--ink{ background:var(--surface-ink); border-color:var(--ink-900); color:var(--paper-100); }
+.kk-card--accent{ box-shadow:var(--pop-accent); }
+.kk-card--pad-sm{ padding:var(--space-4); }
+.kk-card--pad-md{ padding:var(--space-5); }
+.kk-card--pad-lg{ padding:var(--space-6); }
+.kk-card--pad-none{ padding:0; }
+.kk-card--hover{ transition:transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out); }
+.kk-card--hover:hover{ transform:translate(-2px,-2px); box-shadow:var(--pop-6); }
+
+/* --- source: components/core/Badge.jsx --- */
+.kk-badge{
+  display:inline-flex; align-items:center; gap:.4em;
+  font-family:var(--font-mono); font-weight:700; font-size:var(--text-3xs);
+  letter-spacing:.06em; text-transform:uppercase; line-height:1;
+  padding:.45em .7em; border-radius:var(--radius-pill);
+  border:var(--border-thin) solid transparent; white-space:nowrap;
+}
+.kk-badge--dot::before{ content:""; width:.5em; height:.5em; border-radius:50%; background:currentColor; }
+.kk-badge--neutral{ background:var(--paper-200); color:var(--ink-700); border-color:var(--paper-300); }
+.kk-badge--survived{ background:var(--lime-300); color:var(--lime-700); border-color:var(--lime-500); }
+.kk-badge--killed{ background:var(--coral-300); color:var(--coral-700); border-color:var(--coral-500); }
+.kk-badge--review{ background:var(--gold-300); color:var(--gold-600); border-color:var(--gold-500); }
+.kk-badge--info{ background:var(--blue-300); color:var(--blue-700); border-color:var(--blue-500); }
+.kk-badge--solid{ background:var(--ink-800); color:var(--paper-50); border-color:var(--ink-800); }
+
+/* --- source: components/core/Tag.jsx --- */
+.kk-tag{
+  display:inline-flex; align-items:center; gap:.4em;
+  font-family:var(--font-mono); font-size:var(--text-2xs); font-weight:400;
+  color:var(--ink-700); background:var(--paper-100);
+  border:var(--border-thin) solid var(--paper-300); border-radius:var(--radius-sm);
+  padding:.3em .55em; line-height:1; white-space:nowrap;
+}
+.kk-tag__x{ cursor:pointer; opacity:.5; font-weight:700; }
+.kk-tag__x:hover{ opacity:1; color:var(--coral-600); }
+.kk-tag--accent{ background:var(--lime-300); border-color:var(--lime-500); color:var(--lime-700); }
+
+/* --- source: components/data/StatBlock.jsx --- */
+.kk-stat{ display:flex; flex-direction:column; gap:.25em; font-family:var(--font-mono); }
+.kk-stat__label{ font-size:var(--text-3xs); letter-spacing:.1em; text-transform:uppercase; color:var(--ink-400); }
+.kk-stat__value{ display:flex; align-items:baseline; gap:.4em; }
+.kk-stat__num{ font-size:var(--text-3xl); font-weight:700; line-height:1; letter-spacing:-.01em; color:var(--ink-900); }
+.kk-stat__num--sm{ font-size:var(--text-2xl); }
+.kk-stat__num--lg{ font-size:var(--text-4xl); }
+.kk-stat__unit{ font-size:var(--text-sm); color:var(--ink-400); font-weight:400; }
+.kk-stat__delta{ font-size:var(--text-xs); font-weight:700; }
+.kk-stat__delta--up{ color:var(--lime-700); }
+.kk-stat__delta--down{ color:var(--coral-600); }
+.kk-stat__delta--flat{ color:var(--ink-400); }
+.kk-stat__sub{ font-size:var(--text-3xs); color:var(--ink-400); }
+.kk-stat--ink .kk-stat__num{ color:#fff; }
+.kk-stat--ink .kk-stat__label,.kk-stat--ink .kk-stat__sub,.kk-stat--ink .kk-stat__unit{ color:var(--paper-400); }
+.kk-stat--ink .kk-stat__delta--up{ color:var(--lime-400); }
+.kk-stat--ink .kk-stat__delta--down{ color:var(--coral-400); }
+
+/* --- source: components/data/VerdictStamp.jsx --- */
+.kk-stamp{
+  display:inline-flex; align-items:center; gap:.45em;
+  font-family:var(--font-mono); font-weight:700; text-transform:uppercase;
+  letter-spacing:.14em; line-height:1; padding:.5em .8em .45em;
+  border:var(--border-heavy) solid currentColor; border-radius:var(--radius-sm);
+  transform:rotate(-4deg); user-select:none;
+}
+.kk-stamp::before{ content:""; width:.6em; height:.6em; border-radius:50%; background:currentColor; opacity:.85; }
+.kk-stamp--md{ font-size:var(--text-md); }
+.kk-stamp--sm{ font-size:var(--text-xs); padding:.4em .6em .35em; border-width:var(--border-bold); }
+.kk-stamp--lg{ font-size:var(--text-2xl); padding:.4em .7em .35em; }
+.kk-stamp--survived{ color:var(--lime-700); background:color-mix(in srgb, var(--lime-300) 55%, transparent); }
+.kk-stamp--killed{ color:var(--coral-600); background:color-mix(in srgb, var(--coral-300) 50%, transparent); }
+.kk-stamp--review{ color:var(--gold-600); background:color-mix(in srgb, var(--gold-300) 55%, transparent); }
+.kk-stamp--paper{ color:var(--blue-600); background:color-mix(in srgb, var(--blue-300) 45%, transparent); }
+
 /* ===========================================================================
-   Site layer — editorial.
-
-   Everything above this line is the club's design system, unchanged: colour,
-   type, spacing and effect tokens, the base reset, the gridpaper, and the
-   motion keyframes. Everything below it is the marketing site's own component
-   layer, and it deliberately does NOT use the design system's component idiom.
-
-   The design system was built for the research dashboards: 2px ink borders,
-   hard `4px 4px 0` pop shadows, lime section fills, verdict stamps. That idiom
-   fights the composition this site is built on — a paper ground, one monumental
-   headline, hairline rules carrying mono micro-labels, and a single dot-matrix
-   canvas. Both cannot be on the page at once, so the shadows and the heavy
-   borders are not carried over here.
-
-   What IS carried over, unchanged: the tokens above, the logo and favicons,
-   Space Grotesk + Space Mono, and the oversized Chewy KWANT footer. Lime stops
-   being a fill and becomes an accent with a job — the one CTA, link underlines,
-   and the hero dots that sit in the fat tail.
+   Site-specific layout — new for this static port (not in the original
+   mockup). Section content stays inline-styled for easy hand-editing;
+   these are ONLY the layout containers that must reflow on mobile, since
+   inline style="grid-template-columns:..." cannot itself respond to a
+   media query.
    =========================================================================== */
 
-:root {
-  /* The sticky bar's height, so the hero can subtract it from 100svh and the
-     fragment-jump scroll-margin can match it.
-     Desktop: nav padding (2 x 16) + logo (40) = 72. The logo is the tallest
-     item. Below 700px the padding drops to 2 x 14 but the hamburger appears at
-     min-height 44, so the toggle becomes the tallest item and the bar is
-     14 + 44 + 14 = 72 again — see the override in the mobile block, which
-     documents why the number does NOT change even though the padding does. */
-  --nav-h: 72px;
-  --hair: 1px solid var(--paper-300);
-  --hair-ink: 1px solid var(--ink-900);
-
-  /* The token layer sets --focus-ring to --blue-500. This site has no blue in
-     it: the accent carries every interactive affordance, and a 3px ultramarine
-     ring on the nav links, the drawer toggle and every inline link is the one
-     place the palette leaked. Overridden here rather than in the token block so
-     the tokens stay a verbatim copy of the design system. */
-  --focus-ring: var(--ink-900);
-}
-
-/* On ink sections the ink ring is invisible, so the accent takes over. Same
-   idea as .kk-cta's own override below. */
-.kk-invert :focus-visible,
-.kk-band--ink :focus-visible { outline-color: var(--lime-500); }
-
-/* Keyboard bypass for the six tabbable controls in the sticky header. Off-screen
-   until focused, then it lands as a normal button at the top-left. */
-.kk-skip {
-  position: absolute; left: -9999px; top: 0; z-index: 20;
-  font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em;
-  text-transform: uppercase; text-decoration: none;
-  color: var(--ink-900); background: var(--paper-50);
-  border: 1px solid var(--ink-900); padding: 12px 18px;
-}
-.kk-skip:focus { left: 0; }
-
-/* --------------------------------------------------------------------------
-   Primitives
-   -------------------------------------------------------------------------- */
-
-.kk-shell{ max-width:1440px; margin:0 auto; padding-left:clamp(20px,3.4vw,48px); padding-right:clamp(20px,3.4vw,48px); }
-
-/* The workhorse label. Everything on this site that is not a headline or body
-   copy is one of these: section numbers, corner metadata, status, the readout. */
-.kk-micro{
-  font-family:var(--font-mono); font-weight:400; font-size:11px; line-height:1.5;
-  letter-spacing:.11em; text-transform:uppercase; color:var(--ink-400);
-  margin:0;
-}
-.kk-micro--strong{ color:var(--ink-700); }
-.kk-micro--invert{ color:var(--paper-400); }
-
-.kk-display{
-  font-family:var(--font-display); font-weight:700;
-  font-size:clamp(3.1rem,9.2vw,8.6rem); line-height:.87; letter-spacing:-.045em;
-  color:var(--ink-900); margin:0; text-wrap:balance;
-}
-.kk-h2{
-  font-family:var(--font-display); font-weight:700;
-  font-size:clamp(1.95rem,4.6vw,3.5rem); line-height:.95; letter-spacing:-.035em;
-  color:var(--ink-900); margin:0; text-wrap:balance;
-}
-.kk-h3{
-  font-family:var(--font-display); font-weight:600;
-  font-size:clamp(1.18rem,1.9vw,1.5rem); line-height:1.12; letter-spacing:-.022em;
-  color:var(--ink-900); margin:0;
-}
-.kk-lede{
-  font-size:clamp(1.02rem,1.35vw,1.24rem); line-height:1.5;
-  color:var(--ink-700); max-width:46ch; margin:0;
-}
-.kk-body{ font-size:1.0625rem; line-height:1.62; color:var(--ink-700); max-width:60ch; margin:0; }
-.kk-body + .kk-body{ margin-top:1.1em; }
-
-.kk-invert .kk-h2, .kk-invert .kk-h3, .kk-invert .kk-display{ color:var(--paper-50); }
-.kk-invert .kk-lede, .kk-invert .kk-body{ color:var(--paper-300); }
-
-/* Inline links get the lime underline rather than the token blue — no blue on
-   this site, the accent carries every interactive affordance.
-   Scoped to PROSE only, deliberately. An earlier version matched `.kk-band a`
-   and `.kk-hero a` with :not() guards, and lost: :not(.kk-index a) inherits the
-   specificity of its argument, so the guard made the rule MORE specific than
-   the `.kk-index a` it was trying to exclude and underlined the index rule
-   anyway. Naming the prose containers is both simpler and correct. */
-.kk-body a, .kk-lede a, .kk-project__body a{
-  color:inherit; text-decoration:underline;
-  text-decoration-color:var(--lime-600); text-decoration-thickness:1.5px;
-  text-underline-offset:3px;
-}
-.kk-body a:hover, .kk-lede a:hover, .kk-project__body a:hover{ text-decoration-thickness:3px; }
-.kk-invert .kk-body a, .kk-invert .kk-lede a{ color:var(--paper-50); }
-
-/* Links inside micro labels stay quiet — they are wayfinding, not emphasis. */
-.kk-micro a{ color:var(--ink-700); text-decoration:none; }
-.kk-micro a:hover{ color:var(--ink-900); text-decoration:underline; text-decoration-color:var(--lime-600); text-underline-offset:3px; }
-.kk-micro--invert a{ color:var(--paper-400); }
-
-/* --------------------------------------------------------------------------
-   The one button
-   Six kk-btn variants collapsed to a single CTA plus a quiet sibling. No pop
-   shadow: on a paper ground with hairline rules it reads as a different era.
-   -------------------------------------------------------------------------- */
-
-.kk-cta{
-  display:inline-flex; align-items:center; gap:.5em;
-  font-family:var(--font-display); font-weight:600; font-size:14px;
-  letter-spacing:-.01em; white-space:nowrap; text-decoration:none;
-  padding:.7em 1.15em; border-radius:var(--radius-sm);
-  background:var(--lime-500); color:var(--ink-900); border:1px solid var(--ink-900);
-  transition:background var(--dur-fast) var(--ease-out),
-             transform var(--dur-fast) var(--ease-out);
-}
-.kk-cta:hover{ background:var(--lime-400); color:var(--ink-900); transform:translateY(-1px); }
-.kk-cta:active{ transform:none; }
-.kk-cta:focus-visible{ outline:var(--focus-width) solid var(--ink-900); outline-offset:var(--focus-offset); }
-.kk-cta--lg{ font-size:16px; padding:.8em 1.35em; }
-.kk-cta--quiet{ background:transparent; border-color:var(--ink-900); }
-.kk-cta--quiet:hover{ background:var(--paper-200); }
-.kk-invert .kk-cta--quiet{ border-color:var(--paper-400); color:var(--paper-50); }
-.kk-invert .kk-cta--quiet:hover{ background:rgba(251,249,242,.08); }
-.kk-invert .kk-cta:focus-visible{ outline-color:var(--lime-500); }
-
-/* --------------------------------------------------------------------------
-   The index rule — numbered destinations sitting directly on a hairline.
-   Doubles as in-page wayfinding and as the hero's bottom edge.
-   -------------------------------------------------------------------------- */
-
-.kk-index{
-  display:flex; flex-wrap:wrap; align-items:baseline;
-  gap:10px clamp(18px,4.4vw,64px);
-  border-top:var(--hair); padding-top:13px;
-}
-.kk-index a{
-  font-family:var(--font-mono); font-size:11px; letter-spacing:.11em;
-  text-transform:uppercase; color:var(--ink-700); text-decoration:none;
-  display:inline-flex; gap:.7em; align-items:baseline;
-}
-.kk-index a:hover{ color:var(--ink-900); }
-.kk-index a:hover .kk-index__num{ color:var(--lime-700); }
-.kk-index__num{ color:var(--ink-400); font-variant-numeric:tabular-nums; transition:color var(--dur-fast) var(--ease-out); }
-.kk-index__end{ margin-left:auto; }
-
-/* --------------------------------------------------------------------------
-   Hero
-   -------------------------------------------------------------------------- */
-
-.kk-hero{ border-bottom:var(--hair); }
-.kk-hero__inner{
-  min-height:calc(100svh - var(--nav-h));
-  display:flex; flex-direction:column;
-  padding-top:clamp(22px,4vh,44px); padding-bottom:clamp(18px,3vh,34px);
-}
-.kk-hero__top{ display:flex; justify-content:space-between; align-items:flex-start; gap:24px; }
-.kk-hero__top .kk-micro{ max-width:34ch; }
-.kk-hero__head{ margin-top:clamp(26px,6.5vh,74px); }
-.kk-hero__lede{ margin-top:clamp(18px,2.6vh,26px); margin-bottom:clamp(20px,3vh,30px); }
-
-/* The canvas fills whatever vertical space the copy leaves. min-height keeps the
-   sculpture from collapsing to a sliver on short landscape viewports. */
-.kk-hero__stage{ position:relative; flex:1 1 auto; min-height:250px; margin-top:clamp(14px,2.4vh,26px); }
-#kk-surface{ position:absolute; inset:0; width:100%; height:100%; display:block; }
-.kk-hero__readout{
-  position:absolute; left:0; right:0; bottom:0; text-align:center;
-  font-variant-numeric:tabular-nums; pointer-events:none;
-}
-
-/* --------------------------------------------------------------------------
-   Bands and grids
-   -------------------------------------------------------------------------- */
-
-.kk-band{ padding-top:clamp(58px,8.4vw,116px); padding-bottom:clamp(58px,8.4vw,116px); }
-.kk-band + .kk-band{ border-top:var(--hair); }
-.kk-band__label{ margin-bottom:clamp(26px,4.2vw,50px); }
-.kk-band--ink{ background:var(--ink-900); color:var(--paper-300); }
-.kk-band--ink + .kk-band--ink{ border-top-color:var(--ink-700); }
-
-.kk-cols{
-  display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr);
-  gap:clamp(26px,4.6vw,76px); align-items:start;
-}
-.kk-cols--even{ grid-template-columns:repeat(2,minmax(0,1fr)); }
-
-/* The loop: three steps, each hung from its own ink hairline. */
-.kk-steps{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(18px,3vw,44px); }
-.kk-steps > div{ border-top:var(--hair-ink); padding-top:16px; }
-.kk-invert .kk-steps > div{ border-top-color:var(--paper-500); }
-.kk-steps .kk-h3{ margin:clamp(34px,5vw,64px) 0 10px; }
-.kk-steps p{ margin:0; font-size:.98rem; line-height:1.55; color:var(--ink-700); }
-.kk-invert .kk-steps p{ color:var(--paper-300); }
-
-.kk-heading-row{ display:flex; justify-content:space-between; align-items:flex-end; gap:28px; flex-wrap:wrap; margin-bottom:clamp(22px,3vw,36px); }
-
-/* --------------------------------------------------------------------------
-   Project cards — hairline boxes, no fill, no shadow. Status is a micro label,
-   not a stamp: the club has no verdicts to stamp yet.
-   -------------------------------------------------------------------------- */
-
-.kk-projects{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(14px,1.6vw,20px); }
-.kk-project{
-  border:var(--hair); padding:clamp(20px,2.6vw,30px);
-  display:flex; flex-direction:column; gap:12px; min-height:210px;
-}
-.kk-project__top{ display:flex; justify-content:space-between; align-items:flex-start; gap:14px; }
-.kk-project__body{ margin:0; font-size:.98rem; line-height:1.55; color:var(--ink-700); flex:1; }
-.kk-project__meta{ border-top:var(--hair); padding-top:12px; display:flex; gap:14px; flex-wrap:wrap; }
-.kk-project--placeholder{ border-style:dashed; }
-
-/* --------------------------------------------------------------------------
-   Nav — visual treatment only. The cascade below (the `hidden` handling, the
-   drawer positioning, the display:none landmine) is carried over verbatim from
-   the previous stylesheet. Its comments are load-bearing. Do not "tidy" it.
-   -------------------------------------------------------------------------- */
-
 .kk-nav{
-  position:sticky; top:0; z-index:10; background:rgba(251,249,242,.9);
-  backdrop-filter:blur(10px); border-bottom:var(--hair);
+  position:sticky; top:0; z-index:10; background:rgba(251,249,242,.86);
+  backdrop-filter:blur(8px); border-bottom:var(--border-bold) solid var(--ink-800);
 }
 .kk-nav__inner{
-  max-width:1440px; margin:0 auto;
-  padding:16px clamp(20px,3.4vw,48px);
+  max-width:1200px; margin:0 auto; padding:18px 28px;
   display:flex; align-items:center; justify-content:space-between; gap:24px;
 }
-.kk-nav__links{ display:flex; align-items:center; gap:clamp(16px,2vw,30px); }
+.kk-nav__links{ display:flex; align-items:center; gap:26px; }
 
-/* Blockifies the <img>. As a direct flex child it contributed exactly its own
-   height, but wrapping it in <a href="/"> makes the <a> the flex item and the
-   img inside goes back to being inline — it then sits on a baseline and the
-   strut's descender adds ~4px, silently growing the bar past --nav-h. */
+/* Blockifies the <img>. As a direct flex child it contributed exactly 72px, but
+   wrapping it in <a href="/"> makes the <a> the flex item and the img inside
+   goes back to being inline — it then sits on a baseline and the strut's
+   descender adds ~4px, silently growing the 100px bar to ~105px. */
 .kk-nav__logo{ display:flex; color:inherit; }
 
-/* Desktop: the panel is just a run of links in the bar. On mobile it becomes
-   the drawer — see the media block below. */
-.kk-nav__panel{ display:flex; align-items:center; gap:clamp(16px,2vw,30px); }
+/* Desktop: the panel is just a run of links in the bar. Same 26px gap as its
+   parent so [About Projects Sponsors] [Join the klub] reads as one even row.
+   On mobile it becomes the drawer — see the media block below. */
+.kk-nav__panel{ display:flex; align-items:center; gap:26px; }
 .kk-nav__panel a{
-  font-family:var(--font-mono); font-size:11px; letter-spacing:.11em;
-  text-transform:uppercase; color:var(--ink-700); text-decoration:none;
+  font-family:var(--font-mono); font-size:13px; letter-spacing:.04em;
+  color:var(--ink-700); text-decoration:none;
 }
 .kk-nav__panel a:hover{ color:var(--ink-900); }
 .kk-nav__panel a[aria-current="page"]{
-  color:var(--ink-900); text-decoration:underline;
-  text-decoration-color:var(--lime-600); text-decoration-thickness:1.5px;
-  text-underline-offset:5px;
+  color:var(--ink-900); text-decoration:underline; text-underline-offset:5px;
 }
 
 /* Hand-drawn ☰ — the brand vendors no menu glyph and U+2630 isn't in Space
@@ -564,51 +443,58 @@ code, kbd, samp { font-family: var(--font-mono); }
 .kk-nav__toggle{
   display:none;
   flex-direction:column; align-items:center; justify-content:center; gap:4px;
-  width:44px; min-height:44px; padding:0;
-  background:transparent; color:var(--ink-900);
-  border:1px solid var(--ink-900); border-radius:var(--radius-sm); cursor:pointer;
+  width:44px; min-height:44px; padding:0;   /* 44px tap target is free — the 72px logo sets the bar height */
+  background:var(--surface-card); color:var(--ink-900);
+  border:var(--border-bold) solid var(--ink-800); border-radius:var(--radius-sm);
+  box-shadow:var(--pop-2); cursor:pointer;
 }
 .kk-nav__toggle span{
-  display:block; width:16px; height:1.5px; background:currentColor;
-  border-radius:0;
+  display:block; width:18px; height:2px; background:currentColor;
+  border-radius:0;   /* Win95-squared: no rounded caps */
 }
-.kk-nav__toggle:active{ background:var(--paper-200); }
+.kk-nav__toggle:active{ transform:translate(1px,1px); box-shadow:none; }
 
-/* The bar is sticky, so a fragment jump would park the target's first --nav-h
-   underneath it. */
-section[id]{ scroll-margin-top:calc(var(--nav-h) + 8px); }
+/* The bar is sticky and ~100–108px tall, so a fragment jump parks the target's
+   first ~108px underneath it. Latent while everything lived on one page; now
+   every "About" click from /projects/ or /sponsors/ is a cross-page fragment
+   jump on a top-3 nav item. 108 = 72 logo + 2×18 padding (desktop). */
+section[id]{ scroll-margin-top:112px; }
 
-/* --------------------------------------------------------------------------
-   Footer — carried over VERBATIM, including the mobile override.
+/* Vertical padding is left to each section instance (varies 44–72px in the
+   original, on purpose, for rhythm) — only horizontal padding + max-width
+   are shared, so the mobile query below can target them without fighting
+   each section's inline padding-top/padding-bottom. */
+.kk-section{ max-width:1200px; margin:0 auto; padding-left:28px; padding-right:28px; }
 
-   The 2026-07-29 relaunch introduced a `.kk-footer` class whose display:grid
-   (0,1,0) out-specified the `footer{display:block}` override below (0,0,1), so
-   the overlay was never undone on phones. There is deliberately no `.kk-footer`
-   selector in this file. Style the element, or the override loses.
-   -------------------------------------------------------------------------- */
+.kk-two-col{ display:grid; grid-template-columns:1.05fr .95fr; gap:48px; align-items:center; }
+.kk-two-col--join{ display:grid; grid-template-columns:1.2fr .8fr; gap:48px; align-items:center; }
+
+.kk-manifesto-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:0; border-left:var(--border-bold) solid var(--ink-800); }
+.kk-manifesto-grid > div{ border-right:var(--border-bold) solid var(--ink-800); padding:4px 22px 0; }
+
+.kk-stats-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:32px; }
+
+.kk-projects-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
 
 /* The footer stacks its brand line and the wordmark into the SAME grid cell, so the
    wordmark starts at the footer's top edge and the brand line sits over it.
    Grid rather than a negative margin, for two reasons: the footer's height must still
    be driven by whichever child is taller, and a margin big enough to reach the top
-   would drag the wordmark clean out of the ink band on a page whose last section is
-   paper (the footer block is byte-identical across every page, so one value has to
-   serve all of them). */
+   would drag the wordmark clean out of the ink band on /projects/, whose last section
+   is --paper-50 (the footer block is byte-identical across all three pages, so one
+   value has to serve all of them). */
 footer{ display:grid; }
-/* align-self:start on BOTH — as grid items they'd otherwise stretch to the row height,
-   and .kk-footer__inner's own align-items:center would then float the brand line into
-   the middle of the footer instead of leaving it at the top. */
+/* align-self:start on BOTH — as grid items they'd otherwise stretch to the row height
+   (298px at 1440), and .kk-footer__inner's own align-items:center would then float the
+   brand line into the middle of the footer instead of leaving it at the top. */
 .kk-footer__inner{ grid-area:1/1; align-self:start; position:relative; z-index:1; }
 
 .kk-footer__inner{
-  max-width:1440px; margin:0 auto; padding:26px clamp(20px,3.4vw,48px);
+  max-width:1200px; margin:0 auto; padding:28px;
   display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
-  font-family:var(--font-mono); font-size:11px; letter-spacing:.08em;
+  font-family:var(--font-mono); font-size:12px;
 }
-.kk-footer__brand{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
-.kk-footer__links{ display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
-footer a{ color:var(--paper-300); text-decoration:none; }
-footer a:hover{ color:var(--lime-400); }
+.kk-footer__brand{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
 
 /* Oversized wordmark bleeding off the bottom edge. Everything is vw-based so a
    single rule holds at every width — no mobile override. The height is set
@@ -629,42 +515,21 @@ footer a:hover{ color:var(--lime-400); }
      is most of the gap under the footer text — far more than any padding here. The
      negative margin cancels it so the letter tops sit flush with the top of the box.
      Paired with the height above: both were cut by the same amount, so the bottom
-     bleed stays at 8.2vw / 72% of the letterforms visible. Change them together.
-     Tuned to Chewy's metrics specifically — tools/check-site.py asserts the font is
-     actually loaded on every page, because the fallback clips out of this box. */
+     bleed stays at 8.2vw / 72% of the letterforms visible. Change them together. */
   margin-top:-3.3vw;
 }
 
-/* --------------------------------------------------------------------------
-   Mobile
-   -------------------------------------------------------------------------- */
-
-@media (max-width: 860px){
-  .kk-cols, .kk-cols--even{ grid-template-columns:1fr; gap:26px; }
-  .kk-steps{ grid-template-columns:1fr; gap:0; }
-  .kk-steps > div{ padding-bottom:26px; }
-  .kk-steps .kk-h3{ margin-top:20px; }
-  .kk-projects{ grid-template-columns:1fr; }
-}
-
 @media (max-width: 700px){
-  /* NOT 68px. The padding drops to 2 x 14 here, which would make the bar
-     14 + 40 + 14 = 68 on the logo alone — but `.js .kk-nav__toggle` turns on
-     below this breakpoint at min-height:44px, and as a flex sibling it is then
-     the tallest item: 14 + 44 + 14 = 72. Declaring 68 made the hero's
-     `calc(100svh - var(--nav-h))` overshoot the viewport by 4px on every phone. */
-  :root{ --nav-h: 72px; }
-
   /* Undo the footer overlay below 700px. The brand line stacks to a column here and
-     runs taller than the wordmark's entire band of ink, so overlaying them strands
-     the letters above the page bottom with no bleed at all. Under the text it still
-     runs off the bottom edge, which is the point of it. */
+     runs ~176px tall — taller than the wordmark's entire 113px of ink — so overlaying
+     them strands the letters ~62px above the page bottom with no bleed at all. Under
+     the text it still runs off the bottom edge, which is the point of it. */
   footer{ display:block; }
   .kk-footer-word{ align-self:auto; }
 
   /* flex-wrap is the no-JS fallback: without .js the links stay inline in the
      bar and it grows to two rows rather than overflowing the page sideways. */
-  .kk-nav__inner{ padding:14px 20px; flex-wrap:wrap; }
+  .kk-nav__inner{ padding:14px 16px; flex-wrap:wrap; }
   .kk-nav__links{ gap:14px; flex-wrap:wrap; }
 
   .js .kk-nav__toggle{ display:inline-flex; }
@@ -688,27 +553,29 @@ footer a:hover{ color:var(--lime-400); }
        position:relative to .kk-nav__inner — the drawer would lose its full bleed. */
     position:absolute; top:100%; left:0; right:0;
     flex-direction:column; align-items:stretch; gap:0;
-    padding:4px 20px 12px;
+    padding:4px 16px 12px;
     /* Opaque on purpose: the bar's backdrop-filter only blurs its own box, so a
        translucent drawer would show unblurred page content through it. */
     background:var(--paper-50);
-    border-bottom:var(--hair);
+    border-bottom:var(--border-bold) solid var(--ink-800);
     /* NB: no `display` here. `.js .kk-nav__panel` and `.kk-nav__panel[hidden]`
        are both (0,2,0), and this block is later in source — declaring display
        here would win and make `hidden` inert, rendering the drawer open and
        leaving it in the tab order. Landmine. Leave display out. */
   }
   .js .kk-nav__panel a{
-    display:flex; align-items:center; min-height:44px; font-size:12px;
-    border-top:var(--hair);
+    display:flex; align-items:center; min-height:44px; font-size:15px;
+    border-top:var(--border-thin) solid var(--paper-300);
   }
   .js .kk-nav__panel a:first-child{ border-top:none; }
 
-  .kk-hero__top{ flex-direction:column; gap:8px; }
-  .kk-hero__top .kk-micro{ max-width:none; }
-  .kk-index__end{ margin-left:0; }
-  .kk-heading-row{ display:block; }
-  .kk-heading-row > * + *{ margin-top:20px; }
+  .kk-section{ padding-left:16px; padding-right:16px; }
+  .kk-two-col, .kk-two-col--join{ grid-template-columns:1fr; gap:32px; }
+  .kk-manifesto-grid{ grid-template-columns:repeat(2,1fr); }
+  .kk-manifesto-grid > div:nth-child(2n){ border-right:none; }
+  .kk-stats-grid{ grid-template-columns:repeat(2,1fr); gap:24px; }
+  .kk-projects-grid{ grid-template-columns:1fr; }
+  h1{ font-size:2.5rem !important; }
   .kk-footer__inner{ flex-direction:column; align-items:flex-start; }
 }
 
@@ -719,12 +586,107 @@ footer a:hover{ color:var(--lime-400); }
   .js .kk-nav__panel:not([hidden]){ animation: kk-reveal var(--dur-base) var(--ease-out) both; }
 }
 
-/* Interior page head — the hero's composition without the canvas. Not a
-   .kk-band, so the first real .kk-band after it does not draw a second rule on
-   top of this one's border-bottom. */
-.kk-pagehead{
-  padding-top:clamp(44px,6.4vw,86px); padding-bottom:clamp(38px,5.6vw,72px);
-  border-bottom:var(--hair);
+/* ===========================================================================
+   NEW FOR THE 2026-07 RELAUNCH
+
+   Everything above this line is the original stylesheet, restored verbatim:
+   the design system's tokens, its component idiom (2px ink borders, hard
+   `4px 4px 0` pop shadows, lime section fills, badges, stamps, cards) and the
+   site layout that shipped with it. That idiom IS the brand — the relaunch
+   keeps it rather than replacing it.
+
+   Below are only the pieces the relaunch actually needs: the hero canvas frame
+   that replaced the static distribution SVG, a three-column variant of the
+   divided grid for the loop, the footer's second link group, a keyboard skip
+   link, and one brand fix.
+   =========================================================================== */
+
+/* --- one brand fix ------------------------------------------------------
+   The token layer sets --focus-ring to --blue-500, and the brand has no blue
+   in it: the accents are lime, coral and gold, and they carry status. A 3px
+   ultramarine ring on every nav link, button and drawer control was the one
+   place the palette leaked. Overridden here rather than in the token block so
+   the tokens stay a verbatim copy of the design system. */
+:root{ --focus-ring: var(--ink-800); }
+/* Ink-on-ink is invisible, so on the dark bands the accent takes over. */
+.kk-card--ink :focus-visible,
+[style*="--ink-900"] :focus-visible{ outline-color: var(--lime-500); }
+
+/* --- hero canvas --------------------------------------------------------
+   Sits inside the same .kk-card the distribution SVG used to, so the hero keeps
+   its original two-column composition — the card, its 2px border and its pop
+   shadow are unchanged. Only the picture inside it is now alive.
+   aspect-ratio keeps the card the same shape the SVG gave it; the min-height is
+   the floor for browsers that skip the property. */
+.kk-surface-frame{
+  position:relative; width:100%; aspect-ratio:5/4; min-height:120px;
+  background:var(--paper-50);
+  border:var(--border-thin) solid var(--paper-300);
+  border-radius:var(--radius-sm);
+  overflow:hidden;
 }
-.kk-pagehead__head{ margin-top:clamp(22px,5vh,58px); }
-.kk-pagehead .kk-lede{ margin-top:clamp(16px,2.4vh,24px); }
+
+/* Grid items default to min-width:auto, so a track will refuse to shrink below
+   its content's min-content width. `aspect-ratio` + `min-height` on the frame
+   above gives this card an implied minimum width, which at 375px pushed the
+   whole hero column to 388px and put 44px of the page off-screen to the right.
+   min-width:0 lets the track win instead. The frame's min-height is kept small
+   for the same reason — it is only a floor for engines without aspect-ratio,
+   not a design constraint. */
+.kk-two-col > *, .kk-two-col--join > *{ min-width:0; }
+#kk-surface{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+.kk-surface-legend{
+  display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  margin-top:12px; font-family:var(--font-mono); font-size:var(--text-3xs);
+  color:var(--ink-400);
+}
+.kk-surface-legend b{ color:var(--lime-700); font-weight:700; }
+.kk-surface-readout{
+  margin:8px 0 0; font-family:var(--font-mono); font-size:var(--text-3xs);
+  letter-spacing:.06em; color:var(--ink-400); font-variant-numeric:tabular-nums;
+}
+
+/* --- the loop -----------------------------------------------------------
+   Same divided-grid idiom as .kk-manifesto-grid (which the House rules band
+   used), at three columns instead of four. Kept as its own class rather than a
+   modifier so the manifesto grid can be deleted without touching this. */
+.kk-loop-grid{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:0;
+  border-left:var(--border-bold) solid var(--ink-800);
+}
+.kk-loop-grid > div{
+  border-right:var(--border-bold) solid var(--ink-800); padding:4px 22px 0;
+}
+
+/* --- projects -----------------------------------------------------------
+   The placeholder card is dashed so it reads as a slot waiting to be filled
+   rather than as a finished entry with nothing in it. */
+.kk-card--placeholder{ border-style:dashed; box-shadow:none; background:var(--paper-100); }
+
+/* --- footer -------------------------------------------------------------
+   The original footer carried the brand line alone. The relaunch adds the
+   contact route, so the inner row becomes brand-left / links-right. */
+.kk-footer__links{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+.kk-footer__links a{ color:var(--paper-100); text-decoration:none; border-bottom:1.5px solid var(--lime-500); padding-bottom:1px; }
+.kk-footer__links a:hover{ color:var(--lime-400); border-bottom-color:var(--lime-400); }
+
+/* --- keyboard skip ------------------------------------------------------
+   Five tabbable controls sit in the sticky bar ahead of <main> on every page. */
+.kk-skip{
+  position:absolute; left:-9999px; top:0; z-index:20;
+  font-family:var(--font-mono); font-size:var(--text-2xs); letter-spacing:.08em;
+  text-transform:uppercase; text-decoration:none;
+  color:var(--ink-900); background:var(--paper-50);
+  border:var(--border-bold) solid var(--ink-800); box-shadow:var(--pop-3);
+  padding:12px 18px;
+}
+.kk-skip:focus{ left:8px; top:8px; }
+
+@media (max-width: 700px){
+  .kk-loop-grid{ grid-template-columns:1fr; border-left:none; }
+  .kk-loop-grid > div{
+    border-right:none; border-left:var(--border-bold) solid var(--ink-800);
+    padding-bottom:22px;
+  }
+  .kk-surface-frame{ aspect-ratio:4/3; }
+}

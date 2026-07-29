@@ -7,32 +7,39 @@ This repo is intentionally separate from the club's private research repo (`kwan
 ## Structure
 
 ```
-index.html            landing — hero canvas, what we do, the loop, projects teaser, join
-about/index.html      what the club is, the loop, AI with human ownership, who it's for
-projects/index.html   the library — one Example Project card, how publishing works
+index.html            landing — hero canvas, the loop, projects teaser, join
+about/index.html      what the klub is, the process in full, AI, joining
+projects/index.html   the library, how publishing works, what counts
 partners/index.html   collaboration, talks, mentorship, co-designed events
-contact/index.html    email primary, LinkedIn secondary
 sponsors/index.html   redirect stub -> /partners/  (the old URL is on LinkedIn)
 
-css/styles.css        brand tokens (unchanged, from the design system) + the site's
-                      own editorial component layer. Single file, single request.
-js/kk-motion.js       count-up + scroll-reveal. A verbatim copy of the design-system
-                      original — do not edit it here.
+css/styles.css        the original brand stylesheet (tokens + component idiom),
+                      plus a short relaunch section at the bottom
+js/kk-motion.js       count-up + scroll-reveal. A verbatim copy of the
+                      design-system original — do not edit it here.
 js/kk-nav.js          the mobile drawer. Drives the `hidden` ATTRIBUTE, not a class.
-js/kk-surface.js      the hero's dot-matrix halftone canvas. Inert on any page with
-                      no #kk-surface, which is why it can sit in the shared block.
+js/kk-surface.js      the hero's dot-matrix canvas. Inert on any page with no
+                      #kk-surface, which is why it can sit in the shared block.
 assets/               logos, favicon set
 tools/check-site.py   the drift + invariant check. Read the next section.
 ```
 
+Nav is **About · Projects · Partners**, plus a Contact button (a `mailto:`, not a page — there was nothing a contact page would hold that the mailto does not) and the Join button pointing straight at the application form.
+
+## The style
+
+The chunky idiom **is** the brand: 2px ink borders, hard `4px 4px 0` pop shadows, lime section fills, badges, gridpaper. `css/styles.css` is the original stylesheet, unchanged, with a clearly-marked section appended at the bottom for the few things the relaunch actually needed — the hero canvas frame, a three-column variant of the divided grid, the footer's second link group, a skip link, and one brand fix (the token layer's `--focus-ring` was `--blue-500`; the brand has no blue in it).
+
+If you are adding to this site, use the existing components. Do not introduce a second visual system.
+
 ## The check
 
-There is no build step and no templating, so `HEAD-COMMON`, `NAV`, `FOOTER` and `SCRIPTS` are **literally duplicated** in all five pages. Every path inside them is root-relative precisely so they can be byte-identical.
+There is no build step and no templating, so `HEAD-COMMON`, `NAV`, `FOOTER` and `SCRIPTS` are **literally duplicated** in all four pages. Every path inside them is root-relative precisely so they can be byte-identical.
 
-**To change the nav, footer, head or scripts: edit `index.html`, paste into the other four, then run the check.**
+**To change the nav, footer, head or scripts: edit `index.html`, paste into the other three, then run the check.**
 
 ```
-python tools/check-site.py     # -> "ok: 4 blocks identical and invariants hold across 5 pages"
+python tools/check-site.py     # -> "ok: 4 blocks identical, invariants and CSS cascade rules hold across 4 pages"
 ```
 
 It also runs in CI on every push and pull request (`.github/workflows/check.yml`).
@@ -43,18 +50,20 @@ It is not a build step — it produces nothing and the site works without it. It
 |---|---|
 | `&family=Chewy` in the font URL | The footer wordmark is Chewy at 37vw with a `-3.3vw` nudge tuned to its metrics. Without the font it falls back to system cursive and clips out of its own box. |
 | `.kk-footer-word` present | Same wordmark, absent entirely. |
-| `#kk-nav-panel` ships with `hidden` | `kk-nav.js` is deferred and owns that attribute. Without it the drawer renders **open** on a cold mobile cache until the script lands. |
-| The application form URL matches | A mistyped `forms.gle` link is the most expensive copy bug on the site — it is on every poster. |
+| No class on the `<footer>` element | `footer{display:block}` (0,0,1) is what undoes the wordmark overlay on phones. Any class selector out-specifies it. |
+| `#kk-nav-panel` ships with `hidden` | Checked at attribute position, not as a substring — `class="… hidden"` would satisfy a substring test while being exactly the class-for-attribute swap this catches. `kk-nav.js` is deferred and owns that attribute; without it the drawer renders **open** on a cold mobile cache. |
+| An application link exists and matches | Any `forms.gle` **or** `docs.google.com/forms` link, over http or https, must equal the one true form URL — and at least one must be present. It is on every poster. |
 | No `TODO(content)` / `REPLACE_ME` | Placeholders must not reach production. |
 | Every root-relative nav `href` resolves | A nav pointing at a directory that does not exist. |
+| The CSS cascade rules | No bare `.kk-footer` class selector; the mobile `footer{display:block}` override still present; no `display` declared inside `.js .kk-nav__panel`. |
 
-Pages opt out by containing a `REDIRECT` marker — that is how `sponsors/index.html` is excluded.
+Pages opt out by containing a `REDIRECT` marker in a comment near the top **and** actually being a redirect — that is how `sponsors/index.html` is excluded. Skipped pages are printed, so an opt-out is visible in the CI log.
 
 ### Two rules the CSS depends on
 
 Both of these broke in July 2026 and both are cheap to break again:
 
-- **No class on the `<footer>` element.** The mobile override that undoes the wordmark overlay is `footer{display:block}` (0,0,1). Any class selector out-specifies it and strands the letters behind the footer text on phones.
+- **No class on the `<footer>` element.** The mobile override that undoes the wordmark overlay is `footer{display:block}`. Any class selector out-specifies it and strands the letters behind the footer text on phones.
 - **The nav drawer is driven by the `hidden` attribute**, never by an `.is-open` class. `css/styles.css` has a long comment explaining why declaring `display` in the mobile `.kk-nav__panel` block makes `hidden` inert. Read it before touching that block.
 
 ## Local preview
@@ -71,14 +80,10 @@ Paths are root-relative, so under `file://` they resolve against your filesystem
 
 ## The hero canvas
 
-`js/kk-surface.js` plots the signed excess `f = mixture − fitted_normal` of a fat-tailed bivariate density over the axis-aligned normal fitted to it, on a fixed halftone lattice. Dot positions never move; only radius carries information. Lime marks `f > 0` — the peak and the tails, where the normal understates real mass.
+`js/kk-surface.js` replaced the static `assets/hero-distribution.svg` inside the same card, with the same border and the same pop shadow. It plots the signed excess `f = mixture − fitted_normal` of a fat-tailed bivariate density over the axis-aligned normal fitted to it, on a fixed halftone lattice. Dot positions never move; only radius carries information. Lime marks `f > 0` — the tails, where the normal understates real mass. Pointer warps the sampling coordinates; click sends a decaying annulus.
 
 It draws one frame at boot, then runs a `requestAnimationFrame` loop that pauses when the canvas is off-screen or the tab is hidden. Under `prefers-reduced-motion: reduce` it draws a single static frame, binds no pointer listeners, and never calls `requestAnimationFrame` at all.
 
 ## Deploy
 
 Push to `main`. GitHub Pages deploys from `main` / root. The custom domain is set in repo Settings → Pages, which manages the `CNAME` file automatically.
-
-## Provenance
-
-Brand tokens (colour, type, spacing, effects, motion) live in the private `kwantklubben` repo under `design-system/` and are copied verbatim into the top of `css/styles.css`. Everything below the tokens is this site's own editorial layer and deliberately does **not** use the design system's dashboard component idiom — no pop shadows, no 2px borders, lime as an accent rather than a fill.
