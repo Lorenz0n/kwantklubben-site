@@ -364,15 +364,24 @@ code, kbd, samp { font-family: var(--font-mono); }
 .kk-invert .kk-lede, .kk-invert .kk-body{ color:var(--paper-300); }
 
 /* Inline links get the lime underline rather than the token blue — no blue on
-   this site, the accent carries every interactive affordance. */
-.kk-band a:not(.kk-cta):not(.kk-index a),
-.kk-hero a:not(.kk-cta){
+   this site, the accent carries every interactive affordance.
+   Scoped to PROSE only, deliberately. An earlier version matched `.kk-band a`
+   and `.kk-hero a` with :not() guards, and lost: :not(.kk-index a) inherits the
+   specificity of its argument, so the guard made the rule MORE specific than
+   the `.kk-index a` it was trying to exclude and underlined the index rule
+   anyway. Naming the prose containers is both simpler and correct. */
+.kk-body a, .kk-lede a, .kk-project__body a{
   color:inherit; text-decoration:underline;
   text-decoration-color:var(--lime-600); text-decoration-thickness:1.5px;
   text-underline-offset:3px;
 }
-.kk-band a:not(.kk-cta):hover{ text-decoration-thickness:3px; }
-.kk-invert a:not(.kk-cta){ color:var(--paper-50); }
+.kk-body a:hover, .kk-lede a:hover, .kk-project__body a:hover{ text-decoration-thickness:3px; }
+.kk-invert .kk-body a, .kk-invert .kk-lede a{ color:var(--paper-50); }
+
+/* Links inside micro labels stay quiet — they are wayfinding, not emphasis. */
+.kk-micro a{ color:var(--ink-700); text-decoration:none; }
+.kk-micro a:hover{ color:var(--ink-900); text-decoration:underline; text-decoration-color:var(--lime-600); text-underline-offset:3px; }
+.kk-micro--invert a{ color:var(--paper-400); }
 
 /* --------------------------------------------------------------------------
    The one button
