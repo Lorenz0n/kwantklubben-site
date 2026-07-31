@@ -237,6 +237,30 @@ def check_css():
               "making the `hidden` attribute inert." % line)
         failures += 1
 
+    # A stray `}` at the top level is silent: the browser does not warn, the
+    # file still loads, and every rule up to it still applies -- but the parser
+    # discards the NEXT rule while recovering. A dangling declaration left
+    # behind by an edit cost `.kk-loop-grid` its `display:grid` this way, and
+    # the only symptom was the "How it works" band quietly stacking.
+    depth = 0
+    for i, ch in enumerate(css):
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth < 0:
+                line = css[:i].count("\n") + 1
+                print("FAIL css/styles.css:%d: unbalanced `}` at the top level. "
+                      "CSS error recovery swallows the rule that FOLLOWS it, so "
+                      "the damage shows up somewhere else entirely." % line)
+                failures += 1
+                break
+    else:
+        if depth != 0:
+            print("FAIL css/styles.css: %d unclosed `{` — everything after it is "
+                  "absorbed into the wrong rule." % depth)
+            failures += 1
+
     return failures
 
 

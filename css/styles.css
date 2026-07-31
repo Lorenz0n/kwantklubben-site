@@ -612,35 +612,24 @@ footer{ display:grid; }
 .kk-card--ink :focus-visible,
 [style*="--ink-900"] :focus-visible{ outline-color: var(--lime-500); }
 
-/* --- hero chart ---------------------------------------------------------
-   No card, no border, no shadow: the chart sits directly on the gridpaper and
-   runs the full width of the section. The 2px baseline the canvas draws for
-   itself is the only frame it gets, and the gridpaper reads as its graph paper. */
-.kk-tails{ margin-top:clamp(28px,4vw,52px); }
-#kk-tails{
-  display:block; width:100%;
-  height:clamp(230px, 30vw, 400px);
-  touch-action:pan-y;          /* dragging the threshold must not eat page scroll */
-  cursor:ew-resize;
-}
-.kk-tails__readout{
-  margin:14px 0 0; font-family:var(--font-mono);
-  font-size:var(--text-xs); line-height:1.6; color:var(--ink-700);
-  font-variant-numeric:tabular-nums;
-}
-.kk-tails__readout b{ color:var(--ink-900); font-weight:700; }
-.kk-tails__readout .kk-tails__hit{ color:var(--lime-700); }
-.kk-tails__note{
-  margin:8px 0 0; font-family:var(--font-mono);
+/* --- hero board ---------------------------------------------------------
+   No card, no border, no shadow: the board sits directly on the gridpaper and
+   runs the full width of the section. The baseline the canvas draws for itself
+   is the only frame it gets, and the gridpaper reads as its graph paper.
+   Height is deliberately NOT set here — js/kk-bean.js derives it from the
+   measured width so the peg triangle stays in proportion, and a height in CSS
+   would fight it. */
+.kk-bean{ margin-top:clamp(28px,4vw,52px); }
+.kk-bean__note{
+  margin:10px 0 0; font-family:var(--font-mono);
   font-size:var(--text-3xs); line-height:1.6; color:var(--ink-400); max-width:74ch;
 }
+.kk-bean__note b{ color:var(--ink-900); font-weight:700; }
 
 /* Grid items default to min-width:auto, so a track refuses to shrink below its
    content's min-content width — which once pushed the hero column to 388px at a
    375px viewport and put 44px of the page off-screen. */
 .kk-two-col > *, .kk-two-col--join > *{ min-width:0; }
-  letter-spacing:.06em; color:var(--ink-400); font-variant-numeric:tabular-nums;
-}
 
 /* --- the loop -----------------------------------------------------------
    Same divided-grid idiom as .kk-manifesto-grid (which the House rules band

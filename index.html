@@ -67,25 +67,23 @@
       <span class="kk-badge kk-badge--neutral kk-badge--dot">Independent student club</span>
     </div>
     <h1 style="font:var(--weight-bold) 66px/1.0 var(--font-display);letter-spacing:-.03em;color:var(--ink-900);margin:0 0 20px;max-width:15ch">
-      Markets break the <span style="color:var(--lime-600)">bell curve.</span>
+      Randomness has a <span style="color:var(--lime-600)">shape.</span>
     </h1>
     <p style="font:var(--type-body);font-size:19px;color:var(--ink-700);max-width:52ch;margin:0 0 28px">
-      A new student club at SDU, taking that apart with code, data and mathematics.
+      A new student club at SDU, working out what that shape is — with code, data and mathematics.
     </p>
     <div style="display:flex;gap:14px;flex-wrap:wrap">
       <a class="kk-btn kk-btn--primary kk-btn--lg" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Join the klub →</a>
       <a class="kk-btn kk-btn--secondary kk-btn--lg" href="/about/">About the klub</a>
     </div>
 
-    <!-- Full width, no card: the chart sits straight on the gridpaper, which
-         doubles as its graph paper. js/kk-tails.js draws it. -->
-    <div class="kk-tails">
-      <canvas id="kk-tails" role="img" aria-label="A histogram of daily returns with the fitted normal distribution drawn over it. The bars in the tails stand well above the normal curve, shown in lime: the normal cannot account for how often large moves happen."></canvas>
-      <p class="kk-tails__readout" id="kk-tails-readout"></p>
-      <p class="kk-tails__note">
-        Bars: 25,000 simulated daily returns (Student-t, ν=3) — the shape real return distributions have. Line: the normal fitted to the same numbers. Drag the chart to move the threshold.
-      </p>
-    </div>
+    <!-- Full width, no card: the board sits straight on the gridpaper, which
+         doubles as its graph paper. js/kk-bean.js builds the canvas and the
+         controls inside this div and labels them for assistive tech. -->
+    <div class="kk-bean" id="kk-bean"></div>
+    <p class="kk-bean__note">
+      Twenty-five coin flips, one per day: every ball is a day, every pile the month they add up to. Drag <b>P(up day)</b> and watch where the month lands — days that have already settled keep their outcome, only the ones still falling take the new odds. Grey is the distribution those odds imply, lime is everything past 2σ. The axis and the moments are in standard deviations (z) of a fair coin, and the bracketed figure beside each moment is the exact value at the current odds. Coin flips, not market data.
+    </p>
   </div>
 </section>
 <!-- ============ /HERO ============ -->
@@ -205,12 +203,12 @@
 
 <!-- ============ SCRIPTS ============ -->
 <!-- COPY-PASTE BLOCK — byte-identical in every page. kk-motion.js is needed on
-     every page: the footer's .kk-onview reveal depends on it. kk-tails.js
-     returns immediately where there is no #kk-tails, which is what lets this
+     every page: the footer's .kk-onview reveal depends on it. kk-bean.js
+     returns immediately where there is no #kk-bean, which is what lets this
      block stay identical everywhere. -->
 <script src="/js/kk-motion.js" defer></script>
 <script src="/js/kk-nav.js" defer></script>
-<script src="/js/kk-tails.js" defer></script>
+<script src="/js/kk-bean.js" defer></script>
 <!-- ============ /SCRIPTS ============ -->
 </body>
 </html>
