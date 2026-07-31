@@ -4,13 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Projects — Kwant Klubben</title>
-<meta name="description" content="Every strategy the klub has specified, tested and judged — including the ones we killed. Pre-registered hypotheses, logged trials, honest verdicts.">
-
+<meta name="description" content="The Kwant Klubben project library. Everything the klub chooses to publish goes to a public repository, including the questions that went nowhere.">
 <!-- ============ HEAD-COMMON ============ -->
-<!-- COPY-PASTE BLOCK — byte-identical in index.html, projects/index.html and
-     sponsors/index.html. Paths are root-relative precisely so it can be. Edit one,
-     paste into the other two, then run `python tools/check-partials.py`.
-     Per-page <title>/<meta description> stay ABOVE this block, outside it. -->
+<!-- COPY-PASTE BLOCK — byte-identical in every page. Paths are root-relative
+     precisely so it can be. Edit one, paste into the others, then run
+     `python tools/check-site.py`.
+     Per-page <title>/<meta description> stay ABOVE this block, outside it.
+     Chewy is NOT optional: the footer wordmark is set in it at 37vw with a
+     -3.3vw nudge tuned to its metrics, and the check script fails the build if
+     any page drops it from this URL. -->
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/favicon-180.png">
@@ -26,19 +28,26 @@
 <body>
 
 <!-- ============ NAV ============ -->
-<!-- COPY-PASTE BLOCK — byte-identical in all three pages. See HEAD-COMMON above.
-     aria-current is set by js/kk-nav.js rather than hardcoded here, so this block
-     can stay identical across files. -->
+<!-- COPY-PASTE BLOCK — byte-identical in every page. See HEAD-COMMON above.
+     aria-current is set by js/kk-nav.js rather than hardcoded here, so this
+     block can stay identical across files.
+     The `hidden` attribute on the panel is load-bearing: kk-nav.js is deferred,
+     so without it the drawer renders OPEN on a cold mobile cache until the
+     script lands. check-site.py asserts it. Do not switch to a class.
+     Contact is a button rather than a page: there is nothing a contact page
+     would hold that this mailto does not. -->
+<a class="kk-skip" href="#main">Skip to content</a>
 <header class="kk-nav">
   <div class="kk-nav__inner">
     <a class="kk-nav__logo" href="/"><img src="/assets/logo-primary.png" alt="Kwant Klubben — home" style="height:72px"></a>
     <nav class="kk-nav__links" aria-label="Main">
       <div class="kk-nav__panel" id="kk-nav-panel" hidden>
-        <a href="/#about">About</a>
+        <a href="/about/">About</a>
         <a href="/projects/">Projects</a>
-        <a href="/sponsors/">Sponsors</a>
+        <a href="/partners/">Partners</a>
       </div>
-      <a class="kk-btn kk-btn--primary kk-btn--sm" href="/#join">Join the klub</a>
+      <a class="kk-btn kk-btn--secondary kk-btn--sm" href="mailto:hello@kwantklubben.com">Contact</a>
+      <a class="kk-btn kk-btn--primary kk-btn--sm" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Join the klub</a>
       <button class="kk-nav__toggle" type="button" aria-label="Menu" aria-controls="kk-nav-panel" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -47,133 +56,132 @@
 </header>
 <!-- ============ /NAV ============ -->
 
-<!-- ============ PROJECTS ============ -->
-<section style="background:var(--paper-50)">
-  <div class="kk-section" style="padding-top:64px;padding-bottom:64px">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:34px;flex-wrap:wrap;gap:16px">
-      <div>
-        <div class="kk-overline" style="margin-bottom:8px">The library</div>
-        <h1 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0">Every project, honest outcome and all.</h1>
-      </div>
-      <div style="font-family:var(--font-mono);font-size:13px;color:var(--ink-400);max-width:30ch">The repo is the portfolio. SPEC &rarr; code &rarr; trials.csv &rarr; honesty card &rarr; write-up.</div>
+<main id="main">
+
+<!-- ============ PAGE HEAD ============ -->
+<section class="kk-gridpaper" style="border-bottom:2px solid var(--ink-800)">
+  <div class="kk-section" style="padding-top:68px;padding-bottom:44px">
+    <div style="display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap">
+      <span class="kk-badge kk-badge--solid">The library</span>
+      <span class="kk-badge kk-badge--neutral kk-badge--dot">Public repo</span>
     </div>
+    <h1 style="font:var(--weight-bold) 56px/1.0 var(--font-display);letter-spacing:-.03em;color:var(--ink-900);margin:0 0 20px;max-width:16ch">Nothing published yet.</h1>
+    <p style="font:var(--type-body);font-size:19px;color:var(--ink-700);max-width:54ch;margin:0">
+      The first projects are still being worked on. When they land they will appear here, in the shape of the card below — including the ones that went nowhere.
+    </p>
+  </div>
+</section>
 
+<!-- ============ THE LIBRARY ============ -->
+<section id="library" style="background:var(--paper-50)">
+  <div class="kk-section" style="padding-top:56px;padding-bottom:64px">
+    <div class="kk-overline" style="margin-bottom:22px">01 / Published</div>
     <div class="kk-projects-grid">
-
-      <!-- TODO(content): unverified placeholder (Net Sharpe 0.71) — strategies/pairs-twins/SPEC.md currently says "in validation", no verdict recorded yet. Replace with real current status before publishing. -->
-      <div class="kk-card kk-card--pad-md kk-card--hover">
+      <!-- The single placeholder. It must NOT imply a result exists. Replace it
+           with a real entry once the first project is approved for publication;
+           the fields match the project.json contract in the public mirror
+           (title, question, tags, status, summary, author, date, source). -->
+      <div class="kk-card kk-card--pad-md kk-card--placeholder">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
-          <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:12ch">NVO / LLY pairs</h3>
-          <span class="kk-stamp kk-stamp--paper kk-stamp--sm">Live paper</span>
+          <h2 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:18ch">Example Project</h2>
+          <span class="kk-badge kk-badge--neutral">In progress</span>
         </div>
-        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:84px">Market-neutral pharma duopoly spread with a pre-registered z-band and deflated-Sharpe validation.</p>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
-          <span class="kk-tag">equities</span><span class="kk-tag">stat-arb</span><span class="kk-tag">cointegration</span>
-        </div>
-        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px">
-          <div class="kk-stat"><span class="kk-stat__label">Net Sharpe</span><span class="kk-stat__value"><span class="kk-stat__num kk-stat__num--sm">0.71</span></span></div>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:60px">Results coming soon.</p>
+        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px;font-family:var(--font-mono);font-size:12px;color:var(--ink-400)">
+          Kwant Klubben
         </div>
       </div>
-
-      <!-- TODO(content): unverified placeholder — no strategies/options-pricer folder exists in the repo yet (this is currently just a catalog idea in PROJECTS.md, not completed work). Drop this card or replace before publishing. -->
-      <div class="kk-card kk-card--pad-md kk-card--hover">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
-          <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:12ch">Options pricer + Greeks</h3>
-          <span class="kk-stamp kk-stamp--survived kk-stamp--sm">Survived</span>
-        </div>
-        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:84px">Closed-form BS pricer cross-checked against Monte Carlo, then run on a live NVO/LLY chain to map the skew the model can’t explain.</p>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
-          <span class="kk-tag">options</span><span class="kk-tag">black-scholes</span><span class="kk-tag">monte-carlo</span>
-        </div>
-        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px">
-          <div class="kk-stat"><span class="kk-stat__label">IV error</span><span class="kk-stat__value"><span class="kk-stat__num kk-stat__num--sm">1.2%</span></span></div>
-        </div>
-      </div>
-
-      <!-- Verified against docs/DEVLOG.md: KILL, perm p=0.87, gross premium absent (+0.01%/mo, NW t=0.03). Real. -->
-      <div class="kk-card kk-card--pad-md kk-card--hover">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
-          <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:12ch">XS-momentum (12-1)</h3>
-          <span class="kk-stamp kk-stamp--killed kk-stamp--sm">Killed</span>
-        </div>
-        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:84px">Construction valid (UMD ρ=0.88) but the gross premium is gone. The anomaly decayed, not our data. Two kill conditions hit.</p>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
-          <span class="kk-tag">equities</span><span class="kk-tag">factor</span>
-        </div>
-        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px">
-          <div class="kk-stat"><span class="kk-stat__label">Perm p</span><span class="kk-stat__value"><span class="kk-stat__num kk-stat__num--sm">0.87</span></span></div>
-        </div>
-      </div>
-
-      <!-- Verified against docs/DEVLOG.md: KILL, perm p=0.112 (missed pre-registered 0.10 bar), net SR 0.522, DSR 0.928. Real. -->
-      <div class="kk-card kk-card--pad-md kk-card--hover">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
-          <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:12ch">TSMOM multi-asset</h3>
-          <span class="kk-stamp kk-stamp--killed kk-stamp--sm">Killed</span>
-        </div>
-        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:84px">Net SR 0.52, DSR 0.93 — but permutation p just missed the pre-registered 0.10 bar. Timing added no Sharpe over the static book. Killed per spec.</p>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
-          <span class="kk-tag">multi-asset</span><span class="kk-tag">trend</span><span class="kk-tag">vol-target</span>
-        </div>
-        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px">
-          <div class="kk-stat"><span class="kk-stat__label">Perm p</span><span class="kk-stat__value"><span class="kk-stat__num kk-stat__num--sm">0.112</span></span></div>
-        </div>
-      </div>
-
-      <!-- TODO(content): unverified placeholder — no matching strategies/ folder or docs/DEVLOG.md entry found. Drop this card or replace before publishing. -->
-      <div class="kk-card kk-card--pad-md kk-card--hover">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
-          <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:12ch">Stylized facts &amp; fractals</h3>
-          <span class="kk-stamp kk-stamp--survived kk-stamp--sm">Survived</span>
-        </div>
-        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:84px">Return distributions vs normal across timescales: QQ-plots, tail indices, and the shuffle test that proves clustering is real and fat tails are forever.</p>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
-          <span class="kk-tag">research</span><span class="kk-tag">hurst</span><span class="kk-tag">hill</span>
-        </div>
-        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px">
-          <div class="kk-stat"><span class="kk-stat__label">Hurst</span><span class="kk-stat__value"><span class="kk-stat__num kk-stat__num--sm">0.58</span></span></div>
-        </div>
-      </div>
-
-      <!-- TODO(content): unverified placeholder — no matching strategies/ folder or docs/DEVLOG.md entry found. Drop this card or replace before publishing. -->
-      <div class="kk-card kk-card--pad-md kk-card--hover">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
-          <h3 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:12ch">Markov regime model</h3>
-          <span class="kk-stamp kk-stamp--review kk-stamp--sm">In review</span>
-        </div>
-        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:84px">Vol/trend state classification on weekly returns, conditioning an existing strategy and permutation-testing whether it honestly improves anything.</p>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
-          <span class="kk-tag">regime</span><span class="kk-tag">HMM</span>
-        </div>
-        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px">
-          <div class="kk-stat"><span class="kk-stat__label">States</span><span class="kk-stat__value"><span class="kk-stat__num kk-stat__num--sm">3</span></span></div>
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
 
+<!-- ============ HOW PUBLISHING WORKS ============ -->
+<section id="publishing" style="background:var(--lime-500);border-top:2px solid var(--ink-800);border-bottom:2px solid var(--ink-800)">
+  <div class="kk-section" style="padding-top:60px;padding-bottom:64px">
+    <div class="kk-overline" style="color:var(--ink-700);margin-bottom:8px">02 / How publishing works</div>
+    <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0 0 12px;max-width:20ch">Nothing goes public by accident.</h2>
+    <p style="font:var(--type-body);font-size:18px;color:var(--ink-800);max-width:56ch;margin:0 0 34px">Work happens in a private repository. Publication is a deliberate, manual step, and only the approved parts of a project ever leave it.</p>
+    <div class="kk-loop-grid">
+      <div>
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-800);margin-bottom:14px">01</div>
+        <div style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin-bottom:10px">In the private repo</div>
+        <div style="font:var(--type-body-sm);color:var(--ink-700)">Projects live and develop in the klub's own repository, where drafts, dead ends and half-finished code are allowed to be exactly that.</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-800);margin-bottom:14px">02</div>
+        <div style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin-bottom:10px">Marked for publication</div>
+        <div style="font:var(--type-body-sm);color:var(--ink-700)">A project is published only once it is explicitly marked for it and a maintainer runs the publishing step by hand. There is no automatic path out.</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-800);margin-bottom:14px">03</div>
+        <div style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin-bottom:10px">Copied to the public repo</div>
+        <div style="font:var(--type-body-sm);color:var(--ink-700)">The approved folder and its write-up are copied to a public mirror, which this page indexes. The private repository is never exposed.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHAT COUNTS ============ -->
+<section id="shape" style="background:var(--paper-50)">
+  <div class="kk-section kk-two-col" style="padding-top:64px;padding-bottom:64px;align-items:start">
+    <div>
+      <div class="kk-overline" style="margin-bottom:8px">03 / What counts</div>
+      <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0;max-width:14ch">Findings, tools, and dead ends.</h2>
+    </div>
+    <div>
+      <p style="font:var(--type-body);color:var(--ink-700);margin:0 0 18px">A project can be a piece of strategy research, a simulation, a small library other members can use, an educational write-up, or an investigation that ended in nothing. All of them belong here.</p>
+      <p style="font:var(--type-body);color:var(--ink-700);margin:0">Publishing the ones that failed is not modesty. A question you can rule out is a real result, and a library that only contains successes is not describing the work honestly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ JOIN ============ -->
+<section id="join" style="background:var(--ink-900);border-top:2px solid var(--ink-900)">
+  <div class="kk-gridpaper" style="background:transparent">
+    <div class="kk-section" style="padding-top:64px;padding-bottom:68px">
+      <h2 style="font:var(--weight-bold) 46px/1.0 var(--font-display);letter-spacing:-.03em;color:#fff;margin:0 0 18px">Put something in the library.</h2>
+      <p style="font:var(--type-body);font-size:18px;color:var(--paper-300);max-width:48ch;margin:0 0 28px">
+        Applications are open continuously, mainly to students at SDU. All levels are welcome — bring the question and the klub will help you get it somewhere.
+      </p>
+      <a class="kk-btn kk-btn--primary kk-btn--lg" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Apply to join →</a>
+      <p style="font-family:var(--font-mono);font-size:13px;color:var(--paper-400);margin:18px 0 0">We get in touch with everyone who applies.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
 <!-- ============ FOOTER ============ -->
-<!-- COPY-PASTE BLOCK — byte-identical in all three pages. See HEAD-COMMON. -->
+<!-- COPY-PASTE BLOCK — byte-identical in every page. See HEAD-COMMON.
+     No class on the <footer> element: the mobile override that undoes the
+     wordmark overlay is `footer{display:block}`, and any class selector here
+     would out-specify it. That is exactly how 38a783c broke the phone layout. -->
 <footer style="background:var(--ink-900);border-top:2px solid var(--ink-700);color:var(--paper-400)">
   <div class="kk-footer__inner">
     <div class="kk-footer__brand">
       <img src="/assets/logo-mark-knockout.png" alt="" style="height:40px">
-      <span>Kwant Klubben · SDU Quantitative Finance Club</span>
-      <a href="https://www.linkedin.com/company/kwant-klubben" style="color:inherit">LinkedIn</a>
+      <span>Kwant Klubben · Independent student club at the University of Southern Denmark</span>
+    </div>
+    <div class="kk-footer__links">
+      <a href="mailto:hello@kwantklubben.com">hello@kwantklubben.com</a>
+      <a href="https://www.linkedin.com/company/kwant-klubben" target="_blank" rel="noopener">LinkedIn</a>
     </div>
   </div>
-  <div class="kk-footer-word kk-onview"><span>KWANT</span></div>
+  <!-- Ornamental only: 37vw, 14% opacity, and deliberately clipped so a quarter
+       of the letterforms bleed off the page. As real text it was announced as a
+       stray "KWANT" after the footer content on every page. -->
+  <div class="kk-footer-word kk-onview" aria-hidden="true"><span>KWANT</span></div>
 </footer>
 <!-- ============ /FOOTER ============ -->
 
 <!-- ============ SCRIPTS ============ -->
-<!-- COPY-PASTE BLOCK — byte-identical in all three pages. kk-motion.js is needed
-     on every page: the footer's .kk-onview reveal depends on it, not just the
-     home page's count-up stats. -->
+<!-- COPY-PASTE BLOCK — byte-identical in every page. kk-motion.js is needed on
+     every page: the footer's .kk-onview reveal depends on it. kk-bean.js
+     returns immediately where there is no #kk-bean, which is what lets this
+     block stay identical everywhere. -->
 <script src="/js/kk-motion.js" defer></script>
 <script src="/js/kk-nav.js" defer></script>
+<script src="/js/kk-bean.js" defer></script>
 <!-- ============ /SCRIPTS ============ -->
 </body>
 </html>
