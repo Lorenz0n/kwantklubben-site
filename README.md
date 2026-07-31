@@ -14,15 +14,24 @@ partners/index.html   collaboration, talks, mentorship, co-designed events
 sponsors/index.html   redirect stub -> /partners/  (the old URL is on LinkedIn)
 
 css/styles.css        the original brand stylesheet (tokens + component idiom),
-                      plus a short relaunch section at the bottom
+                      a short relaunch section, then the page-furniture classes
 js/kk-motion.js       count-up + scroll-reveal. A verbatim copy of the
                       design-system original — do not edit it here.
 js/kk-nav.js          the mobile drawer. Drives the `hidden` ATTRIBUTE, not a class.
-js/kk-tails.js        the hero chart. Inert on any page with no #kk-tails,
-                      which is why it can sit in the shared block.
+js/kk-bean.js         the hero board — a Galton machine, one peg row per day.
+                      Inert on any page with no #kk-bean, which is why it can
+                      sit in the shared block.
 assets/               logos, favicon set
 tools/check-site.py   the drift + invariant check. Read the next section.
+tools/probe-bean.html harness for the hero board: serve the repo and open it for
+                      30 checks against the rendered pixels.
+
+EDITING.md            how to change the site from github.com. Start there.
 ```
+
+**Editing the copy?** See [EDITING.md](EDITING.md). The pages carry no inline
+styles — 173 were lifted into named classes so a page reads as its words plus a
+class name, and `check-site.py` fails if one is added back.
 
 Nav is **About · Projects · Partners**, plus a Contact button (a `mailto:`, not a page — there was nothing a contact page would hold that the mailto does not) and the Join button pointing straight at the application form.
 
