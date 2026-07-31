@@ -98,6 +98,24 @@
       // a trading month is nearer 21. This is here to give the day count a sense
       // of horizon, not to settle anything.
       var DAYS_PER_MONTH = 30;
+      // The DRAWN window: bins 3..22, which is exactly -4 sigma to +4 sigma.
+      // The full support is 0..25, i.e. +/-5 sigma, and the outermost sigma at
+      // each end carried no visible mass at any odds this slider reaches -- it
+      // was a flat rule running out to a tick, and it made the board about a
+      // quarter wider than the picture in it.
+      //
+      // 4 sigma is the right amount to cut because it lands on bin EDGES, the
+      // same property that makes R=25 work at 2 sigma: 12.5 +/- 4*2.5 = 2.5 and
+      // 22.5, and a bin spans j+/-0.5. So the window is whole bars and its ends
+      // fall exactly on the -4 and +4 ticks, with no bar sliced to fit.
+      //
+      // Everything OUTSIDE the window is still simulated, still counted in N,
+      // still in the tail percentages and still in the moments -- it is not
+      // drawn, that is all. At p=0.5 that is 1.9e-5 of the pile; at the 0.600
+      // end of the slider the far right bins reach ~4e-4, so roughly one day in
+      // 2,300 lands beyond the frame. The printed figures stay complete.
+      var J0 = 3, J1 = 22;
+      var JN = J1 - J0 + 1;
       // Vertical geometry is derived, not fixed. H comes from the measured width
       // in layout(); BASE, BOARD_BOTTOM and MAXH are recomputed from it in
       // render(). At the 440px desktop height they resolve to exactly the
@@ -239,7 +257,13 @@
           canvas.height = Math.round(H * DPR);
         }
         ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-        dx = Math.max(9, Math.min(44, (W - 40) / (R + 1)));
+        // Divided by the DRAWN bin count, not the full support. Keeping the old
+        // denominator would have spent the width on bins that are no longer
+        // drawn and left the board the same size with a gap at each end; using
+        // JN, the 44px cap is what actually narrows it -- on a wide hero the
+        // chart is now 20*44 = 880px instead of 1,105, while a phone still
+        // spends its whole width and gets fatter bars for it.
+        dx = Math.max(9, Math.min(44, (W - 40) / JN));
         cx = Math.round(W / 2);
         small = W < 560;
       }
@@ -612,7 +636,7 @@
            their own contrast. */
         function paintBars() {
           var j, hh, tp, col, e;
-          for (j = 0; j <= R; j++) {
+          for (j = J0; j <= J1; j++) {
             if (counts[j] <= 0) { continue; }
             col = isTail(j) ? LIME8 : INK;
             hh = Math.max(0.8, counts[j] * sc);
@@ -663,9 +687,9 @@
         function impliedPath() {
           var j, gy;
           ctx.beginPath();
-          for (j = 0; j <= R; j++) {
+          for (j = J0; j <= J1; j++) {
             gy = BASE - pmf[j] * nEff * sc;
-            if (j === 0) { ctx.moveTo(binX(j) - dx / 2, gy); }
+            if (j === J0) { ctx.moveTo(binX(j) - dx / 2, gy); }
             else { ctx.lineTo(binX(j) - dx / 2, gy); }
             ctx.lineTo(binX(j) + dx / 2, gy);
           }
@@ -678,7 +702,7 @@
           // simply does not paint -- which is correct, as there is nothing there
           // for the line to be illegible against.
           ctx.beginPath();
-          for (j = 0; j <= R; j++) {
+          for (j = J0; j <= J1; j++) {
             if (counts[j] <= 0) { continue; }
             hh = Math.max(0.8, counts[j] * sc);
             e = barEdge(j);
@@ -700,10 +724,14 @@
         paintImplied();
 
         /* axis */
+        // The window's own edges, which ARE -4 and +4 sigma exactly: binX(2.5)
+        // and binX(22.5). The rule therefore starts and ends on a tick instead
+        // of running a sigma past the last one at each end.
+        var xWL = binX(J0) - dx / 2, xWR = binX(J1) + dx / 2;
         ctx.strokeStyle = INK4; ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.moveTo(binX(0) - dx / 2, BASE + 0.5);
-        ctx.lineTo(binX(R) + dx / 2, BASE + 0.5);
+        ctx.moveTo(xWL, BASE + 0.5);
+        ctx.lineTo(xWR, BASE + 0.5);
         ctx.stroke();
 
         /* axis in standard deviations */
@@ -714,7 +742,10 @@
         var sg, sgx;
         for (sg = -4; sg <= 4; sg++) {
           sgx = xOfSigma(sg);
-          if (sgx < binX(0) - dx || sgx > binX(R) + dx) { continue; }
+          // The half-pixel slack is because +/-4 sigma lands ON the window edge
+          // rather than inside it, and a strict compare would drop both end
+          // ticks -- the two the new width was chosen to end on.
+          if (sgx < xWL - 0.5 || sgx > xWR + 0.5) { continue; }
           ctx.strokeStyle = INK4; ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(sgx, BASE + 1); ctx.lineTo(sgx, BASE + 6);
@@ -735,7 +766,7 @@
         // phrase needs, so the narrow board gets the initial instead.
         ctx.font = small ? '700 11px "Space Mono", ui-monospace, monospace' : FONT_AB;
         var lEnd = binX(ts.loEnd), rStart = binX(ts.hiStart);
-        var lStart = binX(0) - dx / 2, rEnd = binX(R) + dx / 2;
+        var lStart = xWL, rEnd = xWR;
         if (lEnd > lStart + 6) {
           ctx.beginPath();
           ctx.moveTo(lStart, ty - 4); ctx.lineTo(lStart, ty);

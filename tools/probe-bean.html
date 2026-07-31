@@ -69,17 +69,19 @@
   say('A aria says 0 days', /\b0 days\b/.test(alA), /\b0 days\b/.test(alA));
   say('A aria says nothing landed', /Nothing has landed/.test(alA), /Nothing has landed/.test(alA));
 
-  // Sample columns chosen to be free of pegs. Pegs sit at cx + (2j-k)*dx/2, i.e.
-  // integer multiples of dx/2 from the centre, so cx+10 (dx/2 = 20.25 here) never
-  // has one. The far-left column x=25 is inside bin 0, where the silhouette is
-  // ~1e-5 px tall, so the first paint going down there is the axis itself.
+  // Only bins 3..22 are drawn -- exactly -4 to +4 sigma -- so at this width the
+  // chart runs 106..986 and the old far-left sample at x=25 is now off the chart
+  // entirely, where nothing is ever painted. edgeX sits inside bin 3, the
+  // leftmost DRAWN bin, where the implied curve is a small fraction of a pixel
+  // tall and the first paint going down is the axis rule itself.
   var cx = Math.round(1092 / 2);
   var probeX = cx + 10;   // inside bin 13 -- same height as the mode
-  // 365-367: the silhouette's own 1.2px hairline is centred on BASE out here,
-  // where its height is ~2e-5 px, so it straddles the axis rule itself.
+  var edgeX = cx - 400;   // inside bin 3, the left end of the drawn window
+  // 365-367: the implied line's own hairline is centred on BASE out here, so it
+  // straddles the axis rule.
   var baseFound = -1, y;
   for (y = 300; y < 439; y++) {
-    if (painted(px(xA, 25, y))) { baseFound = y; break; }
+    if (painted(px(xA, edgeX, y))) { baseFound = y; break; }
   }
   say('A plot floor y', baseFound, baseFound >= 365 && baseFound <= 367);
 
@@ -180,8 +182,11 @@
   // the band" returns the CASING -- paper over paper, 1.00:1 -- and reports a
   // compliant chart as failing. Matching lime-800 exactly proves both that the
   // tail bars are drawn in it and that it is what actually reaches the screen.
+  // 110..326 is the left tail band as it is now drawn: from the window's left
+  // edge (bin 3) to the -2 sigma line at binX(7.5). It used to start at 30,
+  // which is off the chart since the window narrowed to +/-4 sigma.
   var tailPx = null, tx, ty2;
-  for (tx = 30; tx < 330 && !tailPx; tx += 2) {
+  for (tx = 110; tx < 326 && !tailPx; tx += 2) {
     for (ty2 = 240; ty2 < 365; ty2++) {
       var q2 = px(xC, tx, ty2);
       if (q2.a > 250 && q2.r === 0x5E && q2.g === 0x75 && q2.b === 0x07) { tailPx = q2; break; }
@@ -200,7 +205,7 @@
   // first and the bars second, so the one layer the chart exists to compare was
   // occluded in exactly the places where a comparison was possible -- and at
   // 0.15 alpha it was 1.38:1 against paper even where nothing covered it.
-  // Push P(up day) well away from the settled pile so the model is FORCED to
+  // Push P(up move) well away from the settled pile so the model is FORCED to
   // cross the interior of a tall bar, then look for its paper casing inside that
   // bar. Ink on ink would be invisible; casing on ink is proof it is on top.
   var pC = hC.querySelectorAll('input[type=range]')[0];
@@ -215,10 +220,13 @@
   say('C4 bar top found', barY, barY > 232 && barY < 366);
   say('C4 model line inside the bar', casing >= 0 ? 'casing at y=' + casing : 'not found',
       casing > barY);
-  // the axis rule, sampled at the far left where no bar or silhouette overlaps
+  // The axis rule, sampled at the left END OF THE DRAWN WINDOW where no bar or
+  // implied line overlaps it. x=25 was off the chart once the window narrowed to
+  // +/-4 sigma, so this reported "no axis pixel" rather than a bad contrast --
+  // a check that had stopped looking at anything.
   var axPx = null, ay;
   for (ay = 363; ay <= 369; ay++) {
-    var q3 = px(xC, 25, ay);
+    var q3 = px(xC, edgeX, ay);
     if (q3.a > 120 && (!axPx || q3.a > axPx.a)) { axPx = q3; }
   }
   if (axPx) {

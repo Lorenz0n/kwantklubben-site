@@ -170,6 +170,21 @@ a bar edge coincides with 2σ only when R is an odd perfect square. At 25: σ = 
 mean = 12.5, so ±2σ land on 7.5 and 17.5 — the shared edges of bins 7|8 and 17|18.
 Every bar is whole, no width is fudged, and no bar ever straddles the line.
 
+**Only bins 3–22 are drawn**, which is exactly **±4σ**. The full support is ±5σ,
+but the outermost σ at each end carried no visible mass at any odds the slider
+reaches — it was a flat rule running out to a tick, and it made the board about a
+quarter wider than the picture in it. 4σ is the right cut because it also lands on
+bin *edges* (12.5 ± 10 = 2.5 and 22.5), so the window is whole bars and its ends
+fall exactly on the −4σ and +4σ ticks. `dx` divides by the *drawn* bin count, so
+on a wide hero the 44px cap is what narrows the chart (20 × 44 = 880px), while a
+phone still spends its whole width and gets fatter bars for it.
+
+Everything outside the window is still simulated and still counted — in `N`, in
+the tail percentages, in the moments. It is simply not drawn. At p = 0.5 that is
+1.9 × 10⁻⁵ of the pile; at the 0.600 end of the slider the far right bins reach
+~4 × 10⁻⁴, so roughly one day in 2,300 lands beyond the frame. The printed figures
+stay complete.
+
 **One bead is one DAY.** The readout prints days and then `days / 30` months. The
 units here have been wrong before, in both directions, so if you touch the readout
 keep them straight — `probe-bean.html` asserts both numbers against the spoken
