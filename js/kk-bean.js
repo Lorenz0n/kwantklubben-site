@@ -111,7 +111,10 @@
       // 100% cannot, and layout() only sizes the backing store to match.
       canvas.style.width = '100%';
       canvas.style.height = H + 'px';
-      canvas.style.cursor = 'crosshair';
+      // Not crosshair. Crosshair means "pick a coordinate", and there is no
+      // coordinate to pick here — a click anywhere on the board does the one
+      // same thing, release a burst of days. That is a pointer.
+      canvas.style.cursor = 'pointer';
       // pan-y, not manipulation: a drag that starts on the board must still be
       // able to scroll the page vertically on a phone.
       canvas.style.touchAction = 'pan-y';
@@ -470,12 +473,12 @@
         rowGap = (BOARD_BOTTOM - yTop) / R;
         var pegEnd = yTop + R * rowGap;
 
-        /* hopper */
-        ctx.strokeStyle = INK4; ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(cx - 11, yTop - 13); ctx.lineTo(cx - 2.5, yTop - 4);
-        ctx.moveTo(cx + 11, yTop - 13); ctx.lineTo(cx + 2.5, yTop - 4);
-        ctx.stroke();
+        /* The hopper — two short strokes forming a funnel above the first peg —
+           was drawn here. Removed: the balls do not come out of it (they are
+           spawned at cx and are already falling), so it drew a mechanism that
+           does not exist, and at yTop-13 it read as two stray marks under the
+           metric line rather than as part of the board. Nothing else depends on
+           it; yTop is set above and still frames the peg triangle. */
 
         /* pegs */
         var k, j, px, py;
