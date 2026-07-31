@@ -24,7 +24,7 @@
  * the odds for bounces that have not happened yet; it does not reach back and
  * re-roll days that already landed.
  *
- * ES5-only IIFE to match js/kk-motion.js and js/kk-nav.js — no build step here.
+ * ES5-only IIFE to match js/kk-nav.js — no build step here.
  */
 (function () {
   'use strict';

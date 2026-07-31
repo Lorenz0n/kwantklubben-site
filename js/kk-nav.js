@@ -1,12 +1,9 @@
 /* Kwant Klubben — mobile nav disclosure.
-   Companion to the .kk-nav* rules in css/styles.css. Kept separate from
-   kk-motion.js, which is a verbatim copy of the design-system original and must
-   not be edited.
+   Companion to the .kk-nav* rules in css/styles.css.
 
    The panel ships with `hidden` in the markup rather than having this script add
    it: this file is `defer`, so on the poster-QR path (mobile data, cold cache)
-   the nav would otherwise render OPEN until the script lands. Same reasoning as
-   .kk-onview hiding in CSS rather than in kk-motion.js.
+   the nav would otherwise render OPEN until the script lands.
 
    The 700px breakpoint is duplicated in css/styles.css's @media block. A media
    query can't read a custom property, so the number lives in two places on
