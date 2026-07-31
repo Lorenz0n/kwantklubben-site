@@ -414,6 +414,38 @@ def check_css():
     return failures
 
 
+def check_assets(sources):
+    """Every file in assets/ is referenced by something that ships.
+
+    Cuts both ways, and both have already happened here. An asset nothing points
+    at is dead weight in a public repo — hero-distribution.svg sat unreferenced
+    through the whole relaunch. And a reference silently DISAPPEARING looks
+    identical from the asset's side: the 512px icon link was dropped by a buggy
+    refactor script and nothing noticed, because a missing <link> breaks nothing
+    visible. Asserting the pairing catches either direction.
+    """
+    assets = ROOT / "assets"
+    if not assets.exists():
+        return 0
+    haystack = LAYOUT.read_text(encoding="utf-8")
+    haystack += (ROOT / "css" / "styles.css").read_text(encoding="utf-8")
+    for path in sources:
+        haystack += sources[path]
+    for js in sorted((ROOT / "js").glob("*.js")):
+        haystack += js.read_text(encoding="utf-8")
+
+    failures = 0
+    for path in sorted(assets.rglob("*")):
+        if not path.is_file():
+            continue
+        if path.name not in haystack:
+            print("FAIL assets: %s is referenced by nothing that ships. Either "
+                  "wire it up or delete it — a public repo should not carry "
+                  "files no page asks for." % rel(path))
+            failures += 1
+    return failures
+
+
 def check_links():
     """Every root-relative href in the shared nav resolves to a file that exists."""
     nav = LAYOUT.read_text(encoding="utf-8")
@@ -450,6 +482,7 @@ def main():
                 + check_inline_styles(sources)
                 + check_css()
                 + check_discoverability()
+                + check_assets(sources)
                 + check_links())
 
     # Print what opted out, so a page escaping the checks is visible in CI
