@@ -182,6 +182,13 @@ previously derived, which meant the entire drawing resized as the window moved a
 jumped 16px the instant a counter grew a digit. If you add a metric, check it
 still fits the reserve rather than making the reserve follow it.
 
+Below the reserve there is a **head gap** before `yTop`, the line the walks open
+on, so the beads do not start immediately under the metrics. Note that `MAXH` is
+measured from the *end of the readout*, not from `yTop` — so the gap is taken out
+of the walk region, which is mostly empty, rather than out of the histogram. Widen
+the gap and the walk compresses; the plot floor stays at 366 and the plot stays
+126 tall. Keep it that way round if you retune it.
+
 Under `prefers-reduced-motion: reduce` it resolves 2,400 months at once, draws the
 finished board, and never calls `requestAnimationFrame` at all. `rAF` is throttled
 to a standstill in a background tab, so there is also a fallback that fills the

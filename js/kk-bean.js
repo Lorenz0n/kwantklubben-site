@@ -531,13 +531,25 @@
         // readout can need at this width, so it grows into space already set
         // aside for it and the geometry below is constant.
         var METRIC_ROWS = small ? 3 : (W < 900 ? 2 : 1);
-        yTop = 28 + (METRIC_ROWS - 1) * 16;
+        // Where the READOUT ends -- not where the walks start. The plot is sized
+        // against this rather than against the spawn line, so widening the head
+        // gap below cannot quietly steal height from the histogram.
+        var headEnd = 28 + (METRIC_ROWS - 1) * 16;
         // Derived from the measured height so a short board stays in proportion
         // instead of keeping desktop constants on a phone. At H=440 these come
         // out to exactly 366 / 126 / 236 -- the values this was tuned at.
         BASE = H - FOOTER;
-        MAXH = Math.round((BASE - yTop) * 0.373);
+        MAXH = Math.round((BASE - headEnd) * 0.373);
         BOARD_BOTTOM = BASE - MAXH - 4;
+        // Air between the readout and the line the walks open on. Without it the
+        // first beads appear immediately under the metrics and the two read as
+        // one block of marks rather than a caption above a drawing.
+        //
+        // It comes out of the WALK region, which is mostly empty and can afford
+        // it, and not out of the plot, which cannot -- that is the whole reason
+        // MAXH is measured from headEnd above. Less on a phone, where three rows
+        // of readout have already taken the space this would come from.
+        yTop = headEnd + (small ? 12 : 20);
         stepY = (BOARD_BOTTOM - yTop) / R;
         var walkEnd = yTop + R * stepY;
 
