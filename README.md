@@ -19,8 +19,9 @@ sponsors/index.html   redirect stub -> /partners/  (the old URL is on LinkedIn)
 
 css/styles.css        the original brand stylesheet (tokens + component idiom),
                       a short relaunch section, then the page-furniture classes
-js/kk-motion.js       count-up + scroll-reveal. A verbatim copy of the
-                      design-system original — do not edit it here.
+js/kk-motion.js       count-up + scroll-reveal. A verbatim copy of
+                      kwantklubben/design-system/assets/kk-motion.js — fix it
+                      THERE and re-copy, so the two do not drift.
 js/kk-nav.js          the mobile drawer. Drives the `hidden` ATTRIBUTE, not a class.
 js/kk-bean.js         the hero board — a Galton machine, one peg row per day.
                       Inert on any page with no #kk-bean, which is why it can
