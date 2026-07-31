@@ -5,6 +5,10 @@
 # Removing this file, or re-adding .nojekyll, would publish the raw front matter
 # at the top of every page.
 
+# Absolute URLs are required for canonical and og:url — a share card cannot be
+# fetched from a relative path by a crawler that is not on the site.
+url: https://kwantklubben.com
+
 # Kept out of the built site. These are repo furniture, not public pages.
 exclude:
   - tools/

@@ -47,9 +47,9 @@
       var LIME = cvar('--lime-600', '#A6CE12');
       var PAPER = cvar('--paper-300', '#DCD4BD');
       var INK4 = cvar('--ink-400', '#5A6677');
-      // lime-700 was used here and measures 3.00:1 on paper — below the 4.5:1
-      // small text needs. lime-800 is the same hue at 4.95:1, so the tail
-      // figures stay lime-coded rather than dropping to grey.
+      // lime-700 was used here and is nowhere near the 4.5:1 small text owes
+      // (it is tuned for LARGE text at 3:1). lime-800 is the same hue at 4.95:1,
+      // so the tail figures stay lime-coded rather than dropping to grey.
       var LIME8 = cvar('--lime-800', '#5E7507');
       var FONT = '11px "Space Mono", ui-monospace, monospace';
       var FONT_M = '12px "Space Mono", ui-monospace, monospace';   // metric line
