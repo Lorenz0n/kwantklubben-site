@@ -907,28 +907,24 @@ footer{ background:var(--ink-900); border-top:2px solid var(--ink-700); color:va
 .kk-ticker-wrap {
   width: 100%;
   overflow: hidden;
-  background: var(--surface-card);
-  border: var(--border-bold) solid var(--ink-800);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--pop-4);
-  padding: 48px 0;
+  padding: 48px 0 16px;
   position: relative;
 }
 .kk-ticker-wrap::before, .kk-ticker-wrap::after {
   content: "";
   position: absolute;
   top: 0; bottom: 0;
-  width: 80px;
+  width: 120px;
   z-index: 2;
   pointer-events: none;
 }
 .kk-ticker-wrap::before {
   left: 0;
-  background: linear-gradient(to right, var(--surface-card), transparent);
+  background: linear-gradient(to right, var(--paper-50), transparent);
 }
 .kk-ticker-wrap::after {
   right: 0;
-  background: linear-gradient(to left, var(--surface-card), transparent);
+  background: linear-gradient(to left, var(--paper-50), transparent);
 }
 .kk-ticker {
   display: inline-flex;
