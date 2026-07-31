@@ -1,37 +1,70 @@
 # kwantklubben-site
 
-The public recruiting site for **Kwant Klubben**, a student quant-finance club at SDU Odense. Plain static HTML/CSS/vanilla-JS. Deployed via GitHub Pages at `kwantklubben.com`.
+The public site for **Kwant Klubben**, an independent student club at the University of Southern Denmark. Plain static HTML/CSS/vanilla-JS, no build step. Deployed via GitHub Pages at `kwantklubben.com`.
 
-This repo is intentionally separate from the club's private research repo (`kwantklubben`, not public). Nothing sensitive lives here — brand assets, marketing copy, and a link out to the application form.
+This repo is intentionally separate from the club's private research repo (`kwantklubben`, not public) and from the public project mirror (`kwantklubben-projects`). Nothing sensitive lives here — brand assets, marketing copy, and a link out to the application form.
 
 ## Structure
 
 ```
-index.html            home — hero, about, stats, projects teaser (3 cards), join
-projects/index.html   the full project library (6 cards)
-sponsors/index.html   the sponsor pitch
-css/styles.css        bundled brand tokens + component CSS + site layout (single file, single request)
-js/kk-motion.js       count-up + scroll-reveal, vanilla JS, no dependencies
-js/kk-nav.js          mobile nav disclosure (the ☰ drawer)
-assets/               logos, favicon set, hero illustration
-tools/                check-partials.py — drift check, see below
+index.html            landing — hero chart, the loop, projects teaser, join
+about/index.html      what the klub is, the process in full, AI, joining
+projects/index.html   the library, how publishing works, what counts
+partners/index.html   collaboration, talks, mentorship, co-designed events
+sponsors/index.html   redirect stub -> /partners/  (the old URL is on LinkedIn)
+
+css/styles.css        the original brand stylesheet (tokens + component idiom),
+                      plus a short relaunch section at the bottom
+js/kk-motion.js       count-up + scroll-reveal. A verbatim copy of the
+                      design-system original — do not edit it here.
+js/kk-nav.js          the mobile drawer. Drives the `hidden` ATTRIBUTE, not a class.
+js/kk-tails.js        the hero chart. Inert on any page with no #kk-tails,
+                      which is why it can sit in the shared block.
+assets/               logos, favicon set
+tools/check-site.py   the drift + invariant check. Read the next section.
 ```
 
-## Editing copy
+Nav is **About · Projects · Partners**, plus a Contact button (a `mailto:`, not a page — there was nothing a contact page would hold that the mailto does not) and the Join button pointing straight at the application form.
 
-Every section is wrapped in an HTML comment banner (`<!-- ============ HERO ============ -->` etc.) — search for the section name to find it. Content is plain inline-styled HTML, no templating, no build step: edit the text and reload.
+## The style
 
-### The four shared blocks
+The chunky idiom **is** the brand: 2px ink borders, hard `4px 4px 0` pop shadows, lime section fills, badges, gridpaper. `css/styles.css` is the original stylesheet, unchanged, with a clearly-marked section appended at the bottom for the few things the relaunch actually needed — the hero chart, a three-column variant of the divided grid, the footer's second link group, a skip link, and one brand fix (the token layer's `--focus-ring` was `--blue-500`; the brand has no blue in it).
 
-There is no build step, so `HEAD-COMMON`, `NAV`, `FOOTER` and `SCRIPTS` are **literally duplicated** in all three HTML files. Every path in them is root-relative (`/css/styles.css`) precisely so they can be byte-identical.
+If you are adding to this site, use the existing components. Do not introduce a second visual system.
 
-**To change the nav or footer: edit one file, paste into the other two, then run the check.**
+## The check
+
+There is no build step and no templating, so `HEAD-COMMON`, `NAV`, `FOOTER` and `SCRIPTS` are **literally duplicated** in all four pages. Every path inside them is root-relative precisely so they can be byte-identical.
+
+**To change the nav, footer, head or scripts: edit `index.html`, paste into the other three, then run the check.**
 
 ```
-python tools/check-partials.py     # -> "ok: 4 blocks identical across 3 files"
+python tools/check-site.py     # -> "ok: 4 blocks identical, invariants and CSS cascade rules hold across 4 pages"
 ```
 
-It is not a build step — it produces nothing and the site works without it. It just catches the copies drifting apart.
+It also runs in CI on every push and pull request (`.github/workflows/check.yml`).
+
+It is not a build step — it produces nothing and the site works without it. It exists because the July 2026 relaunch grew the site from three pages to five, hand-edited the old script's hardcoded three-file list, and shipped three pages whose font URL had lost `&family=Chewy`. So beyond comparing the blocks, it asserts things a diff cannot see, on every page it finds by glob:
+
+| Invariant | Why it is checked |
+|---|---|
+| `&family=Chewy` in the font URL | The footer wordmark is Chewy at 37vw with a `-3.3vw` nudge tuned to its metrics. Without the font it falls back to system cursive and clips out of its own box. |
+| `.kk-footer-word` present | Same wordmark, absent entirely. |
+| No class on the `<footer>` element | `footer{display:block}` (0,0,1) is what undoes the wordmark overlay on phones. Any class selector out-specifies it. |
+| `#kk-nav-panel` ships with `hidden` | Checked at attribute position, not as a substring — `class="… hidden"` would satisfy a substring test while being exactly the class-for-attribute swap this catches. `kk-nav.js` is deferred and owns that attribute; without it the drawer renders **open** on a cold mobile cache. |
+| An application link exists and matches | Any `forms.gle` **or** `docs.google.com/forms` link, over http or https, must equal the one true form URL — and at least one must be present. It is on every poster. |
+| No `TODO(content)` / `REPLACE_ME` | Placeholders must not reach production. |
+| Every root-relative nav `href` resolves | A nav pointing at a directory that does not exist. |
+| The CSS cascade rules | No bare `.kk-footer` class selector; the mobile `footer{display:block}` override still present; no `display` declared inside `.js .kk-nav__panel`. |
+
+Pages opt out by containing a `REDIRECT` marker in a comment near the top **and** actually being a redirect — that is how `sponsors/index.html` is excluded. Skipped pages are printed, so an opt-out is visible in the CI log.
+
+### Two rules the CSS depends on
+
+Both of these broke in July 2026 and both are cheap to break again:
+
+- **No class on the `<footer>` element.** The mobile override that undoes the wordmark overlay is `footer{display:block}`. Any class selector out-specifies it and strands the letters behind the footer text on phones.
+- **The nav drawer is driven by the `hidden` attribute**, never by an `.is-open` class. `css/styles.css` has a long comment explaining why declaring `display` in the mobile `.kk-nav__panel` block makes `hidden` inert. Read it before touching that block.
 
 ## Local preview
 
@@ -45,20 +78,40 @@ then open `http://localhost:8000`.
 
 Paths are root-relative, so under `file://` they resolve against your filesystem root — the page renders as unstyled HTML with broken images. That is the expected result of double-clicking the file, not a broken site.
 
-## Before a poster goes up
+## The hero chart
 
-```
-grep -rn "TODO(content)\|REPLACE_ME" .
-```
+`js/kk-tails.js` replaced the static `assets/hero-distribution.svg`. It runs the
+full width of the section with no card around it, so the gridpaper behind it
+doubles as its graph paper.
 
-Every hit needs a real answer (verified stats, the live Google Form URL, the sponsor terms) before this goes on a poster.
+It makes one claim you can check: the normal distribution does not have enough
+mass in its tails to account for how often markets move a lot.
 
-**Check the markers, not the count.** There are currently **12** hits, not 9 — the projects teaser card also exists on `/projects/`, so its marker is counted twice, and `/sponsors/` adds two of its own. A rising count is not automatically a regression.
+- **bars** — how often a day of each size actually happened
+- **thin line** — how often the fitted normal says it should happen
+- **lime** — the gap between them beyond 2σ
+
+The y axis is **log frequency**, labelled as odds (`1 in 10` … `1 in 10,000`),
+and that is load-bearing rather than decorative: on a linear density axis
+everything past 2σ is sub-pixel and the entire point of the chart is invisible.
+On a log axis the normal falls away as a parabola while the real bars refuse to
+come down with it. Drag anywhere on the chart to move the ±threshold; the readout
+compares what the normal predicts beyond it against what the sample contains.
+
+**The data is simulated and the caption on the page says so** — a Student-t with
+ν=3, standardised to unit variance, from a fixed seed so the picture is identical
+on every load. It is the *shape* real return distributions have, not real market
+data. To swap in a real series, only the sampling block near the top of the file
+changes; everything downstream works off `data`.
+
+There is no animation loop. The chart draws once and redraws only on resize and
+while dragging. A short entrance plays on load, but `entrance` defaults to the
+finished state and is only set to zero once the code knows the animation can
+actually run — `requestAnimationFrame` is throttled to a standstill in a
+background tab, and an earlier version left the chart stuck at 9% height there.
+Under `prefers-reduced-motion: reduce` it draws the finished chart immediately
+and never calls `requestAnimationFrame` at all.
 
 ## Deploy
 
-Push to `main`. GitHub Pages is configured to deploy from `main` / root — no Actions workflow needed. Custom domain (`kwantklubben.com`) is set in repo Settings → Pages, which manages the `CNAME` file automatically.
-
-## Provenance
-
-Brand system (tokens, components, the original interactive mockup this was ported from) lives in the private `kwantklubben` repo under `design-system/`. Re-sync against that source if the brand changes — each CSS block in `css/styles.css` is labeled with its origin file.
+Push to `main`. GitHub Pages deploys from `main` / root. The custom domain is set in repo Settings → Pages, which manages the `CNAME` file automatically.

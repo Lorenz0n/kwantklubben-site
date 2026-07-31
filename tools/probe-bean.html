@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<!-- Regression harness for js/kk-bean.js. Not linked from the site.
+     Serve the repo root and open /tools/probe-bean.html.
+     It mounts the SHIPPED file at chosen widths and asserts against the pixels:
+     boot geometry, the N=0 silhouette, the reduced-motion board, and the
+     accessibility wiring. The board boots with render(0) synchronously, so every
+     check here holds even in a background tab where rAF is throttled. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>kk-bean probe</title>
+<link rel="stylesheet" href="/css/styles.css">
+<style>
+  body{ background:var(--paper-50); margin:0; padding:16px; }
+  #out{ font:12px "Space Mono", monospace; white-space:pre; color:#0C1016; }
+  .host{ position:absolute; left:-10000px; top:0; }
+</style>
+</head>
+<body>
+<div id="out">running…</div>
+<div id="stage"></div>
+
+<script src="/js/kk-bean.js"></script>
+<script>
+(function () {
+  var L = [];
+  function say(k, v, ok) { L.push((ok === undefined ? '   ' : (ok ? ' ok ' : 'FAIL')) + ' ' + k + ' = ' + v); }
+
+  var realMM = window.matchMedia;
+  function mount(width, reduced) {
+    // stub matchMedia so mount() takes the branch we want
+    window.matchMedia = function (q) {
+      if (/prefers-reduced-motion/.test(q)) {
+        return { matches: !!reduced, media: q,
+                 addEventListener: function () {}, removeEventListener: function () {},
+                 addListener: function () {}, removeListener: function () {} };
+      }
+      return realMM ? realMM.call(window, q) : { matches: false, media: q };
+    };
+    var host = document.createElement('div');
+    host.className = 'host';
+    host.style.width = width + 'px';
+    document.getElementById('stage').appendChild(host);
+    window.KK_BEAN.mount(host);
+    window.matchMedia = realMM;
+    return host;
+  }
+
+  function px(ctx, x, y) {
+    var d = ctx.getImageData(Math.round(x), Math.round(y), 1, 1).data;
+    return { r: d[0], g: d[1], b: d[2], a: d[3] };
+  }
+  function painted(p) { return p.a > 8; }
+
+  // ---- A. desktop, not reduced, first synchronous frame ----
+  var hA = mount(1092, false);
+  var cA = hA.querySelector('canvas');
+  var xA = cA.getContext('2d');
+  var dpr = Math.min(2, window.devicePixelRatio || 1);
+
+  say('A canvas css height', cA.style.height, cA.style.height === '440px');
+  say('A backing store', cA.width + 'x' + cA.height,
+      cA.width === Math.round(1092 * dpr) && cA.height === Math.round(440 * dpr));
+  say('A css width', cA.style.width, cA.style.width === '100%');
+  say('A role', cA.getAttribute('role'), cA.getAttribute('role') === 'img');
+  say('A tabindex', cA.tabIndex, cA.tabIndex === 0);
+  var alA = cA.getAttribute('aria-label') || '';
+  say('A aria-label len', alA.length, alA.length > 80);
+  say('A aria says 0 days', /\b0 days\b/.test(alA), /\b0 days\b/.test(alA));
+  say('A aria says nothing landed', /Nothing has landed/.test(alA), /Nothing has landed/.test(alA));
+
+  // Sample columns chosen to be free of pegs. Pegs sit at cx + (2j-k)*dx/2, i.e.
+  // integer multiples of dx/2 from the centre, so cx+10 (dx/2 = 20.25 here) never
+  // has one. The far-left column x=25 is inside bin 0, where the silhouette is
+  // ~1e-5 px tall, so the first paint going down there is the axis itself.
+  var cx = Math.round(1092 / 2);
+  var probeX = cx + 10;   // inside bin 13 -- same height as the mode
+  // 365-367: the silhouette's own 1.2px hairline is centred on BASE out here,
+  // where its height is ~2e-5 px, so it straddles the axis rule itself.
+  var baseFound = -1, y;
+  for (y = 300; y < 439; y++) {
+    if (painted(px(xA, 25, y))) { baseFound = y; break; }
+  }
+  say('A plot floor y', baseFound, baseFound >= 365 && baseFound <= 367);
+
+  // the implied silhouette must be drawn with ZERO balls on the board
+  var peak = -1;
+  for (y = 232; y < 366; y++) {
+    if (painted(px(xA, probeX, y))) { peak = y; break; }
+  }
+  say('A silhouette top at N=0', peak, peak >= 236 && peak <= 242);
+  say('A silhouette fills MAXH', (366 - peak) + 'px of 126', Math.abs((366 - peak) - 126) <= 4);
+
+  // ---- B. phone width ----
+  var hB = mount(360, false);
+  var cB = hB.querySelector('canvas');
+  say('B canvas css height', cB.style.height, cB.style.height === '330px');
+  var wB = cB.getBoundingClientRect().width;
+  say('B rendered width', wB.toFixed(1) + ' (host 360)', wB <= 360.5);
+  say('B backing store w', cB.width, cB.width === Math.round(360 * dpr));
+
+  // ---- C. reduced motion ----
+  var hC = mount(1092, true);
+  var cC = hC.querySelector('canvas');
+  var xC = cC.getContext('2d');
+  var rateC = hC.querySelectorAll('input[type=range]')[1];
+  say('C rate slider disabled', rateC.disabled, rateC.disabled === true);
+  var alC = cC.getAttribute('aria-label') || '';
+  var mC = alC.match(/([\d,]+) days/);
+  say('C aria days', mC ? mC[1] : '(none)', !!mC && mC[1] === '2,400');
+  say('C aria has measured', /Measured mean/.test(alC), /Measured mean/.test(alC));
+  // A filled board: the TALLEST bar reaches MAXH. Sampling one bin would not do
+  // -- bars are scaled against the realised maximum, and in 2,400 draws the bin
+  // nearest the mean is not reliably the fullest one.
+  var barTop = 999, xs, yy;
+  for (xs = cx - 120; xs <= cx + 120; xs += 5) {
+    for (yy = 232; yy < 366; yy++) {
+      if (painted(px(xC, xs, yy))) { if (yy < barTop) { barTop = yy; } break; }
+    }
+  }
+  say('C tallest bar top', barTop, barTop >= 236 && barTop <= 242);
+  // and the pile is where a fair coin puts it, not shoved to one side
+  var lo = 0, hi = 0;
+  for (y = 232; y < 366; y++) {
+    if (painted(px(xC, cx - 300, y))) { lo = 366 - y; break; }
+  }
+  for (y = 232; y < 366; y++) {
+    if (painted(px(xC, cx + 300, y))) { hi = 366 - y; break; }
+  }
+  say('C symmetric at +/-300px', lo + ' vs ' + hi, Math.abs(lo - hi) <= 6);
+
+  // ---- C2. the tail label text clears WCAG AA on paper ----
+  // Sampled from the pixels, not from the token: a fill that never reaches the
+  // canvas is not a colour anyone has to read. Fully-covered glyph pixels carry
+  // the fill exactly, so take the most opaque one in the left label's band.
+  function lin(c) { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+  function lum(p) { return 0.2126 * lin(p.r) + 0.7152 * lin(p.g) + 0.0722 * lin(p.b); }
+  var paperL = lum({ r: 0xFB, g: 0xF9, b: 0xF2 });
+  var best = null, xx;
+  for (xx = 21; xx < 150; xx++) {
+    for (yy = 396; yy < 413; yy++) {
+      var q = px(xC, xx, yy);
+      if (q.a >= 250 && (!best || lum(q) < lum(best))) { best = q; }
+    }
+  }
+  if (best) {
+    var tl = lum(best);
+    var cr = (Math.max(tl, paperL) + 0.05) / (Math.min(tl, paperL) + 0.05);
+    say('C2 tail label rgb', best.r + ',' + best.g + ',' + best.b,
+        best.r === 94 && best.g === 117 && best.b === 7);
+    say('C2 tail label contrast', cr.toFixed(2) + ':1 (AA needs 4.5)', cr >= 4.5);
+  } else {
+    say('C2 tail label sampled', 'no opaque glyph pixel found', false);
+  }
+
+  // ---- D. labels wired to controls ----
+  var labs = hA.querySelectorAll('label');
+  var ins = hA.querySelectorAll('input[type=range]');
+  say('D label count', labs.length, labs.length === 2);
+  say('D label0 -> input0', labs[0].htmlFor === ins[0].id && !!ins[0].id,
+      labs[0].htmlFor === ins[0].id && !!ins[0].id);
+  say('D label1 -> input1', labs[1].htmlFor === ins[1].id && !!ins[1].id,
+      labs[1].htmlFor === ins[1].id && !!ins[1].id);
+  say('D unique ids across mounts', ins[0].id + ' vs ' + hB.querySelectorAll('input')[0].id,
+      ins[0].id !== hB.querySelectorAll('input')[0].id);
+  say('D valuetext', ins[0].getAttribute('aria-valuetext'),
+      ins[0].getAttribute('aria-valuetext') === '0.500');
+  var btn = hA.querySelector('button');
+  say('D clear btn height', btn.getBoundingClientRect().height.toFixed(1),
+      btn.getBoundingClientRect().height >= 24);
+
+  // ---- E. keyboard drop path exists ----
+  var before = (cA.getAttribute('aria-label').match(/([\d,]+) days/) || [])[1];
+  var ev = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true });
+  cA.dispatchEvent(ev);
+  say('E keydown was consumed', ev.defaultPrevented, ev.defaultPrevented === true);
+
+  // ---- F. live region populates ----
+  window.setTimeout(function () {
+    var srA = hA.querySelector('p[role=status]');
+    say('F live region filled', (srA.textContent || '').length, (srA.textContent || '').length > 80);
+    say('F live region offscreen', srA.getBoundingClientRect().width.toFixed(0) + 'px',
+        srA.getBoundingClientRect().width < 2);
+    var fails = 0, i;
+    for (i = 0; i < L.length; i++) { if (L[i].indexOf('FAIL') === 0) { fails++; } }
+    document.getElementById('out').textContent =
+      L.join('\n') + '\n\n' + (fails ? fails + ' FAILED' : 'ALL PASS') + ' (' + L.length + ' checks)';
+  }, 800);
+})();
+</script>
+</body>
+</html>

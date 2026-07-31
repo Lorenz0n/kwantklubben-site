@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About — Kwant Klubben</title>
+<meta name="description" content="What Kwant Klubben is, how a project actually runs, how we use AI, who it is for, and how to join. A new independent student club at SDU Odense.">
+<!-- ============ HEAD-COMMON ============ -->
+<!-- COPY-PASTE BLOCK — byte-identical in every page. Paths are root-relative
+     precisely so it can be. Edit one, paste into the others, then run
+     `python tools/check-site.py`.
+     Per-page <title>/<meta description> stay ABOVE this block, outside it.
+     Chewy is NOT optional: the footer wordmark is set in it at 37vw with a
+     -3.3vw nudge tuned to its metrics, and the check script fails the build if
+     any page drops it from this URL. -->
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/favicon-180.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Chewy&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/css/styles.css">
+<script>document.documentElement.classList.add('js')</script>
+<!-- ============ /HEAD-COMMON ============ -->
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<!-- COPY-PASTE BLOCK — byte-identical in every page. See HEAD-COMMON above.
+     aria-current is set by js/kk-nav.js rather than hardcoded here, so this
+     block can stay identical across files.
+     The `hidden` attribute on the panel is load-bearing: kk-nav.js is deferred,
+     so without it the drawer renders OPEN on a cold mobile cache until the
+     script lands. check-site.py asserts it. Do not switch to a class.
+     Contact is a button rather than a page: there is nothing a contact page
+     would hold that this mailto does not. -->
+<a class="kk-skip" href="#main">Skip to content</a>
+<header class="kk-nav">
+  <div class="kk-nav__inner">
+    <a class="kk-nav__logo" href="/"><img src="/assets/logo-primary.png" alt="Kwant Klubben — home" style="height:72px"></a>
+    <nav class="kk-nav__links" aria-label="Main">
+      <div class="kk-nav__panel" id="kk-nav-panel" hidden>
+        <a href="/about/">About</a>
+        <a href="/projects/">Projects</a>
+        <a href="/partners/">Partners</a>
+      </div>
+      <a class="kk-btn kk-btn--secondary kk-btn--sm" href="mailto:hello@kwantklubben.com">Contact</a>
+      <a class="kk-btn kk-btn--primary kk-btn--sm" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Join the klub</a>
+      <button class="kk-nav__toggle" type="button" aria-label="Menu" aria-controls="kk-nav-panel" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </div>
+</header>
+<!-- ============ /NAV ============ -->
+
+<main id="main">
+
+<!-- ============ PAGE HEAD ============ -->
+<section class="kk-gridpaper" style="border-bottom:2px solid var(--ink-800)">
+  <div class="kk-section" style="padding-top:68px;padding-bottom:44px">
+    <div style="display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap">
+      <span class="kk-badge kk-badge--solid">SDU · Odense</span>
+      <span class="kk-badge kk-badge--neutral kk-badge--dot">New klub, first members</span>
+    </div>
+    <h1 style="font:var(--weight-bold) 56px/1.0 var(--font-display);letter-spacing:-.03em;color:var(--ink-900);margin:0 0 20px;max-width:16ch">A club for people who want to know why.</h1>
+    <p style="font:var(--type-body);font-size:19px;color:var(--ink-700);max-width:54ch;margin:0">
+      Kwant Klubben is an independent student club at the University of Southern Denmark exploring quantitative finance through code, data, mathematics, and discussion.
+    </p>
+  </div>
+</section>
+
+<!-- ============ 01 WHAT IT IS ============ -->
+<section id="what" style="background:var(--paper-50)">
+  <div class="kk-section kk-two-col" style="padding-top:64px;padding-bottom:64px;align-items:start">
+    <div>
+      <div class="kk-overline" style="margin-bottom:8px">01 / What it is</div>
+      <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0;max-width:14ch">New, small, and building.</h2>
+    </div>
+    <div>
+      <p style="font:var(--type-body);color:var(--ink-700);margin:0 0 18px">The klub is new. It is currently founded and run by one student, and the first thing it is building is a member community — people who want somewhere to take a quantitative question seriously outside a course deadline.</p>
+      <p style="font:var(--type-body);color:var(--ink-700);margin:0">The work is research and simulation: reading, coding, testing ideas against data, and working out what the result actually supports. The klub does not execute trades and makes no claim to a research track record. Those could come later, honestly earned. There is no reason to pretend about them now.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 THE PROCESS ============ -->
+<section id="process" style="background:var(--lime-500);border-top:2px solid var(--ink-800);border-bottom:2px solid var(--ink-800)">
+  <div class="kk-section" style="padding-top:60px;padding-bottom:64px">
+    <div class="kk-overline" style="color:var(--ink-700);margin-bottom:8px">02 / The process, properly</div>
+    <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0 0 12px;max-width:20ch">What a project actually looks like.</h2>
+    <p style="font:var(--type-body);font-size:18px;color:var(--ink-800);max-width:56ch;margin:0 0 34px">The landing page has the short version. Here is what the three steps really involve, because the middle one is where almost all the time goes and it is the reason to be in a club rather than doing this alone.</p>
+    <div class="kk-projects-grid">
+      <div class="kk-card kk-card--pad-md">
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--coral-600);margin-bottom:12px">01 — IDEATION</div>
+        <h3 style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin:0 0 10px">Make it falsifiable</h3>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0">Most interesting questions start too vague to answer. The work here is narrowing one until it names what evidence would settle it — which is usually also the moment you find out whether you actually care about it.</p>
+      </div>
+      <div class="kk-card kk-card--pad-md">
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--coral-600);margin-bottom:12px">02 — LEARNING PROCESS</div>
+        <h3 style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin:0 0 10px">Where the time goes</h3>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0">Finding data, cleaning it, writing the thing, discovering the first version answered a different question, and rewriting. You will learn more here than the answer is worth, which is the actual reason the klub exists.</p>
+      </div>
+      <div class="kk-card kk-card--pad-md">
+        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--coral-600);margin-bottom:12px">03 — OUTPUT</div>
+        <h3 style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin:0 0 10px">Say what it supports</h3>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0">Write down what you did, what came out, and what it does and does not license you to conclude. That last part is the hard one, and it is the difference between a result and a number.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 AI ============ -->
+<section id="ai" style="background:var(--paper-100);border-bottom:2px solid var(--paper-300)">
+  <div class="kk-section kk-two-col" style="padding-top:64px;padding-bottom:64px;align-items:start">
+    <div>
+      <div class="kk-overline" style="margin-bottom:8px">03 / How we use AI</div>
+      <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0;max-width:14ch">Fast tools, human ownership.</h2>
+    </div>
+    <div>
+      <p style="font:var(--type-body);color:var(--ink-700);margin:0 0 18px">AI is useful for setup, data plumbing, debugging, explanations and first drafts, and the klub uses it openly for all of that. It removes the tedious part of getting to the interesting part.</p>
+      <p style="font:var(--type-body);color:var(--ink-700);margin:0">What it does not do is own the work. You choose the question, read the sources, understand the code that matters, check the numbers, and decide what the result means. If you cannot explain why an answer is right, it is not yet your answer.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 JOINING ============ -->
+<section id="joining" style="background:var(--paper-50)">
+  <div class="kk-section" style="padding-top:64px;padding-bottom:64px">
+    <div class="kk-overline" style="margin-bottom:8px">04 / Joining</div>
+    <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0 0 34px;max-width:16ch">All levels, genuinely.</h2>
+    <div class="kk-projects-grid">
+      <div class="kk-card kk-card--pad-md kk-card--hover">
+        <h3 style="font:var(--weight-bold) 19px/1.15 var(--font-display);color:var(--ink-900);margin:0 0 10px">Who it's for</h3>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0">Open to students from economics, mathematics, computer science and engineering, whatever amount of finance and programming you arrive with. Both ends of that range are wanted, and it will be a better klub when both are in the room.</p>
+      </div>
+      <div class="kk-card kk-card--pad-md kk-card--hover">
+        <h3 style="font:var(--weight-bold) 19px/1.15 var(--font-display);color:var(--ink-900);margin:0 0 10px">What's expected</h3>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0">Participation. Turn up, take something on, tell people what you found. Around exams and when life gets busy that dips — everyone here is a student and that is understood.</p>
+      </div>
+      <div class="kk-card kk-card--pad-md kk-card--hover">
+        <h3 style="font:var(--weight-bold) 19px/1.15 var(--font-display);color:var(--ink-900);margin:0 0 10px">How to apply</h3>
+        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0">One short form, open continuously. It asks about your background so we can point you somewhere useful, not to filter you out. No CV, no motivation essay, no proof of work. We get in touch with everyone who applies.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ JOIN ============ -->
+<section id="join" style="background:var(--ink-900);border-top:2px solid var(--ink-900)">
+  <div class="kk-gridpaper" style="background:transparent">
+    <div class="kk-section" style="padding-top:64px;padding-bottom:68px">
+      <h2 style="font:var(--weight-bold) 46px/1.0 var(--font-display);letter-spacing:-.03em;color:#fff;margin:0 0 18px">Bring a question.</h2>
+      <p style="font:var(--type-body);font-size:18px;color:var(--paper-300);max-width:48ch;margin:0 0 28px">
+        Applications are open continuously, mainly to students at SDU. Bring the question and the klub will help you get it somewhere.
+      </p>
+      <a class="kk-btn kk-btn--primary kk-btn--lg" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Apply to join →</a>
+      <p style="font-family:var(--font-mono);font-size:13px;color:var(--paper-400);margin:18px 0 0">We get in touch with everyone who applies.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<!-- COPY-PASTE BLOCK — byte-identical in every page. See HEAD-COMMON.
+     No class on the <footer> element: the mobile override that undoes the
+     wordmark overlay is `footer{display:block}`, and any class selector here
+     would out-specify it. That is exactly how 38a783c broke the phone layout. -->
+<footer style="background:var(--ink-900);border-top:2px solid var(--ink-700);color:var(--paper-400)">
+  <div class="kk-footer__inner">
+    <div class="kk-footer__brand">
+      <img src="/assets/logo-mark-knockout.png" alt="" style="height:40px">
+      <span>Kwant Klubben · Independent student club at the University of Southern Denmark</span>
+    </div>
+    <div class="kk-footer__links">
+      <a href="mailto:hello@kwantklubben.com">hello@kwantklubben.com</a>
+      <a href="https://www.linkedin.com/company/kwant-klubben" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+  <!-- Ornamental only: 37vw, 14% opacity, and deliberately clipped so a quarter
+       of the letterforms bleed off the page. As real text it was announced as a
+       stray "KWANT" after the footer content on every page. -->
+  <div class="kk-footer-word kk-onview" aria-hidden="true"><span>KWANT</span></div>
+</footer>
+<!-- ============ /FOOTER ============ -->
+
+<!-- ============ SCRIPTS ============ -->
+<!-- COPY-PASTE BLOCK — byte-identical in every page. kk-motion.js is needed on
+     every page: the footer's .kk-onview reveal depends on it. kk-bean.js
+     returns immediately where there is no #kk-bean, which is what lets this
+     block stay identical everywhere. -->
+<script src="/js/kk-motion.js" defer></script>
+<script src="/js/kk-nav.js" defer></script>
+<script src="/js/kk-bean.js" defer></script>
+<!-- ============ /SCRIPTS ============ -->
+</body>
+</html>

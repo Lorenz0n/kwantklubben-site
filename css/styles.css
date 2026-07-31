@@ -30,6 +30,10 @@
   --lime-500: #C2EB2B;
   --lime-600: #A6CE12;
   --lime-700: #7E9C0A;
+  /* One step darker than lime-700, which measures 3.00:1 on paper-50 and so
+     cannot legally carry small text. This clears AA at 4.95:1 while staying the
+     same hue, so a number can stay lime-coded instead of falling back to grey. */
+  --lime-800: #5E7507;
 
   --coral-300: #FFC2B3;
   --coral-400: #FF8366;
@@ -584,4 +588,93 @@ footer{ display:grid; }
    matches at all and the drawer simply appears. */
 @media (max-width: 700px) and (prefers-reduced-motion: no-preference){
   .js .kk-nav__panel:not([hidden]){ animation: kk-reveal var(--dur-base) var(--ease-out) both; }
+}
+
+/* ===========================================================================
+   NEW FOR THE 2026-07 RELAUNCH
+
+   Everything above this line is the original stylesheet, restored verbatim:
+   the design system's tokens, its component idiom (2px ink borders, hard
+   `4px 4px 0` pop shadows, lime section fills, badges, stamps, cards) and the
+   site layout that shipped with it. That idiom IS the brand — the relaunch
+   keeps it rather than replacing it.
+
+   Below are only the pieces the relaunch actually needs: the hero chart
+   that replaced the static distribution SVG, a three-column variant of the
+   divided grid for the loop, the footer's second link group, a keyboard skip
+   link, and one brand fix.
+   =========================================================================== */
+
+/* --- one brand fix ------------------------------------------------------
+   The token layer sets --focus-ring to --blue-500, and the brand has no blue
+   in it: the accents are lime, coral and gold, and they carry status. A 3px
+   ultramarine ring on every nav link, button and drawer control was the one
+   place the palette leaked. Overridden here rather than in the token block so
+   the tokens stay a verbatim copy of the design system. */
+:root{ --focus-ring: var(--ink-800); }
+/* Ink-on-ink is invisible, so on the dark bands the accent takes over. */
+.kk-card--ink :focus-visible,
+[style*="--ink-900"] :focus-visible{ outline-color: var(--lime-500); }
+
+/* --- hero board ---------------------------------------------------------
+   No card, no border, no shadow: the board sits directly on the gridpaper and
+   runs the full width of the section. The baseline the canvas draws for itself
+   is the only frame it gets, and the gridpaper reads as its graph paper.
+   Height is deliberately NOT set here — js/kk-bean.js derives it from the
+   measured width so the peg triangle stays in proportion, and a height in CSS
+   would fight it. */
+.kk-bean{ margin-top:clamp(28px,4vw,52px); }
+.kk-bean__note{
+  margin:10px 0 0; font-family:var(--font-mono);
+  font-size:var(--text-3xs); line-height:1.6; color:var(--ink-400); max-width:74ch;
+}
+.kk-bean__note b{ color:var(--ink-900); font-weight:700; }
+
+/* Grid items default to min-width:auto, so a track refuses to shrink below its
+   content's min-content width — which once pushed the hero column to 388px at a
+   375px viewport and put 44px of the page off-screen. */
+.kk-two-col > *, .kk-two-col--join > *{ min-width:0; }
+
+/* --- the loop -----------------------------------------------------------
+   Same divided-grid idiom as .kk-manifesto-grid (which the House rules band
+   used), at three columns instead of four. Kept as its own class rather than a
+   modifier so the manifesto grid can be deleted without touching this. */
+.kk-loop-grid{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:0;
+  border-left:var(--border-bold) solid var(--ink-800);
+}
+.kk-loop-grid > div{
+  border-right:var(--border-bold) solid var(--ink-800); padding:4px 22px 0;
+}
+
+/* --- projects -----------------------------------------------------------
+   The placeholder card is dashed so it reads as a slot waiting to be filled
+   rather than as a finished entry with nothing in it. */
+.kk-card--placeholder{ border-style:dashed; box-shadow:none; background:var(--paper-100); }
+
+/* --- footer -------------------------------------------------------------
+   The original footer carried the brand line alone. The relaunch adds the
+   contact route, so the inner row becomes brand-left / links-right. */
+.kk-footer__links{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+.kk-footer__links a{ color:var(--paper-100); text-decoration:none; border-bottom:1.5px solid var(--lime-500); padding-bottom:1px; }
+.kk-footer__links a:hover{ color:var(--lime-400); border-bottom-color:var(--lime-400); }
+
+/* --- keyboard skip ------------------------------------------------------
+   Five tabbable controls sit in the sticky bar ahead of <main> on every page. */
+.kk-skip{
+  position:absolute; left:-9999px; top:0; z-index:20;
+  font-family:var(--font-mono); font-size:var(--text-2xs); letter-spacing:.08em;
+  text-transform:uppercase; text-decoration:none;
+  color:var(--ink-900); background:var(--paper-50);
+  border:var(--border-bold) solid var(--ink-800); box-shadow:var(--pop-3);
+  padding:12px 18px;
+}
+.kk-skip:focus{ left:8px; top:8px; }
+
+@media (max-width: 700px){
+  .kk-loop-grid{ grid-template-columns:1fr; border-left:none; }
+  .kk-loop-grid > div{
+    border-right:none; border-left:var(--border-bold) solid var(--ink-800);
+    padding-bottom:22px;
+  }
 }

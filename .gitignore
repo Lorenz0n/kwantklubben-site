@@ -2,3 +2,8 @@
 Thumbs.db
 .vscode/
 .idea/
+
+# Hero sketch gallery — scratch. One was chosen (js/kk-bean.js); the rest are
+# kept locally for comparison and are not part of the site.
+_sketches/
+_sketches.html
