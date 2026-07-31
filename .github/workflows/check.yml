@@ -13,5 +13,60 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Shared blocks and site invariants
+      - name: Layout invariants and site checks
         run: python tools/check-site.py
+
+  # GitHub Pages builds this site with Jekyll. If that build fails, Pages keeps
+  # serving the LAST GOOD version — the site does not go down, it silently stops
+  # updating, and you find out by noticing your change never appeared. Building
+  # here with the same action Pages uses turns that into a red PR instead.
+  build-jekyll:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      # A build can succeed and still produce nonsense — a layout that silently
+      # dropped its content, or front matter served as visible text. Assert on
+      # the OUTPUT, not just the exit code.
+      - name: Assert the built pages are whole
+        run: |
+          set -e
+          fail=0
+          for p in index.html about/index.html projects/index.html partners/index.html; do
+            f="_site/$p"
+            [ -f "$f" ] || { echo "FAIL: $f was not built"; fail=1; continue; }
+
+            # front matter must have been consumed, not printed
+            head -c 3 "$f" | grep -q -- '---' && { echo "FAIL: $f starts with raw front matter"; fail=1; }
+
+            # the layout must actually have wrapped it
+            grep -q '<!DOCTYPE html>'            "$f" || { echo "FAIL: $f has no doctype"; fail=1; }
+            grep -q 'id="kk-nav-panel"'          "$f" || { echo "FAIL: $f has no nav"; fail=1; }
+            grep -q 'kk-footer-word'             "$f" || { echo "FAIL: $f has no footer wordmark"; fail=1; }
+            grep -q 'family=Chewy'               "$f" || { echo "FAIL: $f lost the Chewy font"; fail=1; }
+            grep -q '/js/kk-bean.js'             "$f" || { echo "FAIL: $f has no scripts block"; fail=1; }
+            grep -q '<main id="main">'           "$f" || { echo "FAIL: $f has no main"; fail=1; }
+
+            # unrendered Liquid reaching the output means a typo'd tag
+            grep -q '{{' "$f" && { echo "FAIL: $f contains unrendered Liquid"; fail=1; }
+
+            # the page's own content survived
+            bytes=$(wc -c < "$f")
+            [ "$bytes" -gt 6000 ] || { echo "FAIL: $f is only $bytes bytes — content was dropped"; fail=1; }
+          done
+
+          # the redirect stub is a static passthrough, not a laid-out page
+          grep -q 'http-equiv="refresh"' _site/sponsors/index.html \
+            || { echo "FAIL: sponsors redirect stub did not survive the build"; fail=1; }
+
+          # repo furniture must not be published
+          for x in tools README.md EDITING.md; do
+            [ -e "_site/$x" ] && { echo "FAIL: _site/$x was published — check _config.yml exclude"; fail=1; }
+          done
+
+          [ "$fail" = 0 ] && echo "ok: all pages built whole, nothing leaked"
+          exit $fail

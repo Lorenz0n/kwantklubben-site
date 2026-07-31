@@ -1,0 +1,16 @@
+# GitHub Pages builds this with Jekyll. Only layouts and front matter are used
+# — no plugins, no collections, nothing that needs a Gemfile — so the build is
+# whatever Pages ships and there is no version to keep in step.
+#
+# Removing this file, or re-adding .nojekyll, would publish the raw front matter
+# at the top of every page.
+
+# Kept out of the built site. These are repo furniture, not public pages.
+exclude:
+  - tools/
+  - README.md
+  - EDITING.md
+  - .gitignore
+
+# _sketches/ and _sketches.html are gitignored anyway, but underscore paths are
+# excluded by Jekyll by default regardless, which is belt and braces.
