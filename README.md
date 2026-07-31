@@ -1,13 +1,17 @@
 # kwantklubben-site
 
-The public site for **Kwant Klubben**, an independent student club at the University of Southern Denmark. Plain static HTML/CSS/vanilla-JS, no build step. Deployed via GitHub Pages at `kwantklubben.com`.
+The public site for **Kwant Klubben**, an independent student club at the University of Southern Denmark. Plain HTML/CSS/vanilla-JS — no framework, no toolchain, nothing to install. GitHub Pages assembles the pages with Jekyll (layouts and front matter only, no plugins), so pushing to `main` is the build. Live at `kwantklubben.com`.
 
 This repo is intentionally separate from the club's private research repo (`kwantklubben`, not public) and from the public project mirror (`kwantklubben-projects`). Nothing sensitive lives here — brand assets, marketing copy, and a link out to the application form.
 
 ## Structure
 
 ```
-index.html            landing — hero chart, the loop, projects teaser, join
+_layouts/default.html the <head>, nav, footer and scripts every page shares.
+                      ONE copy — GitHub Pages assembles the pages with Jekyll.
+_config.yml           build config: what stays out of the published site.
+
+index.html            landing — hero board, the loop, projects teaser, join
 about/index.html      what the klub is, the process in full, AI, joining
 projects/index.html   the library, how publishing works, what counts
 partners/index.html   collaboration, talks, mentorship, co-designed events
@@ -28,6 +32,12 @@ tools/probe-bean.html harness for the hero board: serve the repo and open it for
 
 EDITING.md            how to change the site from github.com. Start there.
 ```
+
+**Local preview.** Opening the files directly no longer works: pages are Jekyll
+fragments, so a plain static server shows the raw `---` header and no nav. Either
+install Jekyll, or push to a branch — CI builds the site with the same action
+Pages uses and fails the PR if anything is wrong. For the hero board alone,
+`tools/probe-bean.html` runs standalone against `js/kk-bean.js` with no build.
 
 **Editing the copy?** See [EDITING.md](EDITING.md). The pages carry no inline
 styles — 173 were lifted into named classes so a page reads as its words plus a
