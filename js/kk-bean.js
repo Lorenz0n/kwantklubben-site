@@ -123,7 +123,9 @@
       // drawing is unchanged and only narrow viewports actually move.
       var H = 440;
       var H_MIN = 330, H_MAX = 440;
-      var FOOTER = 74;         /* sigma ticks, labels and tail brackets below BASE */
+      /* FOOTER was a constant 74 here -- ticks, labels and brackets below BASE.
+         It is computed in render() now, because the readout moved down there and
+         its row count is part of the same budget. */
       var BOARD_BOTTOM = 236;  /* y where the 25th step lands */
       var BASE = 366;          /* bin floor */
       var MAXH = 126;          /* tallest bar */
@@ -428,17 +430,18 @@
         return (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(d);
       }
 
-      function groupsFor(ts, d) {
-        var mo = moments(), ex = exact();
-        // Every metric keeps its slot from the first frame. The exact column is a
-        // function of P(up move) alone, so it is meaningful with no data at all;
-        // the measured column shows an en dash until a ball actually lands.
-        // Printing 0.00 for a statistic nobody has measured yet reads as "we
-        // measured zero", which is a different claim from "we have no data".
+      /* The readout is TWO rows, not one line of seven.
+         The first four figures are what the board is about and change as you
+         watch; the last three are diagnostics that sit near their exact values
+         and barely move. Setting all seven at one size and weight produced a
+         seven-item wall of small type that read as a debug print rather than as
+         part of the drawing -- and it sat directly under the hero's call to
+         action, which is the worst place on the page for it. */
+      function headGroups(ts, d) {
         var nil = '–';
-        // Shorter keys on a phone. The size/separator ladder below can only
-        // trade type size against gap width; trimming the labels is what
-        // actually buys a legible size at 360px instead of bottoming out at 9px.
+        // Shorter keys on a phone. The size/separator ladder can only trade type
+        // size against gap width; trimming the labels is what actually buys a
+        // legible size at 360px instead of bottoming out at 9px.
         var kDay = small ? 'd ' : 'days ';
         var kMon = small ? 'mo ' : 'months ';
         // P(up MOVE), not P(up day). It is the odds on each of the R moves inside
@@ -450,14 +453,25 @@
         // once -- so N counts days directly, and months are days/30. Days lead:
         // it is the unit a bead actually is, and the one the pile is a
         // distribution OF. The month figure is a horizon, nothing more.
-        var g = [
+        return [
           [{ t: kDay, c: INK4 }, { t: fmtInt(N), c: INK, b: 1 }],
           [{ t: d + kMon, c: INK4 },
            { t: fmtInt(Math.floor(N / DAYS_PER_MONTH)), c: INK, b: 1 }],
           [{ t: d + kP, c: INK4 }, { t: p.toFixed(3), c: INK, b: 1 }],
           [{ t: d + kT, c: INK4 },
-           { t: N ? (ts.lo + ts.hi).toFixed(2) + '%' : nil, c: N ? LIME8 : INK4, b: 1 }],
-          [{ t: d + 'E[z] ', c: INK4 },
+           { t: N ? (ts.lo + ts.hi).toFixed(2) + '%' : nil, c: N ? LIME8 : INK4, b: 1 }]
+        ];
+      }
+      function diagGroups(d) {
+        var mo = moments(), ex = exact();
+        // Every metric keeps its slot from the first frame. The exact column is a
+        // function of P(up move) alone, so it is meaningful with no data at all;
+        // the measured column shows an en dash until a day actually lands.
+        // Printing 0.00 for a statistic nobody has measured yet reads as "we
+        // measured zero", which is a different claim from "we have no data".
+        var nil = '–';
+        return [
+          [{ t: 'E[z] ', c: INK4 },
            { t: mo ? sgn(mo.mean, 2) : nil, c: INK, b: 1 },
            { t: ' (' + sgn(ex.mean, 2) + ')', c: INK4 }],
           [{ t: d + 'Var[z] ', c: INK4 },
@@ -467,7 +481,6 @@
            { t: mo ? sgn(mo.skew, 2) : nil, c: INK, b: 1 },
            { t: ' (' + sgn(ex.skew, 2) + ')', c: INK4 }]
         ];
-        return g;
       }
       function groupW(g) {
         var w = 0, i;
@@ -523,57 +536,38 @@
         ctx.textAlign = 'left';
         ctx.lineCap = 'butt';
 
-        var pad = 14;
-        var ts = tailSplit();
-        var maxw = W - 2 * pad;
-        // Keep the metrics on ONE row: step the size down, then tighten the
-        // separator, until they fit. Only if even the smallest combination
-        // overflows -- a phone -- is wrapping allowed, so it degrades instead of
-        // breaking. The numbers change width as the pile grows, so this has to be
-        // measured every frame rather than picked once. The floor is 10px, not 9:
-        // at 9px the line was both unreadable AND still wrapping to three rows,
-        // paying the cost twice. On a narrow board the shorter keys and two
-        // honest lines beat one illegible one.
-        var combos = small
-          ? [[11, '  ·  '], [11, ' · '], [10, ' · ']]
-          : [[12, '   ·   '], [12, '  ·  '], [11, '  ·  '], [11, ' · '], [10, ' · ']];
-        var gs = null, ci;
-        for (ci = 0; ci < combos.length; ci++) {
-          setMetric(combos[ci][0]);
-          gs = groupsFor(ts, combos[ci][1]);
-          if (totalW(gs) <= maxw) { break; }
-        }
-        var lines = wrapGroups(gs, maxw);
         var i;
-        for (i = 0; i < lines.length; i++) { drawSegs(lines[i], pad, 13 + i * 16); }
+        var ts = tailSplit();
 
-        // RESERVED, not measured. Deriving the board's top from the number of
-        // rows the readout happened to wrap to meant the entire drawing -- BASE,
-        // MAXH, stepY, every bar and every bead -- jumped 16px the instant a
-        // number grew a digit and pushed the metrics onto another row. The board
-        // moved because a counter ticked over. The reserve is the most rows the
-        // readout can need at this width, so it grows into space already set
-        // aside for it and the geometry below is constant.
-        var METRIC_ROWS = small ? 3 : (W < 900 ? 2 : 1);
-        // Where the READOUT ends -- not where the walks start. The plot is sized
-        // against this rather than against the spawn line, so widening the head
-        // gap below cannot quietly steal height from the histogram.
-        var headEnd = 28 + (METRIC_ROWS - 1) * 16;
-        // Derived from the measured height so a short board stays in proportion
-        // instead of keeping desktop constants on a phone. At H=440 these come
-        // out to exactly 366 / 126 / 236 -- the values this was tuned at.
-        BASE = H - FOOTER;
-        MAXH = Math.round((BASE - headEnd) * 0.373);
+        /* The readout now sits BELOW the drawing, with the sliders, as one strip
+           of chrome -- so the geometry is settled first and the type is set into
+           the space that is left, rather than the other way round.
+
+           RESERVED, not measured. Deriving the layout from the number of rows the
+           readout happened to wrap to meant the whole drawing jumped the instant
+           a number grew a digit: the board moved because a counter ticked over.
+           These are the most rows each block can need at this width, so the type
+           grows into space already set aside for it.
+
+           The headline four always fit one row -- at a 320px chart, in the short
+           phone keys, they are ~280px at 12px and the ladder can still step down
+           to 10. The three diagnostics are much longer and need two rows once the
+           chart is narrow. */
+        var HEAD_ROWS = 1;
+        var DIAG_ROWS = small ? 2 : 1;
+        var MET_LEAD = 16;
+        // Below BASE: sigma ticks and their labels to BASE+18, the tail brackets
+        // and their figures to BASE+42, then the readout from BASE+62.
+        var READ_TOP = 62;
+        var FOOT = READ_TOP + (HEAD_ROWS + DIAG_ROWS - 1) * MET_LEAD + 10;
+
+        BASE = H - FOOT;
+        // Air above the line the walks open on. Small, because there is nothing
+        // above it any more -- the readout that used to occupy this space is at
+        // the bottom now, which is most of what the regrouping bought.
+        yTop = 24;
+        MAXH = Math.round((BASE - yTop) * 0.373);
         BOARD_BOTTOM = BASE - MAXH - 4;
-        // Air between the readout and the line the walks open on. Without it the
-        // first beads appear immediately under the metrics and the two read as
-        // one block of marks rather than a caption above a drawing.
-        //
-        // It comes out of the WALK region, which is mostly empty and can afford
-        // it, and not out of the plot, which cannot -- that is the whole reason
-        // MAXH is measured from headEnd above. Less on a phone, where three rows
-        // of readout have already taken the space this would come from.
-        yTop = headEnd + (small ? 12 : 20);
         stepY = (BOARD_BOTTOM - yTop) / R;
         var walkEnd = yTop + R * stepY;
 
@@ -788,6 +782,50 @@
 
 
         ctx.textAlign = 'left';
+
+        /* ---------- the readout, under the drawing ----------
+           Set to the CHART's own edges, not the canvas padding. Once the window
+           narrowed to +/-4 sigma the chart sat ~130px inside the text column, and
+           a readout starting at the page margin put three different left edges on
+           top of each other -- readout, chart, bracket label. They are one edge
+           now, and the sliders below are padded to the same one.
+
+           Two blocks, two weights. The headline four carry the size; the three
+           diagnostics are a step down and sit in the quieter grey, because they
+           are reference values that hover near their exact figures rather than
+           things to watch. */
+        var mw = xWR - xWL;
+        var hCombo = small
+          ? [[12, '  ·  '], [11, '  ·  '], [11, ' · '], [10, ' · ']]
+          : [[13, '   ·   '], [13, '  ·  '], [12, '  ·  '], [11, ' · '], [10, ' · ']];
+        var dCombo = small
+          ? [[10, '  ·  '], [10, ' · '], [9, ' · ']]
+          : [[11, '   ·   '], [11, '  ·  '], [10, ' · ']];
+        var ci, gs, lines, ry = BASE + READ_TOP;
+
+        for (ci = 0; ci < hCombo.length; ci++) {
+          setMetric(hCombo[ci][0]);
+          gs = headGroups(ts, hCombo[ci][1]);
+          if (totalW(gs) <= mw) { break; }
+        }
+        lines = wrapGroups(gs, mw);
+        for (i = 0; i < lines.length; i++) { drawSegs(lines[i], xWL, ry + i * MET_LEAD); }
+        ry += HEAD_ROWS * MET_LEAD;
+
+        for (ci = 0; ci < dCombo.length; ci++) {
+          setMetric(dCombo[ci][0]);
+          gs = diagGroups(dCombo[ci][1]);
+          if (totalW(gs) <= mw) { break; }
+        }
+        lines = wrapGroups(gs, mw);
+        for (i = 0; i < lines.length; i++) { drawSegs(lines[i], xWL, ry + i * MET_LEAD); }
+
+        // The slider row is DOM and the chart is canvas, so nothing aligns them
+        // for free. Written only on change: this runs every frame, and assigning
+        // an identical style string still dirties layout in some engines.
+        var padL = Math.round(xWL) + 'px', padR = Math.round(W - xWR) + 'px';
+        if (bar.style.paddingLeft !== padL) { bar.style.paddingLeft = padL; }
+        if (bar.style.paddingRight !== padR) { bar.style.paddingRight = padR; }
 
         /* the walks */
         // One place that answers "where is this bead now", so the trail and the

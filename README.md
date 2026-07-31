@@ -190,19 +190,24 @@ units here have been wrong before, in both directions, so if you touch the reado
 keep them straight — `probe-bean.html` asserts both numbers against the spoken
 description, which is the only place the units are stated in words.
 
-**The board is a fixed size.** Its height is one of two values, stepping at 560px,
-and the space reserved above it for the readout is a constant per width bracket —
-*not* the number of rows the readout happened to wrap to. Both of those were
-previously derived, which meant the entire drawing resized as the window moved and
-jumped 16px the instant a counter grew a digit. If you add a metric, check it
-still fits the reserve rather than making the reserve follow it.
+**The readout sits below the drawing, with the sliders, as one strip of chrome.**
+It used to be a single line of seven figures directly under the hero's call to
+action — a wall of small type in the worst place on the page. It is two blocks
+now: the four headline figures at the larger size, then the three `[z]`
+diagnostics a step down in the quieter grey, because those sit near their exact
+values and barely move. Everything in the strip, canvas *and* the DOM slider row,
+is set to the **chart's own edges** rather than the canvas padding — since the
+window narrowed to ±4σ the chart sits ~130px inside the text column, and three
+different left edges were stacking up.
 
-Below the reserve there is a **head gap** before `yTop`, the line the walks open
-on, so the beads do not start immediately under the metrics. Note that `MAXH` is
-measured from the *end of the readout*, not from `yTop` — so the gap is taken out
-of the walk region, which is mostly empty, rather than out of the histogram. Widen
-the gap and the walk compresses; the plot floor stays at 366 and the plot stays
-126 tall. Keep it that way round if you retune it.
+**The board is a fixed size.** Its height is one of two values, stepping at 560px,
+and the rows reserved for the readout are a constant per width bracket — *not* the
+number of rows it happened to wrap to. Both were previously derived, which meant
+the drawing resized as the window moved and jumped 16px the instant a counter grew
+a digit. The headline four always fit one row (at a 320px chart they are ~280px at
+12px, and the ladder can still step to 10); the diagnostics need two once the chart
+is narrow. If you add a metric, check it still fits the reserve rather than making
+the reserve follow it.
 
 Under `prefers-reduced-motion: reduce` it resolves 2,400 months at once, draws the
 finished board, and never calls `requestAnimationFrame` at all. `rAF` is throttled

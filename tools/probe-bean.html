@@ -52,6 +52,23 @@
   }
   function painted(p) { return p.a > 8; }
 
+  // The vertical budget from kk-bean.js render(), restated. These used to be
+  // hardcoded pixels -- 366 for the plot floor, 126 for MAXH, scan windows of
+  // 232..366 -- and every one of them had to be re-tuned by hand each time the
+  // layout moved, which is a probe that costs more than it catches. Deriving
+  // them still asserts something real: that what the renderer PUTS on the canvas
+  // agrees with the geometry the file documents. If the two drift, this fails.
+  function geom(H, small) {
+    var HEAD_ROWS = 1, DIAG_ROWS = small ? 2 : 1, MET_LEAD = 16, READ_TOP = 62;
+    var FOOT = READ_TOP + (HEAD_ROWS + DIAG_ROWS - 1) * MET_LEAD + 10;
+    var BASE = H - FOOT, yTop = 24;
+    var MAXH = Math.round((BASE - yTop) * 0.373);
+    return { BASE: BASE, MAXH: MAXH, top: BASE - MAXH,
+             brackY: BASE + 30 + 12, readY: BASE + READ_TOP };
+  }
+  var G = geom(440, false);          // both desktop mounts
+  var scanTop = G.top - 14;          // a little above the tallest a bar can be
+
   // ---- A. desktop, not reduced, first synchronous frame ----
   var hA = mount(1092, false);
   var cA = hA.querySelector('canvas');
@@ -77,21 +94,25 @@
   var cx = Math.round(1092 / 2);
   var probeX = cx + 10;   // inside bin 13 -- same height as the mode
   var edgeX = cx - 400;   // inside bin 3, the left end of the drawn window
-  // 365-367: the implied line's own hairline is centred on BASE out here, so it
-  // straddles the axis rule.
+  // The implied line's own hairline is centred on BASE out here, so it straddles
+  // the axis rule -- hence the +/-1. Stops short of the readout, which now sits
+  // below the axis and would otherwise be the first thing a downward scan hit.
   var baseFound = -1, y;
-  for (y = 300; y < 439; y++) {
+  for (y = 300; y < G.BASE + 6; y++) {
     if (painted(px(xA, edgeX, y))) { baseFound = y; break; }
   }
-  say('A plot floor y', baseFound, baseFound >= 365 && baseFound <= 367);
+  say('A plot floor y', baseFound + ' (BASE ' + G.BASE + ')',
+      baseFound >= G.BASE - 1 && baseFound <= G.BASE + 1);
 
-  // the implied silhouette must be drawn with ZERO balls on the board
+  // the implied silhouette must be drawn with ZERO days on the board
   var peak = -1;
-  for (y = 232; y < 366; y++) {
+  for (y = scanTop; y < G.BASE; y++) {
     if (painted(px(xA, probeX, y))) { peak = y; break; }
   }
-  say('A silhouette top at N=0', peak, peak >= 236 && peak <= 242);
-  say('A silhouette fills MAXH', (366 - peak) + 'px of 126', Math.abs((366 - peak) - 126) <= 4);
+  say('A silhouette top at N=0', peak + ' (plot top ' + G.top + ')',
+      peak >= G.top - 4 && peak <= G.top + 2);
+  say('A silhouette fills MAXH', (G.BASE - peak) + 'px of ' + G.MAXH,
+      Math.abs((G.BASE - peak) - G.MAXH) <= 4);
 
   // ---- B. phone width ----
   var hB = mount(360, false);
@@ -123,18 +144,19 @@
   // nearest the mean is not reliably the fullest one.
   var barTop = 999, xs, yy;
   for (xs = cx - 120; xs <= cx + 120; xs += 5) {
-    for (yy = 232; yy < 366; yy++) {
+    for (yy = scanTop; yy < G.BASE; yy++) {
       if (painted(px(xC, xs, yy))) { if (yy < barTop) { barTop = yy; } break; }
     }
   }
-  say('C tallest bar top', barTop, barTop >= 236 && barTop <= 242);
+  say('C tallest bar top', barTop + ' (plot top ' + G.top + ')',
+      barTop >= G.top - 4 && barTop <= G.top + 2);
   // and the pile is where a fair coin puts it, not shoved to one side
   var lo = 0, hi = 0;
-  for (y = 232; y < 366; y++) {
-    if (painted(px(xC, cx - 300, y))) { lo = 366 - y; break; }
+  for (y = scanTop; y < G.BASE; y++) {
+    if (painted(px(xC, cx - 300, y))) { lo = G.BASE - y; break; }
   }
-  for (y = 232; y < 366; y++) {
-    if (painted(px(xC, cx + 300, y))) { hi = 366 - y; break; }
+  for (y = scanTop; y < G.BASE; y++) {
+    if (painted(px(xC, cx + 300, y))) { hi = G.BASE - y; break; }
   }
   say('C symmetric at +/-300px', lo + ' vs ' + hi, Math.abs(lo - hi) <= 6);
 
@@ -145,9 +167,12 @@
   function lin(c) { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
   function lum(p) { return 0.2126 * lin(p.r) + 0.7152 * lin(p.g) + 0.0722 * lin(p.b); }
   var paperL = lum({ r: 0xFB, g: 0xF9, b: 0xF2 });
+  // The bracket label starts at the chart's left edge (106 at this width), not
+  // at the canvas padding, and its baseline follows BASE down. Both were fixed
+  // pixels here and both had drifted off the glyphs.
   var best = null, xx;
-  for (xx = 21; xx < 150; xx++) {
-    for (yy = 396; yy < 413; yy++) {
+  for (xx = 108; xx < 280; xx++) {
+    for (yy = G.brackY - 12; yy <= G.brackY + 2; yy++) {
       var q = px(xC, xx, yy);
       if (q.a >= 250 && (!best || lum(q) < lum(best))) { best = q; }
     }
@@ -187,7 +212,7 @@
   // which is off the chart since the window narrowed to +/-4 sigma.
   var tailPx = null, tx, ty2;
   for (tx = 110; tx < 326 && !tailPx; tx += 2) {
-    for (ty2 = 240; ty2 < 365; ty2++) {
+    for (ty2 = scanTop; ty2 < G.BASE; ty2++) {
       var q2 = px(xC, tx, ty2);
       if (q2.a > 250 && q2.r === 0x5E && q2.g === 0x75 && q2.b === 0x07) { tailPx = q2; break; }
     }
@@ -211,21 +236,37 @@
   var pC = hC.querySelectorAll('input[type=range]')[0];
   pC.value = '600';
   pC.dispatchEvent(new Event('input', { bubbles: true }));
-  var colX = cx + 10, barY = -1, casing = -1, yq, qq;
-  for (yq = 232; yq < 366; yq++) {
+  //
+  // Asserted as CONTRAST, not as "is it paper". The casing is a 3.4px stroke
+  // under a 1.6px ink core, so the paper-only part is well under a pixel on each
+  // side and antialiases against the ink bar beneath it -- it lands around
+  // rgb(191,190,186), never the flat rgb(251,249,242) an equality test expects.
+  // An earlier version of this check looked for pure paper and reported "not
+  // found" on a line that was plainly on screen at 10:1. What the chart owes is
+  // that the line reads where it crosses a bar, so measure that.
+  var colX = cx + 10, barY = -1, lightest = null, yq, qq;
+  for (yq = scanTop; yq < G.BASE; yq++) {
     qq = px(xC, colX, yq);
-    if (barY < 0 && painted(qq)) { barY = yq; }
-    if (barY >= 0 && qq.a > 250 && qq.r > 200 && qq.g > 200 && qq.b > 200) { casing = yq; break; }
+    if (barY < 0) { if (painted(qq)) { barY = yq; } continue; }
+    // strictly inside the bar, clear of its own top edge
+    if (yq > barY + 3 && qq.a > 250 && (!lightest || lum(qq) > lum(lightest))) { lightest = qq; }
   }
-  say('C4 bar top found', barY, barY > 232 && barY < 366);
-  say('C4 model line inside the bar', casing >= 0 ? 'casing at y=' + casing : 'not found',
-      casing > barY);
+  say('C4 bar top found', barY, barY > scanTop && barY < G.BASE);
+  if (lightest) {
+    var inkL = lum({ r: 0x0C, g: 0x10, b: 0x16 });
+    var lc = (Math.max(lum(lightest), inkL) + 0.05) / (Math.min(lum(lightest), inkL) + 0.05);
+    say('C4 model line over the bar',
+        lightest.r + ',' + lightest.g + ',' + lightest.b + ' = ' + lc.toFixed(1) + ':1 vs fill',
+        lc >= 3);
+  } else {
+    say('C4 model line over the bar', 'nothing lighter than the fill inside it', false);
+  }
   // The axis rule, sampled at the left END OF THE DRAWN WINDOW where no bar or
   // implied line overlaps it. x=25 was off the chart once the window narrowed to
   // +/-4 sigma, so this reported "no axis pixel" rather than a bad contrast --
   // a check that had stopped looking at anything.
   var axPx = null, ay;
-  for (ay = 363; ay <= 369; ay++) {
+  for (ay = G.BASE - 3; ay <= G.BASE + 3; ay++) {
     var q3 = px(xC, edgeX, ay);
     if (q3.a > 120 && (!axPx || q3.a > axPx.a)) { axPx = q3; }
   }
