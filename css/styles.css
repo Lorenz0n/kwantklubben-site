@@ -653,11 +653,15 @@ footer{ display:grid; }
    Fixed at the variant level rather than by weakening the base rule, because
    each variant wants a different hover label:
 
-     white (secondary)  the whole button goes accent — lime-500 fill, ink-900
-                        label, 13.81:1. A block of the brand colour rather
-                        than a tinted label. (An earlier pass put lime-800
-                        TEXT on the paper-100 fill: legible at 4.62:1, but far
-                        quieter than this.)
+     white (secondary)  inverts to ink — ink-900 fill, lime-500 label, 13.81:1.
+                        The same pair as the hero accent, the other way up.
+                        (Two earlier passes: lime-800 TEXT on the paper-100
+                        fill, legible at 4.62:1 but very quiet; then a lime-500
+                        FILL with an ink label, which read well but landed the
+                        white button on exactly the primary button's RESTING
+                        appearance — hovering a secondary made it look like a
+                        primary, so the pair stopped being distinguishable at
+                        the moment the pointer was on one of them.)
      green (primary)    label goes to paper-50, and the FILL goes to ink-800
                         with it. White on lime is 1.35:1 and unreadable, so
                         a white label alone would have been a hover state you
@@ -677,7 +681,7 @@ footer{ display:grid; }
              background var(--dur-fast) var(--ease-out),
              color var(--dur-fast) var(--ease-out);
 }
-.kk-btn--secondary:hover{ --_bg:var(--lime-500); --_fg:var(--ink-900); }
+.kk-btn--secondary:hover{ --_bg:var(--ink-900); --_fg:var(--lime-500); }
 .kk-btn--primary:hover{ --_bg:var(--ink-800); --_fg:var(--paper-50); }
 /* --danger and --ghost are in the unused inventory, but they are <a>-able and
    would leak the same blue the day they are used. */
