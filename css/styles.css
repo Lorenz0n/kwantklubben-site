@@ -632,6 +632,21 @@ footer{ display:grid; }
 .kk-card--ink :focus-visible,
 [style*="--ink-900"] :focus-visible{ outline-color: var(--lime-500); }
 
+/* --- page frame ---------------------------------------------------------
+   Short pages left the footer floating with a band of bare paper beneath it.
+   On /404.html at a 1400px window the document ended 155px above the bottom of
+   the viewport, so the KWANT wordmark — which is meant to run off the bottom
+   edge of the page — instead hung in the middle of the screen with nothing
+   under it.
+
+   Nothing was making the document fill the viewport. min-height:100vh plus a
+   column flex, with <main> as the only growing item, pins the footer to the
+   bottom on a short page and changes nothing on a page that already overflows.
+   `flex:1 0 auto` rather than `flex:1`: the 0 basis stops main being shrunk
+   below its content when the content IS taller than the screen. */
+body{ min-height:100vh; display:flex; flex-direction:column; }
+main{ flex:1 0 auto; }
+
 /* --- hero board ---------------------------------------------------------
    No card, no border, no shadow: the board sits directly on the gridpaper and
    runs the full width of the section. The baseline the canvas draws for itself
