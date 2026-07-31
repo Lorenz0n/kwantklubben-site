@@ -1,62 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>About — Kwant Klubben</title>
-<meta name="description" content="What Kwant Klubben is, how a project actually runs, how we use AI, who it is for, and how to join. A new independent student club at SDU Odense.">
-<!-- ============ HEAD-COMMON ============ -->
-<!-- COPY-PASTE BLOCK — byte-identical in every page. Paths are root-relative
-     precisely so it can be. Edit one, paste into the others, then run
-     `python tools/check-site.py`.
-     Per-page <title>/<meta description> stay ABOVE this block, outside it.
-     Chewy is NOT optional: the footer wordmark is set in it at 37vw with a
-     -3.3vw nudge tuned to its metrics, and the check script fails the build if
-     any page drops it from this URL. -->
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/favicon-180.png">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Chewy&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="/css/styles.css">
-<script>document.documentElement.classList.add('js')</script>
-<!-- ============ /HEAD-COMMON ============ -->
-</head>
-<body>
-
-<!-- ============ NAV ============ -->
-<!-- COPY-PASTE BLOCK — byte-identical in every page. See HEAD-COMMON above.
-     aria-current is set by js/kk-nav.js rather than hardcoded here, so this
-     block can stay identical across files.
-     The `hidden` attribute on the panel is load-bearing: kk-nav.js is deferred,
-     so without it the drawer renders OPEN on a cold mobile cache until the
-     script lands. check-site.py asserts it. Do not switch to a class.
-     Contact is a button rather than a page: there is nothing a contact page
-     would hold that this mailto does not. -->
-<a class="kk-skip" href="#main">Skip to content</a>
-<header class="kk-nav">
-  <div class="kk-nav__inner">
-    <a class="kk-nav__logo" href="/"><img src="/assets/logo-primary.png" alt="Kwant Klubben — home"></a>
-    <nav class="kk-nav__links" aria-label="Main">
-      <div class="kk-nav__panel" id="kk-nav-panel" hidden>
-        <a href="/about/">About</a>
-        <a href="/projects/">Projects</a>
-        <a href="/partners/">Partners</a>
-      </div>
-      <a class="kk-btn kk-btn--secondary kk-btn--sm" href="mailto:hello@kwantklubben.com">Contact</a>
-      <a class="kk-btn kk-btn--primary kk-btn--sm" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Join the klub</a>
-      <button class="kk-nav__toggle" type="button" aria-label="Menu" aria-controls="kk-nav-panel" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </nav>
-  </div>
-</header>
-<!-- ============ /NAV ============ -->
-
-<main id="main">
+---
+layout: default
+title: 'About — Kwant Klubben'
+description: 'What Kwant Klubben is, how a project actually runs, how we use AI, who it is for, and how to join. A new independent student club at SDU Odense.'
+---
 
 <!-- ============ PAGE HEAD ============ -->
 <section class="kk-gridpaper kk-band--rule">
@@ -161,40 +107,3 @@
     </div>
   </div>
 </section>
-
-</main>
-
-<!-- ============ FOOTER ============ -->
-<!-- COPY-PASTE BLOCK — byte-identical in every page. See HEAD-COMMON.
-     No class on the <footer> element: the mobile override that undoes the
-     wordmark overlay is `footer{display:block}`, and any class selector here
-     would out-specify it. That is exactly how 38a783c broke the phone layout. -->
-<footer>
-  <div class="kk-footer__inner">
-    <div class="kk-footer__brand">
-      <img src="/assets/logo-mark-knockout.png" alt="">
-      <span>Kwant Klubben · Independent student club at the University of Southern Denmark</span>
-    </div>
-    <div class="kk-footer__links">
-      <a href="mailto:hello@kwantklubben.com">hello@kwantklubben.com</a>
-      <a href="https://www.linkedin.com/company/kwant-klubben" target="_blank" rel="noopener">LinkedIn</a>
-    </div>
-  </div>
-  <!-- Ornamental only: 37vw, 14% opacity, and deliberately clipped so a quarter
-       of the letterforms bleed off the page. As real text it was announced as a
-       stray "KWANT" after the footer content on every page. -->
-  <div class="kk-footer-word kk-onview" aria-hidden="true"><span>KWANT</span></div>
-</footer>
-<!-- ============ /FOOTER ============ -->
-
-<!-- ============ SCRIPTS ============ -->
-<!-- COPY-PASTE BLOCK — byte-identical in every page. kk-motion.js is needed on
-     every page: the footer's .kk-onview reveal depends on it. kk-bean.js
-     returns immediately where there is no #kk-bean, which is what lets this
-     block stay identical everywhere. -->
-<script src="/js/kk-motion.js" defer></script>
-<script src="/js/kk-nav.js" defer></script>
-<script src="/js/kk-bean.js" defer></script>
-<!-- ============ /SCRIPTS ============ -->
-</body>
-</html>
