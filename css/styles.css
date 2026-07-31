@@ -902,3 +902,53 @@ footer{ background:var(--ink-900); border-top:2px solid var(--ink-700); color:va
 .kk-pagehead__title--narrow{ font:var(--weight-bold) 56px/1.0 var(--font-display); letter-spacing:-.03em; color:var(--ink-900); margin:0 0 20px; max-width:15ch; }
 .kk-prose__p--lg-flush{ font:var(--type-body); font-size:18px; color:var(--ink-800); margin:0; }
 .kk-section--band-split{ padding-top:60px; padding-bottom:64px; align-items:start; }
+
+/* --- partners marquee --- */
+.kk-ticker-wrap {
+  width: 100%;
+  overflow: hidden;
+  background: var(--surface-card);
+  border: var(--border-bold) solid var(--ink-800);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--pop-4);
+  padding: 48px 0;
+  position: relative;
+}
+.kk-ticker-wrap::before, .kk-ticker-wrap::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 80px;
+  z-index: 2;
+  pointer-events: none;
+}
+.kk-ticker-wrap::before {
+  left: 0;
+  background: linear-gradient(to right, var(--surface-card), transparent);
+}
+.kk-ticker-wrap::after {
+  right: 0;
+  background: linear-gradient(to left, var(--surface-card), transparent);
+}
+.kk-ticker {
+  display: inline-flex;
+  gap: 120px;
+  align-items: center;
+  width: max-content;
+  padding-right: 120px; /* same as gap to make the loop seamless */
+}
+.kk-partner-logo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 28px;
+  color: var(--ink-400);
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: opacity var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+  cursor: default;
+}
+.kk-partner-logo:hover {
+  opacity: 1;
+  color: var(--ink-900);
+}
