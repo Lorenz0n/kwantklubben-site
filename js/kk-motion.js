@@ -3,7 +3,19 @@
    - auto-wires [data-kk-countup] and .kk-onview (adds .kk-go + triggers count-ups when scrolled into view)
    Usage: <script src=".../assets/kk-motion.js" defer></script> */
 (function(){
-  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* Guarded, and re-read on change. matchMedia is assumed present here, which
+     throws outright where it is not; and sampling .matches once at load meant a
+     visitor who turned the OS setting ON mid-session kept getting animation for
+     the rest of it. `reduced` is read at call time, so the listener takes
+     effect for every later count-up. */
+  var reduceMq = window.matchMedia
+    ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  var reduced = !!(reduceMq && reduceMq.matches);
+  if (reduceMq) {
+    var onReduceChange = function(){ reduced = !!reduceMq.matches; };
+    if (reduceMq.addEventListener) reduceMq.addEventListener('change', onReduceChange);
+    else if (reduceMq.addListener) reduceMq.addListener(onReduceChange);
+  }
 
   function setFinal(el){
     var t = parseFloat(el.dataset.target||'0'), dec = parseInt(el.dataset.dec||'0',10);
