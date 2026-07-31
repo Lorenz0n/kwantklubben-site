@@ -153,6 +153,47 @@
     say('C2 tail label sampled', 'no opaque glyph pixel found', false);
   }
 
+  // ---- C3. non-text contrast: tail bars and the axis (WCAG 1.4.11, 3:1) ----
+  // The canvas is transparent where nothing is drawn, and the bars are painted
+  // at alpha < 1, so a raw pixel is not the colour a visitor sees. Composite
+  // each sample over paper-50 first — that is what is actually on screen.
+  function overPaper(p) {
+    var a = p.a / 255;
+    return { r: p.r * a + 0xFB * (1 - a),
+             g: p.g * a + 0xF9 * (1 - a),
+             b: p.b * a + 0xF2 * (1 - a) };
+  }
+  function ratio(c) {
+    var l = lum(c);
+    return (Math.max(l, paperL) + 0.05) / (Math.min(l, paperL) + 0.05);
+  }
+  // most opaque pixel anywhere in the LEFT TAIL band (left of -2 sigma)
+  var tailPx = null, tx, ty2;
+  for (tx = 30; tx < 330; tx += 2) {
+    for (ty2 = 240; ty2 < 365; ty2++) {
+      var q2 = px(xC, tx, ty2);
+      if (q2.a > 200 && (!tailPx || q2.a > tailPx.a)) { tailPx = q2; }
+    }
+  }
+  if (tailPx) {
+    var tc = ratio(overPaper(tailPx));
+    say('C3 tail bar contrast', tc.toFixed(2) + ':1 (1.4.11 needs 3)', tc >= 3);
+  } else {
+    say('C3 tail bar sampled', 'no tail bar pixel found', false);
+  }
+  // the axis rule, sampled at the far left where no bar or silhouette overlaps
+  var axPx = null, ay;
+  for (ay = 363; ay <= 369; ay++) {
+    var q3 = px(xC, 25, ay);
+    if (q3.a > 120 && (!axPx || q3.a > axPx.a)) { axPx = q3; }
+  }
+  if (axPx) {
+    var ac = ratio(overPaper(axPx));
+    say('C3 axis contrast', ac.toFixed(2) + ':1 (1.4.11 needs 3)', ac >= 3);
+  } else {
+    say('C3 axis sampled', 'no axis pixel found', false);
+  }
+
   // ---- D. labels wired to controls ----
   var labs = hA.querySelectorAll('label');
   var ins = hA.querySelectorAll('input[type=range]');

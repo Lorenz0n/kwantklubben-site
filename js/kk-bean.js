@@ -471,7 +471,7 @@
         var pegEnd = yTop + R * rowGap;
 
         /* hopper */
-        ctx.strokeStyle = PAPER; ctx.lineWidth = 1;
+        ctx.strokeStyle = INK4; ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(cx - 11, yTop - 13); ctx.lineTo(cx - 2.5, yTop - 4);
         ctx.moveTo(cx + 11, yTop - 13); ctx.lineTo(cx + 2.5, yTop - 4);
@@ -511,7 +511,11 @@
            colour change land on exactly the same x as the tick and the bracket:
            a bar straddling a line comes out part tail, part body, cut at the
            line rather than at its own edge. */
-        function paintImplied(colour, alpha) {
+        // Fill and edge are separate now. The silhouette is a reference layer and
+        // is SUPPOSED to sit behind the bars, so its fill stays faint (1.1-1.4:1)
+        // — but a shape you cannot make out is not a reference, so the outline
+        // carries the legibility instead and clears 3:1 on its own.
+        function paintImplied(fill, fillA, edge, edgeA) {
           var j;
           ctx.beginPath();
           ctx.moveTo(binX(0) - dx / 2, BASE);
@@ -522,11 +526,11 @@
           }
           ctx.lineTo(binX(R) + dx / 2, BASE);
           ctx.closePath();
-          ctx.fillStyle = colour;
-          ctx.globalAlpha = alpha;
+          ctx.fillStyle = fill;
+          ctx.globalAlpha = fillA;
           ctx.fill();
-          ctx.globalAlpha = alpha * 2.6;
-          ctx.strokeStyle = colour;
+          ctx.globalAlpha = edgeA;
+          ctx.strokeStyle = edge;
           ctx.lineWidth = 1.2;
           ctx.stroke();
           ctx.globalAlpha = 1;
@@ -551,25 +555,37 @@
             }
           }
         }
-        function band(x0, x1, colour, impliedAlpha, barAlpha) {
+        function band(x0, x1, s) {
           if (x1 - x0 < 0.4) { return; }
           ctx.save();
           ctx.beginPath();
           ctx.rect(x0, 0, x1 - x0, BASE + 1);
           ctx.clip();
-          paintImplied(colour, impliedAlpha);
-          paintBars(colour, barAlpha);
+          paintImplied(s.ghost, s.ghostA, s.edge, s.edgeA);
+          paintBars(s.bar, s.barA);
           ctx.restore();
         }
 
+        // Tail bars are lime-800, not lime-600. At 0.92 over paper that is
+        // 4.22:1; lime-600 was 1.67:1, and the tails are the whole point of the
+        // picture — the faintest thing on the chart should not be the thing it
+        // is about. The silhouette KEEPS the pale lime-600 fill so the reference
+        // shape still reads as behind rather than beside the bars, but its
+        // outline moves to lime-800 as well: no alpha of lime-600 can reach 3:1,
+        // because lime-600 is only 1.74:1 even at full opacity.
+        var TAIL = { ghost: LIME, ghostA: 0.17, edge: LIME8, edgeA: 0.74,
+                     bar: LIME8, barA: 0.92 };
+        var BODY = { ghost: INK, ghostA: 0.15, edge: INK, edgeA: 0.45,
+                     bar: INK, barA: 0.82 };
+
         var xLo = binX(SIG_LO), xHi = binX(SIG_HI);
         var xL = binX(0) - dx / 2, xR = binX(R) + dx / 2;
-        band(xL, xLo, LIME, 0.17, 0.92);      // left tail
-        band(xLo, xHi, INK, 0.15, 0.82);      // body
-        band(xHi, xR, LIME, 0.17, 0.92);      // right tail
+        band(xL, xLo, TAIL);      // left tail
+        band(xLo, xHi, BODY);     // body
+        band(xHi, xR, TAIL);      // right tail
 
         /* axis */
-        ctx.strokeStyle = PAPER; ctx.lineWidth = 1;
+        ctx.strokeStyle = INK4; ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(binX(0) - dx / 2, BASE + 0.5);
         ctx.lineTo(binX(R) + dx / 2, BASE + 0.5);
@@ -584,7 +600,7 @@
         for (sg = -4; sg <= 4; sg++) {
           sgx = xOfSigma(sg);
           if (sgx < binX(0) - dx || sgx > binX(R) + dx) { continue; }
-          ctx.strokeStyle = PAPER; ctx.lineWidth = 1;
+          ctx.strokeStyle = INK4; ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(sgx, BASE + 1); ctx.lineTo(sgx, BASE + 6);
           ctx.stroke();
@@ -597,7 +613,7 @@
         // ty, not by: the bead loop below declares its own `by`, and var is
         // function-scoped, so the two were the same binding.
         var ty = BASE + 30;
-        ctx.strokeStyle = LIME; ctx.lineWidth = 1.4;
+        ctx.strokeStyle = LIME8; ctx.lineWidth = 1.4;
         ctx.fillStyle = LIME8;
         // The label has to fit inside the bracket it annotates. The left bracket
         // is 8 bins wide, which is ~98px on a 360px board -- less than the full
