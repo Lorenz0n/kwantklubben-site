@@ -3,7 +3,8 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Hero sketch gallery — scratch. One was chosen (js/kk-bean.js); the rest are
-# kept locally for comparison and are not part of the site.
+# Hero sketch gallery — scratch, and now deleted. The rules stay so that a
+# future round of sketching cannot accidentally publish 16 unfinished concepts
+# to what is a public repo.
 _sketches/
 _sketches.html
