@@ -451,7 +451,18 @@ code, kbd, samp { font-family: var(--font-mono); }
   font-family:var(--font-mono); font-size:13px; letter-spacing:.04em;
   color:var(--ink-700); text-decoration:none;
 }
-.kk-nav__panel a:hover{ color:var(--ink-900); }
+/* ink-700 -> ink-900 was the whole hover state, and on 13px mono it is a change
+   of about 4% luminance: on paper you genuinely cannot tell which item the
+   pointer is on. The lime is the brand's one accent, so hover takes it — a
+   colour change AND a 2px rule under the word, which is what actually carries
+   at this size. lime-800 rather than lime-500/600: this is 13px text, so it
+   owes 4.5:1 and only lime-800 clears it (4.95:1). text-decoration rather than
+   a border so nothing reflows on the way in. */
+.kk-nav__panel a:hover{
+  color:var(--lime-800);
+  text-decoration:underline; text-decoration-thickness:2px;
+  text-underline-offset:5px;
+}
 .kk-nav__panel a[aria-current="page"]{
   color:var(--ink-900); text-decoration:underline; text-underline-offset:5px;
 }
@@ -631,6 +642,46 @@ footer{ display:grid; }
 /* Ink-on-ink is invisible, so on the dark bands the accent takes over. */
 .kk-card--ink :focus-visible,
 [style*="--ink-900"] :focus-visible{ outline-color: var(--lime-500); }
+
+/* --- button hover ---------------------------------------------------------
+   The second blue leak, and the louder one. Every button on the site is an
+   <a>, so the base rule `a:hover{color:var(--link-hover)}` — (0,1,1) — beat
+   `.kk-btn`'s own `color:var(--_fg)` at (0,1,0), and the label of every
+   button on the site turned ultramarine the moment the pointer touched it.
+   The palette has no blue in it.
+
+   Fixed at the variant level rather than by weakening the base rule, because
+   each variant wants a different hover label:
+
+     white (secondary)  ink-900 -> lime-800. Green is the accent, and lime-800
+                        is the only shade of it that clears 4.5:1 on the
+                        paper-100 hover fill (4.62:1) — this is 13-17px text,
+                        not large text.
+     green (primary)    label goes to paper-50, and the FILL goes to ink-800
+                        with it. White on lime is 1.35:1 and unreadable, so
+                        a white label alone would have been a hover state you
+                        cannot read; inverting to the ink button that already
+                        exists in the kit gives a white label at 15:1 and a
+                        hover far more visible than the old lime-500 ->
+                        lime-400 nudge ever was.
+
+   `.kk-btn:hover` is (0,2,0) and out-specifies `a:hover`, so the catch-all
+   below is what actually holds the label to --_fg; the variants only pick the
+   value. Colour joins the transition list — inherited from .kk-btn it would
+   snap while the background eased. */
+.kk-btn:hover{
+  color:var(--_fg);
+  transition:transform var(--dur-fast) var(--ease-out),
+             box-shadow var(--dur-fast) var(--ease-out),
+             background var(--dur-fast) var(--ease-out),
+             color var(--dur-fast) var(--ease-out);
+}
+.kk-btn--secondary:hover{ --_fg:var(--lime-800); }
+.kk-btn--primary:hover{ --_bg:var(--ink-800); --_fg:var(--paper-50); }
+/* --danger and --ghost are in the unused inventory, but they are <a>-able and
+   would leak the same blue the day they are used. */
+.kk-btn--danger:hover{ --_fg:#fff; }
+.kk-btn--ghost:hover{ --_fg:var(--ink-900); }
 
 /* --- page frame ---------------------------------------------------------
    Short pages left the footer floating with a band of bare paper beneath it.
