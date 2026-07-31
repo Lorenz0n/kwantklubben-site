@@ -624,11 +624,6 @@ footer{ display:grid; }
    measured width so the peg triangle stays in proportion, and a height in CSS
    would fight it. */
 .kk-bean{ margin-top:clamp(28px,4vw,52px); }
-.kk-bean__note{
-  margin:10px 0 0; font-family:var(--font-mono);
-  font-size:var(--text-3xs); line-height:1.6; color:var(--ink-400); max-width:74ch;
-}
-.kk-bean__note b{ color:var(--ink-900); font-weight:700; }
 
 /* Grid items default to min-width:auto, so a track refuses to shrink below its
    content's min-content width — which once pushed the hero column to 388px at a
