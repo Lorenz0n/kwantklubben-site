@@ -106,14 +106,26 @@
   var rateC = hC.querySelectorAll('input[type=range]')[1];
   say('C rate slider disabled', rateC.disabled, rateC.disabled === true);
   var alC = cC.getAttribute('aria-label') || '';
-  var mC = alC.match(/([\d,]+) days/);
-  say('C aria days', mC ? mC[1] : '(none)', !!mC && mC[1] === '2,400');
+  // One bead runs R Bernoulli days and lands ONCE, so N counts MONTHS. The
+  // readout used to print N as days and N/R as months -- the same 25x error
+  // twice, in opposite directions -- and this probe asserted the wrong one of
+  // the two, which is how it survived. instantDrops(2400) is 2,400 months and
+  // therefore 60,000 days.
+  var mC = alC.match(/([\d,]+) months/);
+  say('C aria months', mC ? mC[1] : '(none)', !!mC && mC[1] === '2,400');
+  var dC = alC.match(/([\d,]+) days/);
+  say('C aria days', dC ? dC[1] : '(none)', !!dC && dC[1] === '60,000');
   say('C aria has measured', /Measured mean/.test(alC), /Measured mean/.test(alC));
   // A filled board: the TALLEST bar reaches MAXH. Sampling one bin would not do
   // -- bars are scaled against the realised maximum, and in 2,400 draws the bin
   // nearest the mean is not reliably the fullest one.
   var barTop = 999, xs, yy;
   for (xs = cx - 120; xs <= cx + 120; xs += 5) {
+    // Skip the centre column. The zero rule -- the mark that says every walk
+    // opens at zero, and that binX(12.5) IS cx -- runs the full height of the
+    // board there, so a column sampling it finds paint at the top of the scan
+    // and reports the rule as a very tall bar.
+    if (Math.abs(xs - cx) <= 2) { continue; }
     for (yy = 232; yy < 366; yy++) {
       if (painted(px(xC, xs, yy))) { if (yy < barTop) { barTop = yy; } break; }
     }
@@ -167,20 +179,47 @@
     var l = lum(c);
     return (Math.max(l, paperL) + 0.05) / (Math.min(l, paperL) + 0.05);
   }
-  // most opaque pixel anywhere in the LEFT TAIL band (left of -2 sigma)
+  // The tail bar fill, in the LEFT TAIL band (left of -2 sigma), asked for BY
+  // NAME rather than by opacity. Bars are opaque now, and so is the paper casing
+  // the implied line carries where it crosses one, so "the most opaque pixel in
+  // the band" returns the CASING -- paper over paper, 1.00:1 -- and reports a
+  // compliant chart as failing. Matching lime-800 exactly proves both that the
+  // tail bars are drawn in it and that it is what actually reaches the screen.
   var tailPx = null, tx, ty2;
-  for (tx = 30; tx < 330; tx += 2) {
+  for (tx = 30; tx < 330 && !tailPx; tx += 2) {
     for (ty2 = 240; ty2 < 365; ty2++) {
       var q2 = px(xC, tx, ty2);
-      if (q2.a > 200 && (!tailPx || q2.a > tailPx.a)) { tailPx = q2; }
+      if (q2.a > 250 && q2.r === 0x5E && q2.g === 0x75 && q2.b === 0x07) { tailPx = q2; break; }
     }
   }
   if (tailPx) {
     var tc = ratio(overPaper(tailPx));
+    say('C3 tail bar is lime-800', tailPx.r + ',' + tailPx.g + ',' + tailPx.b, true);
     say('C3 tail bar contrast', tc.toFixed(2) + ':1 (1.4.11 needs 3)', tc >= 3);
   } else {
-    say('C3 tail bar sampled', 'no tail bar pixel found', false);
+    say('C3 tail bar sampled', 'no lime-800 tail bar pixel found', false);
   }
+
+  // ---- C4. the implied outline is drawn ON TOP of the bars ----
+  // The defect the whole rework turns on. band() used to paint the reference
+  // first and the bars second, so the one layer the chart exists to compare was
+  // occluded in exactly the places where a comparison was possible -- and at
+  // 0.15 alpha it was 1.38:1 against paper even where nothing covered it.
+  // Push P(up day) well away from the settled pile so the model is FORCED to
+  // cross the interior of a tall bar, then look for its paper casing inside that
+  // bar. Ink on ink would be invisible; casing on ink is proof it is on top.
+  var pC = hC.querySelectorAll('input[type=range]')[0];
+  pC.value = '600';
+  pC.dispatchEvent(new Event('input', { bubbles: true }));
+  var colX = cx + 10, barY = -1, casing = -1, yq, qq;
+  for (yq = 232; yq < 366; yq++) {
+    qq = px(xC, colX, yq);
+    if (barY < 0 && painted(qq)) { barY = yq; }
+    if (barY >= 0 && qq.a > 250 && qq.r > 200 && qq.g > 200 && qq.b > 200) { casing = yq; break; }
+  }
+  say('C4 bar top found', barY, barY > 232 && barY < 366);
+  say('C4 model line inside the bar', casing >= 0 ? 'casing at y=' + casing : 'not found',
+      casing > barY);
   // the axis rule, sampled at the far left where no bar or silhouette overlaps
   var axPx = null, ay;
   for (ay = 363; ay <= 369; ay++) {

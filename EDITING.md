@@ -159,7 +159,13 @@ Change it once there and it changes everywhere.
 
 **Change the hero board.** It is a canvas drawn by `js/kk-bean.js`, not markup.
 `tools/probe-bean.html` is its test harness: serve the repo and open
-`/tools/probe-bean.html` for 30 checks against the rendered pixels.
+`/tools/probe-bean.html` for 39 checks against the rendered pixels.
+
+Two things in there are easy to break and are asserted. **One bead is one
+month** of 25 trading days, so the readout prints months and `25 × months` days
+— not the other way round. And the **implied outline is stroked last, over the
+bars**: it is the layer the chart exists to compare against, and drawing it
+underneath hides it exactly where a comparison is possible.
 
 ---
 

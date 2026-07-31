@@ -20,22 +20,26 @@ sponsors/index.html   redirect stub -> /partners/  (the old URL is on LinkedIn)
 css/styles.css        the original brand stylesheet (tokens + component idiom),
                       a short relaunch section, then the page-furniture classes
 js/kk-nav.js          the mobile drawer. Drives the `hidden` ATTRIBUTE, not a class.
-js/kk-bean.js         the hero board — a Galton machine, one peg row per day.
-                      Inert on any page with no #kk-bean, which is why it can
-                      sit in the shared block.
+js/kk-bean.js         the hero board — one random walk per month, stacking into
+                      the distribution they are drawn from. No pegs: nothing
+                      collides with anything. Inert on any page with no
+                      #kk-bean, which is why it can sit in the shared block.
 assets/               logos, favicon set
 tools/check-site.py   the drift + invariant check. Read the next section.
 tools/probe-bean.html harness for the hero board: serve the repo and open it for
-                      30 checks against the rendered pixels.
+                      39 checks against the rendered pixels.
+tools/serve-preview.py local preview with the Jekyll layout applied, for when
+                      you have no Ruby. Read the next section.
 
 EDITING.md            how to change the site from github.com. Start there.
 ```
 
 **Local preview.** Opening the files directly no longer works: pages are Jekyll
-fragments, so a plain static server shows the raw `---` header and no nav. Either
-install Jekyll, or push to a branch — CI builds the site with the same action
-Pages uses and fails the PR if anything is wrong. For the hero board alone,
-`tools/probe-bean.html` runs standalone against `js/kk-bean.js` with no build.
+fragments, so a plain static server shows the raw `---` header and no nav. Run
+`python tools/serve-preview.py`, install Jekyll, or push to a branch — CI builds
+the site with the same action Pages uses and fails the PR if anything is wrong.
+For the hero board alone, `tools/probe-bean.html` runs standalone against
+`js/kk-bean.js` with no build.
 
 **Editing the copy?** See [EDITING.md](EDITING.md). The pages carry no inline
 styles — 173 were lifted into named classes so a page reads as its words plus a
@@ -88,46 +92,84 @@ Both of these broke in July 2026 and both are cheap to break again:
 **Always serve it. Never open `index.html` with `file://`.**
 
 ```
-python -m http.server 8000        # from the repo root
+python tools/serve-preview.py     # -> http://localhost:4000
 ```
-
-then open `http://localhost:8000`.
 
 Paths are root-relative, so under `file://` they resolve against your filesystem root — the page renders as unstyled HTML with broken images. That is the expected result of double-clicking the file, not a broken site.
 
-## The hero chart
+`python -m http.server` fixes the paths but not the pages: every page here is a
+Jekyll *fragment*, so a plain static server serves the raw `---` front matter as
+visible text with no `<head>`, no nav and no footer. `serve-preview.py` applies
+`_layouts/default.html` the way Pages does and sends no-cache headers, so a reload
+always shows the file on disk.
 
-`js/kk-tails.js` replaced the static `assets/hero-distribution.svg`. It runs the
+It implements exactly the four substitutions this site uses — `page.title`,
+`page.description`, `page.url`, `site.url`, plus `{{ content }}` — and nothing
+else. It is a **preview, not a build**: it writes no files, and CI still builds
+with the real `jekyll-build-pages` action. If a future page needs a Liquid tag
+beyond those four, this renders it literally and the CI job's "unrendered Liquid"
+assertion is what catches it. Installing Ruby and running `jekyll serve` remains
+the higher-fidelity option.
+
+## The hero board
+
+`js/kk-bean.js` replaced the static `assets/hero-distribution.svg`. It runs the
 full width of the section with no card around it, so the gridpaper behind it
 doubles as its graph paper.
 
-It makes one claim you can check: the normal distribution does not have enough
-mass in its tails to account for how often markets move a lot.
+*(An earlier draft of this file documented a `js/kk-tails.js` — a fat-tails chart
+on a log-odds axis. No such file has ever existed in this repo. What shipped is
+the board below. The fat-tails idea is still a good one and is still unbuilt.)*
 
-- **bars** — how often a day of each size actually happened
-- **thin line** — how often the fitted normal says it should happen
-- **lime** — the gap between them beyond 2σ
+**A month is twenty-five trading days.** Each bead is one month: it opens at zero
+and steps left or right once per day, so where it comes to rest after 25 steps is
+that month's count of up days. Stack enough months and the pile is
+Binomial(25, p) — the distribution a month is drawn from.
 
-The y axis is **log frequency**, labelled as odds (`1 in 10` … `1 in 10,000`),
-and that is load-bearing rather than decorative: on a linear density axis
-everything past 2σ is sub-pixel and the entire point of the chart is invisible.
-On a log axis the normal falls away as a parabola while the real bars refuse to
-come down with it. Drag anywhere on the chart to move the ±threshold; the readout
-compares what the normal predicts beyond it against what the sample contains.
+There are **no pegs**, and that is deliberate rather than cosmetic. Nothing ever
+collided with anything: every outcome is drawn from a seeded LCG before the bead
+moves, so a peg field was 325 arc fills a frame asserting that the shape on the
+floor is produced by the apparatus. It is produced by adding up twenty-five
+independent days. What is drawn instead is the one true thing about the geometry
+— `binX(12.5)` **is** `cx`, so the column every walk opens in is exactly the 0σ
+tick it will be measured against, and a faint rule says so.
 
-**The data is simulated and the caption on the page says so** — a Student-t with
-ν=3, standardised to unit variance, from a fixed seed so the picture is identical
-on every load. It is the *shape* real return distributions have, not real market
-data. To swap in a real series, only the sampling block near the top of the file
-changes; everything downstream works off `data`.
+- **solid bars** — months that actually landed. A fill means "this happened".
+- **lime bars** — the same months, beyond 2σ *of a fair coin*
+- **ink outline** — the exact Binomial(25, p) at the odds currently set: where the
+  pile *would* sit if every month so far had run at these odds
 
-There is no animation loop. The chart draws once and redraws only on resize and
-while dragging. A short entrance plays on load, but `entrance` defaults to the
-finished state and is only set to zero once the code knows the animation can
-actually run — `requestAnimationFrame` is throttled to a standstill in a
-background tab, and an earlier version left the chart stuck at 9% height there.
-Under `prefers-reduced-motion: reduce` it draws the finished chart immediately
-and never calls `requestAnimationFrame` at all.
+**Mark type carries the layer, lightness carries the region, and hue is
+load-bearing on nothing.** Fill means measured, outline means implied — so the
+comparison survives greyscale, print, and all three dichromacies (ink-900 against
+lime-800 is 3.65:1 normally and never below 3.36:1 simulated). An earlier build
+had this exactly backwards: hue carried the layer and *alpha* carried the
+comparison, at 1.10–1.38:1, under bars that were painted on top of it. The
+outline is stroked **last**, over the bars, with a paper casing clipped to the
+bars so it survives crossing one. Both of those are load-bearing; `probe-bean.html`
+asserts them (`C4`).
+
+The x axis is in standard deviations of a **fair** coin and does not move when
+you move `P(up day)`. A ruler that slides with the thing it measures cannot show
+you that the thing moved. So "beyond 2σ" means *further than a market with no
+edge in it would have gone* — which is why the tail figure climbing as you raise
+`P(up day)` is the point rather than a rounding artefact.
+
+`R = 25` is load-bearing. Bar edges sit at half-integers and σ is `sqrt(R)/2`, so
+a bar edge coincides with 2σ only when R is an odd perfect square. At 25: σ = 2.5,
+mean = 12.5, so ±2σ land on 7.5 and 17.5 — the shared edges of bins 7|8 and 17|18.
+Every bar is whole, no width is fudged, and no bar ever straddles the line.
+
+**One bead is one MONTH.** The readout prints months and then `25 × months` days.
+An earlier build printed `N` as days and `N/25` as months — the same 25× error
+made twice in opposite directions — and claimed 2,400 days out of what were
+actually 60,000 coin flips. If you touch the readout, keep the units straight;
+`probe-bean.html` asserts both numbers.
+
+Under `prefers-reduced-motion: reduce` it resolves 2,400 months at once, draws the
+finished board, and never calls `requestAnimationFrame` at all. `rAF` is throttled
+to a standstill in a background tab, so there is also a fallback that fills the
+board if five frames have not run after 2.2 seconds.
 
 ## Deploy
 

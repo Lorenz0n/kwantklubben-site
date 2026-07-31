@@ -1,28 +1,47 @@
 /* kk-bean.js — the hero board
  *
- * A Galton board, one peg row per trading day. Each ball falls through 25 rows
- * of fair-ish coin flips and lands in the bin its path adds up to, so the pile
- * that builds is Binomial(25, p) — the distribution of a month made out of
- * twenty-five random days.
+ * A month is twenty-five trading days. Each bead walks one: it opens at zero and
+ * steps left or right once per day, so where it comes to rest after 25 steps is
+ * that month's count of up days. Stack enough months and the pile is
+ * Binomial(25, p) — the distribution a month is drawn from.
  *
- *   grey silhouette   the exact distribution for the odds currently set: where
- *                     the pile WOULD sit if every day so far had run at these
- *                     odds. It jumps the instant the slider moves.
- *   ink bars          days that actually landed, inside 2 sigma
- *   lime bars         the tails, beyond 2 sigma
+ * There are no pegs, because nothing bounces off anything. The bead's horizontal
+ * position IS its running sum, and the column it opens in is the zero of the very
+ * axis it lands on. A peg field drew a mechanism that does not exist, and read as
+ * a pinball machine — which asserts that the shape comes from the apparatus. It
+ * comes from adding up twenty-five independent days.
  *
- * The x axis is in standard deviations of a FAIR coin and does not move when
- * you move P(up day). A ruler that slides with the thing it measures cannot
- * show you that the thing moved.
+ *   solid bars        months that actually landed. A fill means "this happened".
+ *   lime bars         the same months, out beyond 2 sigma of a FAIR coin
+ *   ink outline       the exact distribution at the odds currently set: where the
+ *                     pile WOULD sit if every month so far had run at these odds.
+ *                     An open stroke, drawn LAST and over the bars — a reference
+ *                     you cannot see where the data is is not a reference. It
+ *                     jumps the instant the slider moves; the bars migrate toward
+ *                     it only as new months land.
+ *
+ * Mark type carries the layer (fill = measured, outline = implied) and lightness
+ * carries the region (ink = body, lime = tail). Hue is load-bearing on nothing, so
+ * the chart survives greyscale, print and all three dichromacies: ink-900 against
+ * lime-800 is 3.65:1 normally and never below 3.36:1 simulated. The previous build
+ * had this exactly backwards — hue carried the layer and ALPHA carried the
+ * comparison, at 1.10-1.38:1, under bars that were drawn on top of it.
+ *
+ * The x axis is in standard deviations of a FAIR coin and does not move when you
+ * move P(up day). A ruler that slides with the thing it measures cannot show you
+ * that the thing moved. "Beyond 2 sigma" therefore means "further than a market
+ * with no edge in it would have gone" — which is why the tail figure climbing as
+ * you raise P(up day) is the whole point rather than a rounding artefact.
  *
  * R = 25, and that is load-bearing. Bar edges sit at half-integers and sigma is
- * sqrt(R)/2, so a bar edge lands exactly on 2 sigma only when R is an odd
- * perfect square. At 25: sigma 2.5, mean 12.5, so -2s = 7.5 and +2s = 17.5, the
- * shared edges of bins 7|8 and 17|18. Whole bars AND an exact split.
+ * sqrt(R)/2, so a bar edge lands exactly on 2 sigma only when R is an odd perfect
+ * square. At 25: sigma 2.5, mean 12.5, so -2s = 7.5 and +2s = 17.5, the shared
+ * edges of bins 7|8 and 17|18. Whole bars AND an exact split — and the walk opens
+ * at binX(12.5), which is exactly the 0 sigma tick.
  *
- * Settled bars are history and are never recomputed. Moving P(up day) changes
- * the odds for bounces that have not happened yet; it does not reach back and
- * re-roll days that already landed.
+ * Settled bars are history and are never recomputed. Moving P(up day) changes the
+ * odds for steps that have not happened yet; it does not reach back and re-roll
+ * months that already landed.
  *
  * ES5-only IIFE to match js/kk-nav.js — no build step here.
  */
@@ -46,6 +65,11 @@
       var INK = cvar('--ink-900', '#0C1016');
       var LIME = cvar('--lime-600', '#A6CE12');
       var PAPER = cvar('--paper-300', '#DCD4BD');
+      // The page behind the canvas, which is transparent everywhere nothing is
+      // drawn. Needed as a real colour because the implied outline is cased in it
+      // to survive crossing an ink bar — a knockout has to be painted, and
+      // "transparent" would knock out the bar as well.
+      var PAPER50 = cvar('--paper-50', '#FBF9F2');
       var INK4 = cvar('--ink-400', '#5A6677');
       // lime-700 was used here and is nowhere near the 4.5:1 small text owes
       // (it is tuned for LARGE text at 3:1). lime-800 is the same hue at 4.95:1,
@@ -76,16 +100,16 @@
       var H = 440;
       var H_MIN = 330, H_MAX = 440;
       var FOOTER = 74;         /* sigma ticks, labels and tail brackets below BASE */
-      var BOARD_BOTTOM = 236;  /* y where the last bounce ends */
+      var BOARD_BOTTOM = 236;  /* y where the 25th step lands */
       var BASE = 366;          /* bin floor */
       var MAXH = 126;          /* tallest bar */
-      // The plot is scaled against at least this many days. Without a floor the
-      // first ball to land is the tallest bar on an empty board, so it is drawn
+      // The plot is scaled against at least this many months. Without a floor the
+      // first month to land is the tallest bar on an empty board, so it is drawn
       // at full plot height and the scale then collapses under it over the next
-      // second. It also lets the implied silhouette -- which depends on p alone
-      // and needs no data -- be drawn from the very first frame instead of
-      // leaving the hero blank until enough balls have landed. Above 60 days
-      // this is inert and the drawing is bit-for-bit what it was before.
+      // second. It also lets the implied outline -- which depends on p alone and
+      // needs no data -- be drawn from the very first frame instead of leaving
+      // the hero blank until enough months have landed. Above 60 months this is
+      // inert and the drawing is unchanged.
       var N_REF = 60;
       var u;
 
@@ -146,13 +170,16 @@
       val.textContent = '0.500';
       val.style.cssText = 'color:' + INK + ';min-width:42px;';
       var rLab = document.createElement('label');
-      rLab.textContent = 'daily returns/sec';
+      // months/sec, not "daily returns/sec". One bead is one month of R days, so
+      // this slider was mislabelled by a factor of R in the same way the readout
+      // was.
+      rLab.textContent = 'months/sec';
       rLab.htmlFor = uid + '-rate';
       var rate = document.createElement('input');
       rate.type = 'range';
       rate.id = uid + '-rate';
       rate.min = '1'; rate.max = '60'; rate.step = '1'; rate.value = '12';
-      rate.setAttribute('aria-valuetext', '12 per second');
+      rate.setAttribute('aria-valuetext', '12 months per second');
       rate.style.cssText = 'flex:1 1 120px;max-width:190px;accent-color:' + LIME + ';cursor:pointer;';
       var rVal = document.createElement('span');
       rVal.textContent = '12';
@@ -182,7 +209,9 @@
 
       /* ---------- geometry ---------- */
       var W = 640, DPR = 1;
-      var dx = 20, cx = 320, yTop = 24, rowGap = 7;
+      // stepY, not rowGap: there are no rows of anything any more. It is the
+      // vertical distance one trading day advances the walk.
+      var dx = 20, cx = 320, yTop = 24, stepY = 7;
       var small = false;
       function layout() {
         // dpr is re-read every layout rather than cached at mount. Browser zoom
@@ -226,6 +255,12 @@
       var SIG_LO = BASE_MEAN - 2 * BASE_SD;
       var SIG_HI = BASE_MEAN + 2 * BASE_SD;
       function xOfSigma(s) { return binX(BASE_MEAN + s * BASE_SD); }
+      // Bin j spans j-0.5 to j+0.5, and at R=25 the sigma lines land on 7.5 and
+      // 17.5, so every bin is WHOLLY in the body or WHOLLY in a tail — nothing
+      // straddles. That is what lets a bar be coloured by its index, and is why
+      // the three clipped regions the old build cut the board into are gone: they
+      // existed only to cut a bar that, at this R, never needs cutting.
+      function isTail(j) { return (j + 0.5) <= SIG_LO || (j - 0.5) >= SIG_HI; }
       // observed mass in each 2-sigma tail, reported separately
       // Share of the pile beyond each 2-sigma line. A bin straddling the line
       // contributes the fraction of its width that lies past it -- the same
@@ -253,13 +288,13 @@
 
       /* ---------- histogram ----------
          The bars are settled outcomes and are never recomputed. Changing
-         P(up day) changes the odds for bounces that have not happened yet; it
-         does not reach back and re-roll days that already landed.
+         P(up day) changes the odds for days that have not happened yet; it does
+         not reach back and re-roll months that already landed.
 
          pmf is the exact Binomial(R, p) at the CURRENT setting. Scaled to N it
-         is the implied distribution: where the pile would sit if every day so
+         is the implied distribution: where the pile would sit if every month so
          far had run at these odds. It jumps the moment the slider moves, while
-         the bars migrate toward it only as new days land. */
+         the bars migrate toward it only as new months land. */
       function buildPmf() {
         pmf = [];
         var c = 1, i;
@@ -279,8 +314,8 @@
         for (k = 0; k < R; k++) { uni.push(rnd()); }
         return uni;
       }
-      // clear / reduced-motion: resolve a whole run at once, every bounce
-      // against the p in force right now
+      // clear / reduced-motion: resolve a whole run at once, every day against
+      // the p in force right now
       function instantDrops(n, now) {
         var i, k, uni, u;
         for (i = 0; i < n; i++) {
@@ -291,13 +326,24 @@
       }
 
       /* ---------- beads ----------
-         Each bounce is decided at the moment the ball reaches that peg, using
-         the p in force then. A ball already falling re-routes for the rows
-         below it; a ball that has landed is history. */
+         Each day is decided at the moment the walk reaches it, using the p in
+         force then. A month still in progress re-rolls the days it has not
+         reached yet; a month that has landed is history. */
+      // How many walks draw their path at once. Four is enough to say "each of
+      // these is a walk" and few enough that they never stack into a wedge.
+      var TRAIL_MAX = 4;
+      var tracing = 0;
       function spawn(delay) {
         var b = { uni: freshPath(), dirs: [], row: 0, t: -delay, phase: 0,
-                  drop: 0, u: 0, y: 0, x: cx };
+                  drop: 0, u: 0, y: 0, x: cx, trace: false };
         b.dirs.push(b.uni[0] < p ? 1 : 0);
+        // Top up to TRAIL_MAX rather than tracing every Nth bead. A traced walk
+        // only frees its slot when it lands, so the traced ones spread themselves
+        // down the board instead of bunching at the top, and the number of them
+        // adapts on its own when the release rate changes. Every Nth would draw
+        // four stubs at the opening on a fast board and nothing at all on a slow
+        // one.
+        if (tracing < TRAIL_MAX) { b.trace = true; tracing++; }
         beads.push(b);
       }
       function sumDirs(b, row) {
@@ -366,10 +412,19 @@
         var kDay = small ? 'd ' : 'days ';
         var kMon = small ? 'mo ' : 'months ';
         var kP = small ? 'p ' : 'P(up day) ';
-        var kT = small ? 'tails ' : 'tails>2σ ';
+        // Whose sigma was never stated. It is the fair coin's, fixed, and saying
+        // so is the difference between "the tails" (a property of the ruler) and
+        // "further than a market with no edge would have gone" (a claim).
+        var kT = small ? 'tails ' : 'tails>2σ fair ';
+        // One bead runs R Bernoulli days and lands ONCE, so N counts MONTHS and
+        // the day count is N*R. The old build printed N as days and N/R as
+        // months, which was the same 25x error made twice in opposite
+        // directions: at 2,400 beads it claimed 2,400 days out of what were
+        // actually 60,000 coin flips. Months lead now — it is the unit a bead
+        // actually is, and the one the pile is a distribution OF.
         var g = [
-          [{ t: kDay, c: INK4 }, { t: fmtInt(N), c: INK, b: 1 }],
-          [{ t: d + kMon, c: INK4 }, { t: fmtInt(Math.floor(N / R)), c: INK, b: 1 }],
+          [{ t: kMon, c: INK4 }, { t: fmtInt(N), c: INK, b: 1 }],
+          [{ t: d + kDay, c: INK4 }, { t: fmtInt(N * R), c: INK, b: 1 }],
           [{ t: d + kP, c: INK4 }, { t: p.toFixed(3), c: INK, b: 1 }],
           [{ t: d + kT, c: INK4 },
            { t: N ? (ts.lo + ts.hi).toFixed(2) + '%' : nil, c: N ? LIME8 : INK4, b: 1 }],
@@ -470,36 +525,49 @@
         BASE = H - FOOTER;
         MAXH = Math.round((BASE - yTop) * 0.373);
         BOARD_BOTTOM = BASE - MAXH - 4;
-        rowGap = (BOARD_BOTTOM - yTop) / R;
-        var pegEnd = yTop + R * rowGap;
+        stepY = (BOARD_BOTTOM - yTop) / R;
+        var walkEnd = yTop + R * stepY;
 
-        /* The hopper — two short strokes forming a funnel above the first peg —
-           was drawn here. Removed: the balls do not come out of it (they are
-           spawned at cx and are already falling), so it drew a mechanism that
-           does not exist, and at yTop-13 it read as two stray marks under the
-           metric line rather than as part of the board. Nothing else depends on
-           it; yTop is set above and still frames the peg triangle. */
+        /* Two things have been drawn in this space and both are gone now.
 
-        /* pegs */
-        var k, j, px, py;
-        ctx.globalAlpha = 0.42;
-        ctx.fillStyle = INK4;
-        for (k = 0; k < R; k++) {
-          py = yTop + k * rowGap;
-          for (j = 0; j <= k; j++) {
-            px = cx + (2 * j - k) * dx * 0.5;
-            ctx.beginPath();
-            ctx.arc(px, py, 1.3, 0, 6.28318);
-            ctx.fill();
-          }
-        }
-        ctx.globalAlpha = 1;
+           A hopper — two strokes forming a funnel — was removed earlier because
+           the beads do not come out of it.
 
-        // Scale against at least N_REF days. On an empty board the tallest thing
-        // in the plot was the single ball that had just landed, so it was drawn
-        // at full height and the scale then collapsed under it; and the implied
-        // silhouette, which needs no data at all, was suppressed entirely until
-        // enough had landed to give it a height. Both were the same missing
+           A triangle of 325 pegs was removed here, for the same reason one layer
+           down: nothing ever collided with one. Every outcome is drawn from the
+           seeded LCG before the bead moves, and no code path ever read a peg's
+           position. They were 325 arc fills a frame asserting that the shape on
+           the floor is produced by the apparatus. It is produced by adding up
+           twenty-five independent days, which is a fact about the arithmetic and
+           not about the machine.
+
+           What replaces them is the one true thing about this geometry. The walk
+           opens at cx, and binX(12.5) IS cx, so the column every bead starts in
+           is exactly the 0 sigma tick it will be measured against. The rule runs
+           all the way to the axis and is drawn BEFORE the bars, so the pile hides
+           the middle of it and the eye still joins the opening to the zero. */
+        ctx.save();
+        ctx.globalAlpha = 0.30;
+        ctx.strokeStyle = INK4;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(Math.round(cx) + 0.5, yTop - 7);
+        ctx.lineTo(Math.round(cx) + 0.5, BASE);
+        ctx.stroke();
+        /* the opening itself, so "every month starts here, at zero" is a mark on
+           the board rather than something you have to infer from the symmetry */
+        ctx.globalAlpha = 0.6;
+        ctx.beginPath();
+        ctx.moveTo(cx - 5.5, yTop - 6.5);
+        ctx.lineTo(cx + 5.5, yTop - 6.5);
+        ctx.stroke();
+        ctx.restore();
+
+        // Scale against at least N_REF months. On an empty board the tallest
+        // thing in the plot was the single month that had just landed, so it was
+        // drawn at full height and the scale then collapsed under it; and the
+        // implied outline, which needs no data at all, was suppressed entirely
+        // until enough had landed to give it a height. Both were the same missing
         // floor. Past N_REF this term drops out and nothing changes.
         var nEff = N > N_REF ? N : N_REF;
         var pmfMaxN = 0, q;
@@ -507,49 +575,28 @@
         var denom = Math.max(1, maxC, pmfMaxN);
         var sc = MAXH / denom;
         var bw = Math.max(2, dx - 2);
-        var h, top;
 
-        /* Everything in the plot is drawn three times, clipped into the three
-           regions the two sigma lines cut the board into. That is what makes the
-           colour change land on exactly the same x as the tick and the bracket:
-           a bar straddling a line comes out part tail, part body, cut at the
-           line rather than at its own edge. */
-        // Fill and edge are separate now. The silhouette is a reference layer and
-        // is SUPPOSED to sit behind the bars, so its fill stays faint (1.1-1.4:1)
-        // — but a shape you cannot make out is not a reference, so the outline
-        // carries the legibility instead and clears 3:1 on its own.
-        function paintImplied(fill, fillA, edge, edgeA) {
-          var j;
-          ctx.beginPath();
-          ctx.moveTo(binX(0) - dx / 2, BASE);
-          for (j = 0; j <= R; j++) {
-            var gy = BASE - pmf[j] * nEff * sc;
-            ctx.lineTo(binX(j) - dx / 2, gy);
-            ctx.lineTo(binX(j) + dx / 2, gy);
-          }
-          ctx.lineTo(binX(R) + dx / 2, BASE);
-          ctx.closePath();
-          ctx.fillStyle = fill;
-          ctx.globalAlpha = fillA;
-          ctx.fill();
-          ctx.globalAlpha = edgeA;
-          ctx.strokeStyle = edge;
-          ctx.lineWidth = 1.2;
-          ctx.stroke();
-          ctx.globalAlpha = 1;
-        }
-        function paintBars(colour, alpha) {
-          var j, hh, tp;
+        /* MEASURED — what actually landed. Solid fill, FULL opacity, coloured by
+           bin index. Every bin is wholly body or wholly tail (isTail), which is
+           why the old build's three clipped bands are gone: they existed to cut a
+           bar at the sigma line, and at R=25 no bar ever needs cutting.
+
+           Alpha is 1.0 now, not 0.82/0.92. The alphas were there so the reference
+           layer underneath could show through — but it never did, because a fill
+           at 0.15 over paper is 1.38:1, and the bars were painted on top of it
+           anyway. Paying for a transparency nobody could see cost the bars 2:1 of
+           their own contrast. */
+        function paintBars() {
+          var j, hh, tp, col;
           for (j = 0; j <= R; j++) {
             if (counts[j] <= 0) { continue; }
+            col = isTail(j) ? LIME8 : INK;
             hh = Math.max(0.8, counts[j] * sc);
             tp = BASE - hh;
-            ctx.globalAlpha = alpha;
-            ctx.fillStyle = colour;
+            ctx.fillStyle = col;
             ctx.fillRect(binX(j) - bw / 2, tp, bw, hh);
-            ctx.globalAlpha = 1;
             if (now - hits[j] < 260) {
-              ctx.strokeStyle = colour;
+              ctx.strokeStyle = col;
               ctx.lineWidth = 1.6;
               ctx.beginPath();
               ctx.moveTo(binX(j) - bw / 2, tp - 1);
@@ -558,34 +605,73 @@
             }
           }
         }
-        function band(x0, x1, s) {
-          if (x1 - x0 < 0.4) { return; }
-          ctx.save();
+
+        /* IMPLIED — the exact Binomial(R, p) at the current setting, scaled to N.
+           One open staircase in a single colour, stroked LAST, so it crosses the
+           bars instead of hiding under them. This is the whole of the old
+           "implied and actual look the same" bug: band() painted the reference
+           first and the bars second, so the reference was occluded in exactly the
+           places where a comparison was possible.
+
+           An OUTLINE rather than a fill is what separates the layers. Mark type
+           is a categorical channel — it survives greyscale, print and every
+           dichromacy — where the old build used alpha, which is the weakest
+           channel there is, for the most important distinction on the chart.
+
+           Stroked twice: a 3.4px paper casing, then a 1.6px ink core. The casing
+           is legibility insurance, not a semantic channel. Without it the line is
+           ink-on-ink (1:1) wherever it crosses a body bar. ink-400 was the obvious
+           alternative to casing and is unusable: 1.12:1 against lime-800, i.e.
+           invisible over exactly the bars the tails are about.
+
+           The casing is CLIPPED TO THE BARS, which is not a refinement — an
+           unclipped one is a bug. paper-50 is opaque, and the canvas is
+           transparent over .kk-gridpaper, so stroking it across the full width
+           punches a 3.4px band of blank paper through the grid ruling the hero
+           sits on, following the curve out to where pmf is ~0 and the line lies
+           along the axis. Inside a bar it knocks out ink, which is the whole job;
+           outside one it knocks out the page. */
+        // The staircase itself. Built twice rather than once and kept, because
+        // clipping needs its own beginPath() and that discards whatever path is
+        // being assembled -- which silently strokes the clip rectangles instead
+        // of the curve.
+        function impliedPath() {
+          var j, gy;
           ctx.beginPath();
-          ctx.rect(x0, 0, x1 - x0, BASE + 1);
+          for (j = 0; j <= R; j++) {
+            gy = BASE - pmf[j] * nEff * sc;
+            if (j === 0) { ctx.moveTo(binX(j) - dx / 2, gy); }
+            else { ctx.lineTo(binX(j) - dx / 2, gy); }
+            ctx.lineTo(binX(j) + dx / 2, gy);
+          }
+        }
+        function paintImplied() {
+          var j, hh;
+          ctx.lineJoin = 'miter';
+          ctx.save();
+          // An empty path clips to nothing, so on an empty board the casing pass
+          // simply does not paint -- which is correct, as there is nothing there
+          // for the line to be illegible against.
+          ctx.beginPath();
+          for (j = 0; j <= R; j++) {
+            if (counts[j] <= 0) { continue; }
+            hh = Math.max(0.8, counts[j] * sc);
+            ctx.rect(binX(j) - bw / 2, BASE - hh, bw, hh);
+          }
           ctx.clip();
-          paintImplied(s.ghost, s.ghostA, s.edge, s.edgeA);
-          paintBars(s.bar, s.barA);
+          impliedPath();
+          ctx.strokeStyle = PAPER50;
+          ctx.lineWidth = 3.4;
+          ctx.stroke();
           ctx.restore();
+          impliedPath();
+          ctx.strokeStyle = INK;
+          ctx.lineWidth = 1.6;
+          ctx.stroke();
         }
 
-        // Tail bars are lime-800, not lime-600. At 0.92 over paper that is
-        // 4.22:1; lime-600 was 1.67:1, and the tails are the whole point of the
-        // picture — the faintest thing on the chart should not be the thing it
-        // is about. The silhouette KEEPS the pale lime-600 fill so the reference
-        // shape still reads as behind rather than beside the bars, but its
-        // outline moves to lime-800 as well: no alpha of lime-600 can reach 3:1,
-        // because lime-600 is only 1.74:1 even at full opacity.
-        var TAIL = { ghost: LIME, ghostA: 0.17, edge: LIME8, edgeA: 0.74,
-                     bar: LIME8, barA: 0.92 };
-        var BODY = { ghost: INK, ghostA: 0.15, edge: INK, edgeA: 0.45,
-                     bar: INK, barA: 0.82 };
-
-        var xLo = binX(SIG_LO), xHi = binX(SIG_HI);
-        var xL = binX(0) - dx / 2, xR = binX(R) + dx / 2;
-        band(xL, xLo, TAIL);      // left tail
-        band(xLo, xHi, BODY);     // body
-        band(xHi, xR, TAIL);      // right tail
+        paintBars();
+        paintImplied();
 
         /* axis */
         ctx.strokeStyle = INK4; ctx.lineWidth = 1;
@@ -646,6 +732,57 @@
 
         ctx.textAlign = 'left';
 
+        /* the walks */
+        // One place that answers "where is this bead now", so the trail and the
+        // dot cannot disagree about it.
+        //
+        // The -2.4*sin(pi*t) hop that used to be in the y term is gone. It lifted
+        // the bead between one row and the next, which is a BOUNCE: the arc of
+        // something rebounding off a surface. There is no surface. A day moves the
+        // walk one step across and one step down, and the path between them is a
+        // straight line.
+        var b;
+        function beadXY(bd) {
+          var tt, x0, x1, tgt;
+          if (bd.phase === 0) {
+            tt = bd.t < 0 ? 0 : bd.t;
+            x0 = xAtRow(bd, bd.row);
+            x1 = bd.row < R ? xAtRow(bd, bd.row + 1) : x0;
+            return { x: x0 + (x1 - x0) * tt, y: yTop + (bd.row + bd.t) * stepY };
+          }
+          tgt = Math.max(walkEnd + 2, BASE - Math.max(0.8, counts[bd.u] * sc) - 3);
+          return { x: binX(bd.u), y: walkEnd + (tgt - walkEnd) * bd.drop * bd.drop };
+        }
+
+        // Trails on a handful of beads, never on all of them. Two hundred
+        // polylines at low alpha do not read as an ensemble — they composite into
+        // a solid grey wedge sitting over the histogram, and cost ~5,000 lineTo a
+        // frame, which is more than the peg field that was just deleted. A few
+        // full-length paths say "each of these is a 25-day walk"; the loose dots
+        // say "and there are a great many of them".
+        var pos, kk, lim;
+        ctx.strokeStyle = INK;
+        ctx.lineWidth = 1;
+        ctx.lineJoin = 'round';
+        for (i = 0; i < beads.length; i++) {
+          b = beads[i];
+          if (!b.trace) { continue; }
+          // Fade as it settles: a finished path left hanging over the pile is a
+          // walk whose walker stopped moving a second ago.
+          ctx.globalAlpha = 0.32 * (b.phase === 0 ? 1 : 1 - b.drop);
+          if (ctx.globalAlpha <= 0.015) { continue; }
+          pos = beadXY(b);
+          ctx.beginPath();
+          // xAtRow(b, 0) is cx exactly — the walk opens on the zero rule.
+          ctx.moveTo(cx, yTop);
+          lim = Math.min(b.row, R);
+          for (kk = 1; kk <= lim; kk++) {
+            ctx.lineTo(xAtRow(b, kk), yTop + kk * stepY);
+          }
+          ctx.lineTo(pos.x, pos.y);
+          ctx.stroke();
+        }
+
         /* beads */
         // Still one fill per bead -- overlapping beads compound at 0.9 and a
         // single batched path would not -- but the alpha is set once rather than
@@ -653,22 +790,10 @@
         ctx.fillStyle = INK;
         ctx.globalAlpha = 0.9;
         for (i = 0; i < beads.length; i++) {
-          var b = beads[i];
-          var bxp, byp;
-          if (b.phase === 0) {
-            var tt = b.t < 0 ? 0 : b.t;
-            var x0 = xAtRow(b, b.row);
-            var x1 = b.row < R ? xAtRow(b, b.row + 1) : x0;
-            bxp = x0 + (x1 - x0) * tt;
-            byp = yTop + (b.row + b.t) * rowGap - 2.4 * Math.sin(Math.PI * tt);
-          } else {
-            var tgt = Math.max(pegEnd + 2, BASE - Math.max(0.8, counts[b.u] * sc) - 3);
-            bxp = binX(b.u);
-            byp = pegEnd + (tgt - pegEnd) * b.drop * b.drop;
-          }
-          if (byp < 15) { continue; }
+          pos = beadXY(beads[i]);
+          if (pos.y < 15) { continue; }
           ctx.beginPath();
-          ctx.arc(bxp, byp, 2.8, 0, 6.28318);
+          ctx.arc(pos.x, pos.y, 2.8, 0, 6.28318);
           ctx.fill();
         }
         ctx.globalAlpha = 1;
@@ -682,8 +807,10 @@
         var dt = last ? Math.min(0.05, (ts - last) / 1000) : 0.016;
         last = ts;
 
-        // One ball IS one daily return, so the slider is balls per second
-        // directly: at 1 the machine releases one ball a second.
+        // One bead IS one month, so the slider is beads per second directly: at 1
+        // the board opens one new month a second. (It is emphatically NOT one
+        // daily return, which is what the comment here used to claim and what the
+        // readout used to print.)
         var rps = parseInt(rate.value, 10) || 12;
         if (rps < 1) { rps = 1; }
         var gap = 1 / rps;
@@ -700,7 +827,7 @@
             b.t += dt * 7.5;
             while (b.t >= 1 && b.row < R) {
               b.t -= 1; b.row++;
-              // decide the next peg as the ball arrives at it, at today's odds
+              // roll the next day as the walk arrives at it, at today's odds
               if (b.row < R) { b.dirs.push(b.uni[b.row] < p ? 1 : 0); }
             }
             if (b.row >= R) { b.phase = 1; b.drop = 0; b.u = sumDirs(b, R); b.t = 0; }
@@ -708,6 +835,7 @@
             b.drop += dt / 0.30;
             if (b.drop >= 1) {
               land(b.u, ts);
+              if (b.trace) { tracing--; }
               continue;
             }
           }
@@ -756,12 +884,22 @@
       // without this none of it exists for a screen reader.
       function describe() {
         var t = tailSplit(), mo = moments(), ex = exact();
-        var s = 'Bean machine. Balls fall through ' + R + ' rows of pegs and pile up ' +
-          'into a distribution. The axis is in standard deviations of a fair coin, ' +
-          'and bars beyond 2 sigma are drawn as tails. ' +
-          'Press Enter to release more days. ' +
+        var s = 'A distribution built out of random walks. Each bead is one month: ' +
+          // "R trading days", never "R days": the running total further down this
+          // string is reported as "N days", and a listener (or a regex) meeting
+          // two different "<number> days" in one description has no way to tell
+          // the month length from the day count.
+          'it opens at zero and steps up or down once per day for ' + R +
+          ' trading days, and where it comes to rest is that month\'s count of ' +
+          'up days. ' +
+          'The months stack into a histogram, and an outline over it is the exact ' +
+          'distribution implied by the odds currently set. The axis is in standard ' +
+          'deviations of a fair coin and does not move when the odds do, so bars ' +
+          'beyond 2 sigma are months that went further than a market with no edge ' +
+          'in it would have gone. ' +
+          'Press Enter to release more months. ' +
           'P of an up day, ' + p.toFixed(3) + '. ' +
-          fmtInt(N) + ' days, ' + fmtInt(Math.floor(N / R)) + ' months. ';
+          fmtInt(N) + ' months, ' + fmtInt(N * R) + ' days. ';
         if (mo) {
           s += 'Beyond 2 sigma, ' + (t.lo + t.hi).toFixed(2) + '% of the pile: ' +
             t.lo.toFixed(2) + '% left, ' + t.hi.toFixed(2) + '% right. ' +
@@ -788,7 +926,7 @@
       /* ---------- interaction ---------- */
       rate.addEventListener('input', function () {
         rVal.textContent = rate.value;
-        rate.setAttribute('aria-valuetext', rate.value + ' per second');
+        rate.setAttribute('aria-valuetext', rate.value + ' months per second');
       });
       slider.addEventListener('input', function () {
         p = parseInt(slider.value, 10) / 1000;
@@ -828,7 +966,10 @@
       });
       clr.addEventListener('click', function () {
         var i;
-        N = 0; maxC = 1; beads = [];
+        // tracing counts traced beads that are still in flight. Dropping the
+        // beads without zeroing it leaks the trail budget: after two clears no
+        // walk would ever draw its path again.
+        N = 0; maxC = 1; beads = []; tracing = 0;
         for (i = 0; i <= R; i++) { counts[i] = 0; hits[i] = -9; }
         seed = 12345;
         if (reduce) { instantDrops(1400, -9999); render(0); }
@@ -845,7 +986,7 @@
         rLab.style.opacity = reduce ? '0.45' : '';
         if (reduce) {
           if (raf) { window.cancelAnimationFrame(raf); raf = 0; }
-          beads = [];
+          beads = []; tracing = 0;
           if (!N) { instantDrops(2400, -9999); }
           render(0);
         } else {
@@ -868,10 +1009,13 @@
       // nothing.
       rate.disabled = reduce;
       if (reduce) { rLab.style.opacity = '0.45'; }
-      // Starts empty: watching the pile build from nothing is the point of the
-      // machine, and the implied silhouette is drawn from the first frame now,
-      // so an empty board still has something to read. Reduced motion gets a
-      // filled board, since there is no animation there to do the filling.
+      // Starts empty: watching the pile build from nothing is the point, and the
+      // implied outline is drawn from the first frame, so an empty board still
+      // has something to read -- and reads unambiguously as the MODEL, because it
+      // is an outline with no fill under it. The old build drew a filled grey
+      // silhouette here, which on an empty board was the only thing on screen and
+      // therefore looked exactly like data. Reduced motion gets a filled board,
+      // since there is no animation there to do the filling.
       if (reduce) { instantDrops(2400, -9999); }
       render(0);
       announce();
