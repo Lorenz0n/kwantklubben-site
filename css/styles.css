@@ -673,3 +673,104 @@ footer{ display:grid; }
     padding-bottom:22px;
   }
 }
+
+/* ===================================================================
+   PAGE FURNITURE
+
+   These were 146 inline style= attributes repeated across the four pages.
+   Lifting them here is what makes the markup editable: a page is now its
+   words plus a class name, so the copy can be found and changed without
+   reading past a wall of declarations. Every rule below reproduces its
+   inline original exactly — this was a lift, not a redesign.
+   =================================================================== */
+
+/* --- bands — the full-width colour blocks a section sits on --- */
+.kk-band--ink{ background:var(--ink-900); border-top:2px solid var(--ink-900); }
+.kk-band--lime{ background:var(--lime-500); border-top:2px solid var(--ink-800); border-bottom:2px solid var(--ink-800); }
+.kk-band--paper{ background:var(--paper-50); }
+.kk-band--rule{ border-bottom:2px solid var(--ink-800); }
+.kk-gridpaper--bare{ background:transparent; }
+
+/* --- section rhythm — vertical padding, paired with .kk-section --- */
+.kk-section--band{ padding-top:60px; padding-bottom:64px; }
+.kk-section--body{ padding-top:64px; padding-bottom:64px; }
+.kk-section--cta{ padding-top:64px; padding-bottom:68px; }
+.kk-section--pagehead{ padding-top:68px; padding-bottom:44px; }
+.kk-section--split{ padding-top:64px; padding-bottom:64px; align-items:start; }
+
+/* --- page and band headings --- */
+.kk-band__title{ font:var(--weight-bold) 40px/1.05 var(--font-display); letter-spacing:-.02em; color:var(--ink-900); margin:0; max-width:14ch; }
+.kk-band__title--lead{ font:var(--weight-bold) 40px/1.05 var(--font-display); letter-spacing:-.02em; color:var(--ink-900); margin:0 0 12px; max-width:20ch; }
+.kk-cta__title{ font:var(--weight-bold) 46px/1.0 var(--font-display); letter-spacing:-.03em; color:#fff; margin:0 0 18px; }
+.kk-item__t{ font:var(--weight-bold) 21px/1.15 var(--font-display); color:var(--ink-900); margin:0 0 10px; }
+.kk-item__t--sm{ font:var(--weight-bold) 19px/1.15 var(--font-display); color:var(--ink-900); margin:0 0 10px; }
+.kk-offer__t{ font:var(--weight-bold) 21px/1.1 var(--font-display); color:var(--ink-900); margin:0 0 12px; max-width:14ch; }
+.kk-pagehead__title{ font:var(--weight-bold) 56px/1.0 var(--font-display); letter-spacing:-.03em; color:var(--ink-900); margin:0 0 20px; max-width:16ch; }
+
+/* --- body copy --- */
+.kk-band__lead{ font:var(--type-body); font-size:18px; color:var(--ink-800); max-width:56ch; margin:0 0 34px; }
+.kk-card__d{ font:var(--type-body-sm); color:var(--ink-700); margin:0 0 16px; min-height:60px; }
+.kk-cta__lead{ font:var(--type-body); font-size:18px; color:var(--paper-300); max-width:48ch; margin:0 0 28px; }
+.kk-cta__note{ font-family:var(--font-mono); font-size:13px; color:var(--paper-400); margin:18px 0 0; }
+.kk-offer__d{ font:var(--type-body-sm); color:var(--ink-700); margin:0 0 16px; }
+.kk-pagehead__lead{ font:var(--type-body); font-size:19px; color:var(--ink-700); max-width:54ch; margin:0; }
+.kk-prose__p{ font:var(--type-body); color:var(--ink-700); margin:0; }
+.kk-prose__p--gap{ font:var(--type-body); color:var(--ink-700); margin:0 0 18px; }
+.kk-prose__p--lg{ font:var(--type-body); font-size:18px; color:var(--ink-800); margin:0 0 18px; }
+.kk-prose__p--sm{ font:var(--type-body-sm); color:var(--ink-700); margin:0; }
+
+/* --- repeating components --- */
+.kk-badge-row{ display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap; }
+.kk-btn-row{ display:flex; gap:14px; flex-wrap:wrap; }
+.kk-card__foot{ border-top:1.5px solid var(--paper-300); padding-top:12px; font-family:var(--font-mono); font-size:12px; color:var(--ink-400); }
+.kk-card__head{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:14px; }
+.kk-item__n{ font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--coral-600); margin-bottom:12px; }
+.kk-overline--gap{ margin-bottom:8px; }
+.kk-overline--on-lime{ color:var(--ink-700); margin-bottom:8px; }
+.kk-sectionhead{ display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:34px; flex-wrap:wrap; gap:16px; }
+.kk-sectionhead__note{ font-family:var(--font-mono); font-size:13px; color:var(--ink-400); max-width:32ch; }
+.kk-step__d{ font:var(--type-body-sm); color:var(--ink-700); }
+.kk-step__n{ font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--ink-800); margin-bottom:14px; }
+.kk-step__t{ font:var(--weight-bold) 21px/1.15 var(--font-display); color:var(--ink-900); margin-bottom:10px; }
+.kk-tag-row{ display:flex; gap:6px; flex-wrap:wrap; }
+
+/* --- nav and footer chrome --- */
+.kk-footer__brand img{ height:40px; }
+.kk-nav__logo img{ height:72px; }
+footer{ background:var(--ink-900); border-top:2px solid var(--ink-700); color:var(--paper-400); }
+
+/* --- the landing hero --- */
+.kk-accent{ color:var(--lime-600); }
+.kk-hero__lead{ font:var(--type-body); font-size:19px; color:var(--ink-700); max-width:52ch; margin:0 0 28px; }
+.kk-hero__title{ font:var(--weight-bold) 66px/1.0 var(--font-display); letter-spacing:-.03em; color:var(--ink-900); margin:0 0 20px; max-width:15ch; }
+.kk-section--hero{ padding-top:64px; padding-bottom:52px; }
+
+/* --- the how-it-works band --- */
+.kk-band--lime-flush{ background:var(--lime-500); border-bottom:2px solid var(--ink-800); }
+.kk-loop__title{ font:var(--weight-bold) 40px/1.05 var(--font-display); letter-spacing:-.02em; color:var(--ink-900); margin:0 0 36px; max-width:18ch; }
+.kk-section--loop{ padding-top:56px; padding-bottom:56px; }
+
+/* --- the library band --- */
+.kk-card__t{ font:var(--weight-bold) 21px/1.1 var(--font-display); color:var(--ink-900); margin:0; max-width:18ch; }
+.kk-center-row{ margin-top:28px; display:flex; justify-content:center; }
+.kk-overline--gap-lg{ margin-bottom:22px; }
+.kk-section--list{ padding-top:56px; padding-bottom:64px; }
+.kk-sectionhead__title{ font:var(--weight-bold) 40px/1.05 var(--font-display); letter-spacing:-.02em; color:var(--ink-900); margin:0; }
+
+/* --- the join band --- */
+.kk-formcard{ background:var(--ink-700); }
+.kk-formcard__list{ font:var(--type-body-sm); color:var(--paper-100); margin:0; padding-left:18px; line-height:1.9; }
+.kk-formcard__note{ margin-top:16px; font-family:var(--font-mono); font-size:12px; color:var(--paper-400); }
+.kk-join__lead{ font:var(--type-body); font-size:18px; color:var(--paper-300); max-width:44ch; margin:0 0 28px; }
+.kk-join__title{ font:var(--weight-bold) 52px/1.0 var(--font-display); letter-spacing:-.03em; color:#fff; margin:0 0 18px; }
+.kk-overline--gap-md{ margin-bottom:14px; }
+.kk-section--join{ padding-top:72px; padding-bottom:72px; }
+
+/* --- one-off page furniture --- */
+.kk-band--paper-100{ background:var(--paper-100); border-bottom:2px solid var(--paper-300); }
+.kk-band__title--gap{ font:var(--weight-bold) 40px/1.05 var(--font-display); letter-spacing:-.02em; color:var(--ink-900); margin:0 0 34px; max-width:16ch; }
+.kk-band__title--wide{ font:var(--weight-bold) 40px/1.05 var(--font-display); letter-spacing:-.02em; color:var(--ink-900); margin:0; max-width:16ch; }
+.kk-overline--on-ink{ color:var(--paper-400); margin-bottom:8px; }
+.kk-pagehead__title--narrow{ font:var(--weight-bold) 56px/1.0 var(--font-display); letter-spacing:-.03em; color:var(--ink-900); margin:0 0 20px; max-width:15ch; }
+.kk-prose__p--lg-flush{ font:var(--type-body); font-size:18px; color:var(--ink-800); margin:0; }
+.kk-section--band-split{ padding-top:60px; padding-bottom:64px; align-items:start; }

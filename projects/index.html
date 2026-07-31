@@ -39,7 +39,7 @@
 <a class="kk-skip" href="#main">Skip to content</a>
 <header class="kk-nav">
   <div class="kk-nav__inner">
-    <a class="kk-nav__logo" href="/"><img src="/assets/logo-primary.png" alt="Kwant Klubben — home" style="height:72px"></a>
+    <a class="kk-nav__logo" href="/"><img src="/assets/logo-primary.png" alt="Kwant Klubben — home"></a>
     <nav class="kk-nav__links" aria-label="Main">
       <div class="kk-nav__panel" id="kk-nav-panel" hidden>
         <a href="/about/">About</a>
@@ -59,35 +59,35 @@
 <main id="main">
 
 <!-- ============ PAGE HEAD ============ -->
-<section class="kk-gridpaper" style="border-bottom:2px solid var(--ink-800)">
-  <div class="kk-section" style="padding-top:68px;padding-bottom:44px">
-    <div style="display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap">
+<section class="kk-gridpaper kk-band--rule">
+  <div class="kk-section kk-section--pagehead">
+    <div class="kk-badge-row">
       <span class="kk-badge kk-badge--solid">The library</span>
       <span class="kk-badge kk-badge--neutral kk-badge--dot">Public repo</span>
     </div>
-    <h1 style="font:var(--weight-bold) 56px/1.0 var(--font-display);letter-spacing:-.03em;color:var(--ink-900);margin:0 0 20px;max-width:16ch">Nothing published yet.</h1>
-    <p style="font:var(--type-body);font-size:19px;color:var(--ink-700);max-width:54ch;margin:0">
+    <h1 class="kk-pagehead__title">Nothing published yet.</h1>
+    <p class="kk-pagehead__lead">
       The first projects are still being worked on. When they land they will appear here, in the shape of the card below — including the ones that went nowhere.
     </p>
   </div>
 </section>
 
 <!-- ============ THE LIBRARY ============ -->
-<section id="library" style="background:var(--paper-50)">
-  <div class="kk-section" style="padding-top:56px;padding-bottom:64px">
-    <div class="kk-overline" style="margin-bottom:22px">01 / Published</div>
+<section class="kk-band--paper" id="library">
+  <div class="kk-section kk-section--list">
+    <div class="kk-overline kk-overline--gap-lg">01 / Published</div>
     <div class="kk-projects-grid">
       <!-- The single placeholder. It must NOT imply a result exists. Replace it
            with a real entry once the first project is approved for publication;
            the fields match the project.json contract in the public mirror
            (title, question, tags, status, summary, author, date, source). -->
       <div class="kk-card kk-card--pad-md kk-card--placeholder">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">
-          <h2 style="font:var(--weight-bold) 21px/1.1 var(--font-display);color:var(--ink-900);margin:0;max-width:18ch">Example Project</h2>
+        <div class="kk-card__head">
+          <h2 class="kk-card__t">Example Project</h2>
           <span class="kk-badge kk-badge--neutral">In progress</span>
         </div>
-        <p style="font:var(--type-body-sm);color:var(--ink-700);margin:0 0 16px;min-height:60px">Results coming soon.</p>
-        <div style="border-top:1.5px solid var(--paper-300);padding-top:12px;font-family:var(--font-mono);font-size:12px;color:var(--ink-400)">
+        <p class="kk-card__d">Results coming soon.</p>
+        <div class="kk-card__foot">
           Kwant Klubben
         </div>
       </div>
@@ -96,55 +96,55 @@
 </section>
 
 <!-- ============ HOW PUBLISHING WORKS ============ -->
-<section id="publishing" style="background:var(--lime-500);border-top:2px solid var(--ink-800);border-bottom:2px solid var(--ink-800)">
-  <div class="kk-section" style="padding-top:60px;padding-bottom:64px">
-    <div class="kk-overline" style="color:var(--ink-700);margin-bottom:8px">02 / How publishing works</div>
-    <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0 0 12px;max-width:20ch">Nothing goes public by accident.</h2>
-    <p style="font:var(--type-body);font-size:18px;color:var(--ink-800);max-width:56ch;margin:0 0 34px">Work happens in a private repository. Publication is a deliberate, manual step, and only the approved parts of a project ever leave it.</p>
+<section class="kk-band--lime" id="publishing">
+  <div class="kk-section kk-section--band">
+    <div class="kk-overline kk-overline--on-lime">02 / How publishing works</div>
+    <h2 class="kk-band__title--lead">Nothing goes public by accident.</h2>
+    <p class="kk-band__lead">Work happens in a private repository. Publication is a deliberate, manual step, and only the approved parts of a project ever leave it.</p>
     <div class="kk-loop-grid">
       <div>
-        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-800);margin-bottom:14px">01</div>
-        <div style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin-bottom:10px">In the private repo</div>
-        <div style="font:var(--type-body-sm);color:var(--ink-700)">Projects live and develop in the klub's own repository, where drafts, dead ends and half-finished code are allowed to be exactly that.</div>
+        <div class="kk-step__n">01</div>
+        <div class="kk-step__t">In the private repo</div>
+        <div class="kk-step__d">Projects live and develop in the klub's own repository, where drafts, dead ends and half-finished code are allowed to be exactly that.</div>
       </div>
       <div>
-        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-800);margin-bottom:14px">02</div>
-        <div style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin-bottom:10px">Marked for publication</div>
-        <div style="font:var(--type-body-sm);color:var(--ink-700)">A project is published only once it is explicitly marked for it and a maintainer runs the publishing step by hand. There is no automatic path out.</div>
+        <div class="kk-step__n">02</div>
+        <div class="kk-step__t">Marked for publication</div>
+        <div class="kk-step__d">A project is published only once it is explicitly marked for it and a maintainer runs the publishing step by hand. There is no automatic path out.</div>
       </div>
       <div>
-        <div style="font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--ink-800);margin-bottom:14px">03</div>
-        <div style="font:var(--weight-bold) 21px/1.15 var(--font-display);color:var(--ink-900);margin-bottom:10px">Copied to the public repo</div>
-        <div style="font:var(--type-body-sm);color:var(--ink-700)">The approved folder and its write-up are copied to a public mirror, which this page indexes. The private repository is never exposed.</div>
+        <div class="kk-step__n">03</div>
+        <div class="kk-step__t">Copied to the public repo</div>
+        <div class="kk-step__d">The approved folder and its write-up are copied to a public mirror, which this page indexes. The private repository is never exposed.</div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ============ WHAT COUNTS ============ -->
-<section id="shape" style="background:var(--paper-50)">
-  <div class="kk-section kk-two-col" style="padding-top:64px;padding-bottom:64px;align-items:start">
+<section class="kk-band--paper" id="shape">
+  <div class="kk-section kk-two-col kk-section--split">
     <div>
-      <div class="kk-overline" style="margin-bottom:8px">03 / What counts</div>
-      <h2 style="font:var(--weight-bold) 40px/1.05 var(--font-display);letter-spacing:-.02em;color:var(--ink-900);margin:0;max-width:14ch">Findings, tools, and dead ends.</h2>
+      <div class="kk-overline kk-overline--gap">03 / What counts</div>
+      <h2 class="kk-band__title">Findings, tools, and dead ends.</h2>
     </div>
     <div>
-      <p style="font:var(--type-body);color:var(--ink-700);margin:0 0 18px">A project can be a piece of strategy research, a simulation, a small library other members can use, an educational write-up, or an investigation that ended in nothing. All of them belong here.</p>
-      <p style="font:var(--type-body);color:var(--ink-700);margin:0">Publishing the ones that failed is not modesty. A question you can rule out is a real result, and a library that only contains successes is not describing the work honestly.</p>
+      <p class="kk-prose__p--gap">A project can be a piece of strategy research, a simulation, a small library other members can use, an educational write-up, or an investigation that ended in nothing. All of them belong here.</p>
+      <p class="kk-prose__p">Publishing the ones that failed is not modesty. A question you can rule out is a real result, and a library that only contains successes is not describing the work honestly.</p>
     </div>
   </div>
 </section>
 
 <!-- ============ JOIN ============ -->
-<section id="join" style="background:var(--ink-900);border-top:2px solid var(--ink-900)">
-  <div class="kk-gridpaper" style="background:transparent">
-    <div class="kk-section" style="padding-top:64px;padding-bottom:68px">
-      <h2 style="font:var(--weight-bold) 46px/1.0 var(--font-display);letter-spacing:-.03em;color:#fff;margin:0 0 18px">Put something in the library.</h2>
-      <p style="font:var(--type-body);font-size:18px;color:var(--paper-300);max-width:48ch;margin:0 0 28px">
+<section class="kk-band--ink" id="join">
+  <div class="kk-gridpaper kk-gridpaper--bare">
+    <div class="kk-section kk-section--cta">
+      <h2 class="kk-cta__title">Put something in the library.</h2>
+      <p class="kk-cta__lead">
         Applications are open continuously, mainly to students at SDU. All levels are welcome — bring the question and the klub will help you get it somewhere.
       </p>
       <a class="kk-btn kk-btn--primary kk-btn--lg" href="https://forms.gle/P5Aw4ka85QUZiUmZ9" target="_blank" rel="noopener">Apply to join →</a>
-      <p style="font-family:var(--font-mono);font-size:13px;color:var(--paper-400);margin:18px 0 0">We get in touch with everyone who applies.</p>
+      <p class="kk-cta__note">We get in touch with everyone who applies.</p>
     </div>
   </div>
 </section>
@@ -156,10 +156,10 @@
      No class on the <footer> element: the mobile override that undoes the
      wordmark overlay is `footer{display:block}`, and any class selector here
      would out-specify it. That is exactly how 38a783c broke the phone layout. -->
-<footer style="background:var(--ink-900);border-top:2px solid var(--ink-700);color:var(--paper-400)">
+<footer>
   <div class="kk-footer__inner">
     <div class="kk-footer__brand">
-      <img src="/assets/logo-mark-knockout.png" alt="" style="height:40px">
+      <img src="/assets/logo-mark-knockout.png" alt="">
       <span>Kwant Klubben · Independent student club at the University of Southern Denmark</span>
     </div>
     <div class="kk-footer__links">

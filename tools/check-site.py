@@ -278,6 +278,25 @@ def check_links(sources):
     return failures
 
 
+def check_inline_styles(sources):
+    """No `style=` attributes in the pages.
+
+    173 of them were lifted into named classes so that a page reads as its words
+    plus a class name and the copy can be found and changed without wading
+    through declarations. One inline style added back is not a disaster, but
+    fifty are, and fifty is what you get by adding one at a time.
+    """
+    failures = 0
+    for path, text in sources.items():
+        for m in re.finditer(r'<(\w+)[^>]*?\sstyle="([^"]*)"', text):
+            line = text[:m.start()].count("\n") + 1
+            print("FAIL %s:%d: inline style on <%s>. Give it a class in "
+                  "css/styles.css instead — see EDITING.md.\n"
+                  "     %s" % (rel(path), line, m.group(1), m.group(2)[:80]))
+            failures += 1
+    return failures
+
+
 def main():
     if not PAGES:
         print("FAIL: no pages found under %s" % ROOT)
@@ -292,7 +311,8 @@ def main():
     sources = {p: p.read_text(encoding="utf-8") for p in PAGES}
 
     failures = (check_blocks(sources) + check_invariants(sources)
-                + check_links(sources) + check_css())
+                + check_links(sources) + check_css()
+                + check_inline_styles(sources))
 
     # Print what opted out, so a page escaping the checks is visible in CI
     # rather than silently absent from the count.
