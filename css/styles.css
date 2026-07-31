@@ -290,17 +290,11 @@ code, kbd, samp { font-family: var(--font-mono); }
   .kk-draw { stroke-dasharray:none; stroke-dashoffset:0; }
 }
 
-/* Scroll-triggered reveal wiring — kk-motion.js's IntersectionObserver adds
-   .kk-go to .kk-onview elements once they scroll into view; this is what
-   actually gates the fade-up rather than letting it fire on page load.
-   Hiding is scoped to .js (set by the inline script in <head>) so the element
-   stays visible if the script never runs, and the whole block sits inside
-   no-preference — same idiom as .kk-reveal above — because .kk-onview.kk-go
-   would otherwise out-specify a reduce-branch override and animate anyway. */
-@media (prefers-reduced-motion: no-preference) {
-  .js .kk-onview{ opacity:0; }
-  .js .kk-onview.kk-go{ opacity:1; animation: kk-reveal var(--dur-slow) var(--ease-out) both; }
-}
+/* The scroll-reveal wiring (.js .kk-onview{opacity:0} plus a .kk-go override)
+   lived here. It was removed with kk-motion.js: the hiding half is the load
+   bearing one, and with no IntersectionObserver left to add .kk-go, anything
+   given .kk-onview would have been hidden permanently rather than revealed.
+   A rule that only ever hides is worse than no rule. */
 
 /* ===========================================================================
    COMPONENT INVENTORY (from the design system)
@@ -569,7 +563,7 @@ footer{ display:grid; }
                            drawer above 700px.
        mobile, no JS    -> needs .js, so it doesn't match; links stay in the bar
                            and flex-wrap gives two rows. Every destination stays
-                           reachable. Same guard idiom as `.js .kk-onview`.
+                           reachable. Same .js-guard idiom used elsewhere in this file.
        mobile, JS       -> bites; kk-nav.js owns the attribute from here on. */
   .js .kk-nav__panel[hidden]{ display:none; }
 

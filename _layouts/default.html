@@ -33,6 +33,7 @@
      is dropped from this URL. -->
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon/favicon-512.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/favicon-180.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -96,14 +97,15 @@
   <!-- Ornamental only: 37vw, 14% opacity, and deliberately clipped so a quarter
        of the letterforms bleed off the page. As real text it was announced as a
        stray "KWANT" after the footer content on every page. -->
-  <div class="kk-footer-word kk-onview" aria-hidden="true"><span>KWANT</span></div>
+  <div class="kk-footer-word" aria-hidden="true"><span>KWANT</span></div>
 </footer>
 <!-- /FOOTER -->
 
 <!-- SCRIPTS -->
-<!-- kk-motion.js is needed on every page: the footer's .kk-onview reveal
-     depends on it. kk-bean.js returns immediately where there is no #kk-bean. -->
-<script src="/js/kk-motion.js" defer></script>
+<!-- kk-motion.js used to load here for the footer wordmark's scroll reveal.
+     The wordmark is static now and nothing else on the site used it, so it was
+     a request per page that did nothing. kk-bean.js returns immediately where
+     there is no #kk-bean, which is why it can sit in the shared block. -->
 <script src="/js/kk-nav.js" defer></script>
 <script src="/js/kk-bean.js" defer></script>
 <!-- /SCRIPTS -->
