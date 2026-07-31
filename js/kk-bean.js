@@ -47,7 +47,10 @@
       var LIME = cvar('--lime-600', '#A6CE12');
       var PAPER = cvar('--paper-300', '#DCD4BD');
       var INK4 = cvar('--ink-400', '#5A6677');
-      var LIME7 = cvar('--lime-700', '#7E9C0A');   // lime dark enough to read as text
+      // lime-700 was used here and measures 3.00:1 on paper — below the 4.5:1
+      // small text needs. lime-800 is the same hue at 4.95:1, so the tail
+      // figures stay lime-coded rather than dropping to grey.
+      var LIME8 = cvar('--lime-800', '#5E7507');
       var FONT = '11px "Space Mono", ui-monospace, monospace';
       var FONT_M = '12px "Space Mono", ui-monospace, monospace';   // metric line
       var FONT_B = '700 12px "Space Mono", ui-monospace, monospace';
@@ -366,7 +369,7 @@
           [{ t: d + kMon, c: INK4 }, { t: fmtInt(Math.floor(N / R)), c: INK, b: 1 }],
           [{ t: d + kP, c: INK4 }, { t: p.toFixed(3), c: INK, b: 1 }],
           [{ t: d + kT, c: INK4 },
-           { t: N ? (ts.lo + ts.hi).toFixed(2) + '%' : nil, c: N ? LIME7 : INK4, b: 1 }],
+           { t: N ? (ts.lo + ts.hi).toFixed(2) + '%' : nil, c: N ? LIME8 : INK4, b: 1 }],
           [{ t: d + 'E[z] ', c: INK4 },
            { t: mo ? sgn(mo.mean, 2) : nil, c: INK, b: 1 },
            { t: ' (' + sgn(ex.mean, 2) + ')', c: INK4 }],
@@ -595,7 +598,7 @@
         // function-scoped, so the two were the same binding.
         var ty = BASE + 30;
         ctx.strokeStyle = LIME; ctx.lineWidth = 1.4;
-        ctx.fillStyle = LIME7;
+        ctx.fillStyle = LIME8;
         // The label has to fit inside the bracket it annotates. The left bracket
         // is 8 bins wide, which is ~98px on a 360px board -- less than the full
         // phrase needs, so the narrow board gets the initial instead.

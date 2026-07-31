@@ -129,6 +129,30 @@
   }
   say('C symmetric at +/-300px', lo + ' vs ' + hi, Math.abs(lo - hi) <= 6);
 
+  // ---- C2. the tail label text clears WCAG AA on paper ----
+  // Sampled from the pixels, not from the token: a fill that never reaches the
+  // canvas is not a colour anyone has to read. Fully-covered glyph pixels carry
+  // the fill exactly, so take the most opaque one in the left label's band.
+  function lin(c) { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); }
+  function lum(p) { return 0.2126 * lin(p.r) + 0.7152 * lin(p.g) + 0.0722 * lin(p.b); }
+  var paperL = lum({ r: 0xFB, g: 0xF9, b: 0xF2 });
+  var best = null, xx;
+  for (xx = 21; xx < 150; xx++) {
+    for (yy = 396; yy < 413; yy++) {
+      var q = px(xC, xx, yy);
+      if (q.a >= 250 && (!best || lum(q) < lum(best))) { best = q; }
+    }
+  }
+  if (best) {
+    var tl = lum(best);
+    var cr = (Math.max(tl, paperL) + 0.05) / (Math.min(tl, paperL) + 0.05);
+    say('C2 tail label rgb', best.r + ',' + best.g + ',' + best.b,
+        best.r === 94 && best.g === 117 && best.b === 7);
+    say('C2 tail label contrast', cr.toFixed(2) + ':1 (AA needs 4.5)', cr >= 4.5);
+  } else {
+    say('C2 tail label sampled', 'no opaque glyph pixel found', false);
+  }
+
   // ---- D. labels wired to controls ----
   var labs = hA.querySelectorAll('label');
   var ins = hA.querySelectorAll('input[type=range]');

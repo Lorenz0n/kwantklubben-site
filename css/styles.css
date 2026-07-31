@@ -30,6 +30,10 @@
   --lime-500: #C2EB2B;
   --lime-600: #A6CE12;
   --lime-700: #7E9C0A;
+  /* One step darker than lime-700, which measures 3.00:1 on paper-50 and so
+     cannot legally carry small text. This clears AA at 4.95:1 while staying the
+     same hue, so a number can stay lime-coded instead of falling back to grey. */
+  --lime-800: #5E7507;
 
   --coral-300: #FFC2B3;
   --coral-400: #FF8366;
