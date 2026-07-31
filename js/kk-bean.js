@@ -72,15 +72,24 @@
       // "transparent" would knock out the bar as well.
       var PAPER50 = cvar('--paper-50', '#FBF9F2');
       var INK4 = cvar('--ink-400', '#5A6677');
+      // For the KEYS in the headline readout. ink-400 is 5.53:1 on paper, which
+      // passes but reads faint at mono sizes this small; ink-500 is 8.95:1 and
+      // gives the labels enough weight to be read rather than merely detected.
+      // The diagnostics keep ink-400 -- they are supposed to sit back.
+      var INK5 = cvar('--ink-500', '#3C4756');
       // lime-700 was used here and is nowhere near the 4.5:1 small text owes
       // (it is tuned for LARGE text at 3:1). lime-800 is the same hue at 4.95:1,
       // so the tail figures stay lime-coded rather than dropping to grey.
       var LIME8 = cvar('--lime-800', '#5E7507');
       var FONT = '11px "Space Mono", ui-monospace, monospace';
+      // The DOM control row. It sits directly under the canvas readout and is
+      // part of the same strip, so it takes the same size -- at 11px against a
+      // 16px readout the sliders read as a separate, lesser widget.
+      var FONT_UI = '13px "Space Mono", ui-monospace, monospace';
       var FONT_M = '12px "Space Mono", ui-monospace, monospace';   // metric line
       var FONT_B = '700 12px "Space Mono", ui-monospace, monospace';
-      var FONT_A  = '12px "Space Mono", ui-monospace, monospace';        // axis
-      var FONT_AB = '700 12px "Space Mono", ui-monospace, monospace';    // tails
+      var FONT_A  = '13px "Space Mono", ui-monospace, monospace';        // axis
+      var FONT_AB = '700 13px "Space Mono", ui-monospace, monospace';    // tails
       function setMetric(px) {
         FONT_M = px + 'px "Space Mono", ui-monospace, monospace';
         FONT_B = '700 ' + px + 'px "Space Mono", ui-monospace, monospace';
@@ -178,7 +187,7 @@
 
       var bar = document.createElement('div');
       bar.style.cssText = 'display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;' +
-        'font:' + FONT + ';color:' + INK4 + ';';
+        'font:' + FONT_UI + ';color:' + INK5 + ';';
       // Real <label for>, not a floating <span> beside an aria-label that says
       // something else: the visible text then IS the accessible name, which is
       // what voice control needs to address the control (WCAG 2.5.3).
@@ -213,7 +222,7 @@
       clr.textContent = 'clear';
       // 5px padding, not 3px: at 3px the target measured ~21px tall, under the
       // 24px minimum of WCAG 2.5.8.
-      clr.style.cssText = 'font:' + FONT + ';color:' + INK4 + ';background:transparent;border:1px solid ' + PAPER +
+      clr.style.cssText = 'font:' + FONT_UI + ';color:' + INK5 + ';background:transparent;border:1px solid ' + PAPER +
         ';border-radius:0;padding:5px 10px;cursor:pointer;';
       bar.appendChild(lab); bar.appendChild(slider); bar.appendChild(val);
       bar.appendChild(rLab); bar.appendChild(rate); bar.appendChild(rVal);
@@ -454,12 +463,12 @@
         // it is the unit a bead actually is, and the one the pile is a
         // distribution OF. The month figure is a horizon, nothing more.
         return [
-          [{ t: kDay, c: INK4 }, { t: fmtInt(N), c: INK, b: 1 }],
-          [{ t: d + kMon, c: INK4 },
+          [{ t: kDay, c: INK5 }, { t: fmtInt(N), c: INK, b: 1 }],
+          [{ t: d + kMon, c: INK5 },
            { t: fmtInt(Math.floor(N / DAYS_PER_MONTH)), c: INK, b: 1 }],
-          [{ t: d + kP, c: INK4 }, { t: p.toFixed(3), c: INK, b: 1 }],
-          [{ t: d + kT, c: INK4 },
-           { t: N ? (ts.lo + ts.hi).toFixed(2) + '%' : nil, c: N ? LIME8 : INK4, b: 1 }]
+          [{ t: d + kP, c: INK5 }, { t: p.toFixed(3), c: INK, b: 1 }],
+          [{ t: d + kT, c: INK5 },
+           { t: N ? (ts.lo + ts.hi).toFixed(2) + '%' : nil, c: N ? LIME8 : INK5, b: 1 }]
         ];
       }
       function diagGroups(d) {
@@ -555,11 +564,16 @@
            chart is narrow. */
         var HEAD_ROWS = 1;
         var DIAG_ROWS = small ? 2 : 1;
-        var MET_LEAD = 16;
+        // Leading follows the type size. The whole readout was set at 13/11 with a
+        // flat 16px lead, which is small enough on a wide screen that the figures
+        // had to be hunted for rather than read -- the numbers ARE the point of an
+        // interactive chart, and they were the quietest thing on it.
+        var HEAD_LEAD = small ? 17 : 20;
+        var DIAG_LEAD = small ? 15 : 17;
         // Below BASE: sigma ticks and their labels to BASE+18, the tail brackets
         // and their figures to BASE+42, then the readout from BASE+62.
         var READ_TOP = 62;
-        var FOOT = READ_TOP + (HEAD_ROWS + DIAG_ROWS - 1) * MET_LEAD + 10;
+        var FOOT = READ_TOP + HEAD_ROWS * HEAD_LEAD + (DIAG_ROWS - 1) * DIAG_LEAD + 10;
 
         BASE = H - FOOT;
         // Air above the line the walks open on. Small, because there is nothing
@@ -794,13 +808,16 @@
            diagnostics are a step down and sit in the quieter grey, because they
            are reference values that hover near their exact figures rather than
            things to watch. */
+        // The ladder still steps down to fit, but it now starts from a size worth
+        // reading. On a 880px chart the headline is ~620px at 16px even with
+        // seven-figure counts, so the top rung is what actually gets used.
         var mw = xWR - xWL;
         var hCombo = small
-          ? [[12, '  ·  '], [11, '  ·  '], [11, ' · '], [10, ' · ']]
-          : [[13, '   ·   '], [13, '  ·  '], [12, '  ·  '], [11, ' · '], [10, ' · ']];
+          ? [[13, '  ·  '], [12, '  ·  '], [12, ' · '], [11, ' · ']]
+          : [[16, '   ·   '], [15, '   ·   '], [14, '  ·  '], [13, '  ·  '], [12, ' · ']];
         var dCombo = small
-          ? [[10, '  ·  '], [10, ' · '], [9, ' · ']]
-          : [[11, '   ·   '], [11, '  ·  '], [10, ' · ']];
+          ? [[11, '  ·  '], [10, ' · '], [9, ' · ']]
+          : [[13, '   ·   '], [12, '  ·  '], [11, ' · ']];
         var ci, gs, lines, ry = BASE + READ_TOP;
 
         for (ci = 0; ci < hCombo.length; ci++) {
@@ -809,8 +826,8 @@
           if (totalW(gs) <= mw) { break; }
         }
         lines = wrapGroups(gs, mw);
-        for (i = 0; i < lines.length; i++) { drawSegs(lines[i], xWL, ry + i * MET_LEAD); }
-        ry += HEAD_ROWS * MET_LEAD;
+        for (i = 0; i < lines.length; i++) { drawSegs(lines[i], xWL, ry + i * HEAD_LEAD); }
+        ry += HEAD_ROWS * HEAD_LEAD;
 
         for (ci = 0; ci < dCombo.length; ci++) {
           setMetric(dCombo[ci][0]);
@@ -818,7 +835,7 @@
           if (totalW(gs) <= mw) { break; }
         }
         lines = wrapGroups(gs, mw);
-        for (i = 0; i < lines.length; i++) { drawSegs(lines[i], xWL, ry + i * MET_LEAD); }
+        for (i = 0; i < lines.length; i++) { drawSegs(lines[i], xWL, ry + i * DIAG_LEAD); }
 
         // The slider row is DOM and the chart is canvas, so nothing aligns them
         // for free. Written only on change: this runs every frame, and assigning

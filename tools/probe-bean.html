@@ -59,8 +59,9 @@
   // them still asserts something real: that what the renderer PUTS on the canvas
   // agrees with the geometry the file documents. If the two drift, this fails.
   function geom(H, small) {
-    var HEAD_ROWS = 1, DIAG_ROWS = small ? 2 : 1, MET_LEAD = 16, READ_TOP = 62;
-    var FOOT = READ_TOP + (HEAD_ROWS + DIAG_ROWS - 1) * MET_LEAD + 10;
+    var HEAD_ROWS = 1, DIAG_ROWS = small ? 2 : 1, READ_TOP = 62;
+    var HEAD_LEAD = small ? 17 : 20, DIAG_LEAD = small ? 15 : 17;
+    var FOOT = READ_TOP + HEAD_ROWS * HEAD_LEAD + (DIAG_ROWS - 1) * DIAG_LEAD + 10;
     var BASE = H - FOOT, yTop = 24;
     var MAXH = Math.round((BASE - yTop) * 0.373);
     return { BASE: BASE, MAXH: MAXH, top: BASE - MAXH,
