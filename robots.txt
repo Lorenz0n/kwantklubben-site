@@ -1,0 +1,5 @@
+# The whole site is public and there is nothing here to keep out of an index.
+User-agent: *
+Allow: /
+
+Sitemap: https://kwantklubben.com/sitemap.xml

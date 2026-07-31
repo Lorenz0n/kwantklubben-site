@@ -29,10 +29,16 @@
   --lime-400: #D5F25A;
   --lime-500: #C2EB2B;
   --lime-600: #A6CE12;
-  --lime-700: #7E9C0A;
-  /* One step darker than lime-700, which measures 3.00:1 on paper-50 and so
-     cannot legally carry small text. This clears AA at 4.95:1 while staying the
-     same hue, so a number can stay lime-coded instead of falling back to grey. */
+  /* Was #7E9C0A, which measures 2.99904:1 on paper-50 — a rounding hair UNDER
+     the 3:1 large-text minimum, so the hero's accent word failed by 0.001.
+     #79960A is 3.23:1: clears with real margin, two shades off the original, and
+     still unmistakably lime rather than olive. Safe to correct in place because
+     every other consumer of this token (--accent-ink, .kk-badge--survived,
+     .kk-tag--accent, .kk-stat__delta--up, .kk-stamp--survived) is in the unused
+     inventory below — .kk-accent is the only rendered use on the site. */
+  --lime-700: #79960A;
+  /* Darker again, for SMALL lime text, which owes 4.5:1 rather than 3:1. Used by
+     the hero board's tail figures. 4.95:1. */
   --lime-800: #5E7507;
 
   --coral-300: #FFC2B3;
@@ -295,6 +301,22 @@ code, kbd, samp { font-family: var(--font-mono); }
   .js .kk-onview{ opacity:0; }
   .js .kk-onview.kk-go{ opacity:1; animation: kk-reveal var(--dur-slow) var(--ease-out) both; }
 }
+
+/* ===========================================================================
+   COMPONENT INVENTORY (from the design system)
+
+   Much of what follows is not referenced by any page today — .kk-stat*,
+   .kk-stamp*, .kk-ticker*, and several badge/card/button variants. That is
+   deliberate: it is the kit, kept whole for when real projects land, and
+   deleting it would only mean digging it back out of git later.
+
+   ONE EXCEPTION, and it is not a style preference:
+   .kk-badge--survived / --killed and .kk-stamp--survived / --killed must NOT be
+   used on this site. "Survived / killed" verdict cards are excluded by the
+   club's brief — the klub does not pass verdicts on research it has not
+   published, and a placeholder wearing one would be a claim it cannot support.
+   Reach for .kk-badge--neutral instead.
+   =========================================================================== */
 
 /* --- source: components/core/Button.jsx --- */
 .kk-btn{
@@ -724,7 +746,9 @@ footer{ display:grid; }
 .kk-btn-row{ display:flex; gap:14px; flex-wrap:wrap; }
 .kk-card__foot{ border-top:1.5px solid var(--paper-300); padding-top:12px; font-family:var(--font-mono); font-size:12px; color:var(--ink-400); }
 .kk-card__head{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:14px; }
-.kk-item__n{ font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--coral-600); margin-bottom:12px; }
+/* coral-600 is 4.00:1 on the card and this is 13px, which owes 4.5:1.
+   coral-700 is 5.90:1. */
+.kk-item__n{ font-family:var(--font-mono); font-size:13px; font-weight:700; color:var(--coral-700); margin-bottom:12px; }
 .kk-overline--gap{ margin-bottom:8px; }
 .kk-overline--on-lime{ color:var(--ink-700); margin-bottom:8px; }
 .kk-sectionhead{ display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:34px; flex-wrap:wrap; gap:16px; }
@@ -735,12 +759,22 @@ footer{ display:grid; }
 .kk-tag-row{ display:flex; gap:6px; flex-wrap:wrap; }
 
 /* --- nav and footer chrome --- */
-.kk-footer__brand img{ height:40px; }
-.kk-nav__logo img{ height:72px; }
+/* width:auto is load-bearing. The width/height ATTRIBUTES on these images exist
+   so the browser can reserve space before the file loads, but an HTML width
+   attribute is a presentational hint that maps to the CSS `width` property — so
+   without this the nav logo rendered at its full 1020px intrinsic width, eight
+   times too wide and squashed to 72px tall. With width:auto the attributes
+   supply only the aspect ratio and the width is derived from the height. */
+.kk-footer__brand img{ height:40px; width:auto; }
+.kk-nav__logo img{ height:72px; width:auto; }
 footer{ background:var(--ink-900); border-top:2px solid var(--ink-700); color:var(--paper-400); }
 
 /* --- the landing hero --- */
-.kk-accent{ color:var(--lime-600); }
+/* --lime-600 measures 1.74:1 on paper. The headline word is text, not
+   decoration, so it owes the 3:1 large-text minimum at 66px bold. --lime-700
+   now clears it at 3.23:1 (see the token — its old value missed by 0.001).
+   --lime-800 passes with more room but goes olive at this size. */
+.kk-accent{ color:var(--lime-700); }
 .kk-hero__lead{ font:var(--type-body); font-size:19px; color:var(--ink-700); max-width:52ch; margin:0 0 28px; }
 .kk-hero__title{ font:var(--weight-bold) 66px/1.0 var(--font-display); letter-spacing:-.03em; color:var(--ink-900); margin:0 0 20px; max-width:15ch; }
 .kk-section--hero{ padding-top:64px; padding-bottom:52px; }
@@ -770,7 +804,11 @@ footer{ background:var(--ink-900); border-top:2px solid var(--ink-700); color:va
 .kk-band--paper-100{ background:var(--paper-100); border-bottom:2px solid var(--paper-300); }
 .kk-band__title--gap{ font:var(--weight-bold) 40px/1.05 var(--font-display); letter-spacing:-.02em; color:var(--ink-900); margin:0 0 34px; max-width:16ch; }
 .kk-band__title--wide{ font:var(--weight-bold) 40px/1.05 var(--font-display); letter-spacing:-.02em; color:var(--ink-900); margin:0; max-width:16ch; }
-.kk-overline--on-ink{ color:var(--paper-400); margin-bottom:8px; }
+/* Colour only. It used to bundle margin-bottom:8px too, which meant an overline
+   on a dark panel could not also take a different gap — so the one on the join
+   card kept the ink-400 default and sat at 2.64:1 on --ink-700. Composes with
+   any --gap* modifier now. */
+.kk-overline--on-ink{ color:var(--paper-400); }
 .kk-pagehead__title--narrow{ font:var(--weight-bold) 56px/1.0 var(--font-display); letter-spacing:-.03em; color:var(--ink-900); margin:0 0 20px; max-width:15ch; }
 .kk-prose__p--lg-flush{ font:var(--type-body); font-size:18px; color:var(--ink-800); margin:0; }
 .kk-section--band-split{ padding-top:60px; padding-bottom:64px; align-items:start; }

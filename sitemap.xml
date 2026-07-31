@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Hand-written: five pages does not justify a plugin. tools/check-site.py
+     asserts that every page it discovers appears below, so this cannot fall
+     behind silently when a page is added. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://kwantklubben.com/</loc>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://kwantklubben.com/about/</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kwantklubben.com/projects/</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kwantklubben.com/partners/</loc>
+    <priority>0.8</priority>
+  </url>
+</urlset>

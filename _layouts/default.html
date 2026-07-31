@@ -6,6 +6,26 @@
 <title>{{ page.title }}</title>
 <meta name="description" content="{{ page.description }}">
 
+<link rel="canonical" href="{{ site.url }}{{ page.url }}">
+<meta name="theme-color" content="#FBF9F2">
+
+<!-- Sharing. Without these a link to the site posts as a bare grey URL — no
+     image, no title, no description — and a LinkedIn post or a QR poster is how
+     most people meet the klub first. og:image must be an absolute URL: the
+     crawler fetching it is not on the site. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kwant Klubben">
+<meta property="og:title" content="{{ page.title }}">
+<meta property="og:description" content="{{ page.description }}">
+<meta property="og:url" content="{{ site.url }}{{ page.url }}">
+<meta property="og:image" content="{{ site.url }}/assets/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ page.title }}">
+<meta name="twitter:description" content="{{ page.description }}">
+<meta name="twitter:image" content="{{ site.url }}/assets/og-card.png">
+
 <!-- HEAD-COMMON -->
 <!-- Shared by every page — this file is the only copy.
      Chewy is NOT optional: the footer wordmark is set in it at 37vw with a
@@ -36,7 +56,7 @@
 <a class="kk-skip" href="#main">Skip to content</a>
 <header class="kk-nav">
   <div class="kk-nav__inner">
-    <a class="kk-nav__logo" href="/"><img src="/assets/logo-primary.png" alt="Kwant Klubben — home"></a>
+    <a class="kk-nav__logo" href="/"><img src="/assets/logo-primary.png" alt="Kwant Klubben — home" width="1020" height="592"></a>
     <nav class="kk-nav__links" aria-label="Main">
       <div class="kk-nav__panel" id="kk-nav-panel" hidden>
         <a href="/about/">About</a>
@@ -58,14 +78,14 @@
 </main>
 
 <!-- FOOTER -->
-<!-- COPY-PASTE BLOCK — byte-identical in every page. See HEAD-COMMON.
+<!-- Shared by every page — this file is the only copy.
      No class on the <footer> element: the mobile override that undoes the
      wordmark overlay is `footer{display:block}`, and any class selector here
      would out-specify it. That is exactly how 38a783c broke the phone layout. -->
 <footer>
   <div class="kk-footer__inner">
     <div class="kk-footer__brand">
-      <img src="/assets/logo-mark-knockout.png" alt="">
+      <img src="/assets/logo-mark-knockout.png" alt="" width="512" height="512">
       <span>Kwant Klubben · Independent student club at the University of Southern Denmark</span>
     </div>
     <div class="kk-footer__links">
