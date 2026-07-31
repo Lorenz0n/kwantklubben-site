@@ -203,6 +203,70 @@ def check_layout_invariants():
         if token not in text:
             print("FAIL _layouts/default.html: missing `%s`" % token)
             failures += 1
+
+    # Sharing metadata. Absent, a link to the site posts as a bare grey URL with
+    # no image and no title — which is how most people meet the klub, via a
+    # LinkedIn post or a poster QR. Silent when broken, so it is asserted.
+    for prop, why in [
+        ('property="og:title"', "the headline on a shared link"),
+        ('property="og:description"', "the blurb under it"),
+        ('property="og:image"', "the preview card"),
+        ('property="og:url"', "the canonical target of the share"),
+        ('name="twitter:card"', "large-image rendering rather than a thumbnail"),
+        ('rel="canonical"', "which URL is the real one"),
+    ]:
+        if prop not in text:
+            print("FAIL _layouts/default.html: no %s — %s is lost" % (prop, why))
+            failures += 1
+
+    # og:image and canonical must be ABSOLUTE. A crawler fetching the card is not
+    # on the site, so a root-relative path resolves against the wrong host.
+    for m in re.finditer(r'(?:content|href)="(/[^"]*)"', text):
+        val = m.group(1)
+        line = text[:m.start()].count("\n") + 1
+        near = text[max(0, m.start() - 220):m.start()]
+        if re.search(r'(og:image|og:url|twitter:image|rel="canonical")', near):
+            print("FAIL _layouts/default.html:%d: %s is root-relative. Sharing "
+                  "metadata needs {{ site.url }} in front of it." % (line, val))
+            failures += 1
+    return failures
+
+
+def check_discoverability():
+    """robots, sitemap and a real 404 — and a sitemap that has not gone stale.
+
+    The sitemap is hand-written because five pages does not justify a plugin.
+    That is only defensible while something notices when it falls behind a new
+    page, which is what the loop below is for.
+    """
+    failures = 0
+    for name in ("robots.txt", "sitemap.xml", "404.html"):
+        if not (ROOT / name).exists():
+            print("FAIL: %s is missing" % name)
+            failures += 1
+    if failures:
+        return failures
+
+    sitemap = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
+    listed = set(re.findall(r"<loc>\s*(.*?)\s*</loc>", sitemap))
+    for path in PAGES:
+        rel_dir = path.parent.relative_to(ROOT).as_posix()
+        want = "https://kwantklubben.com/" + ("" if rel_dir == "." else rel_dir + "/")
+        if want not in listed:
+            print("FAIL sitemap.xml: %s is a page but %s is not listed"
+                  % (rel(path), want))
+            failures += 1
+
+    robots = (ROOT / "robots.txt").read_text(encoding="utf-8")
+    if "sitemap.xml" not in robots.lower():
+        print("FAIL robots.txt: does not point at the sitemap")
+        failures += 1
+
+    notfound = (ROOT / "404.html").read_text(encoding="utf-8")
+    if not notfound.startswith("---"):
+        print("FAIL 404.html: no front matter, so it gets no layout — a visitor "
+              "who mistypes a URL lands on an unstyled fragment")
+        failures += 1
     return failures
 
 
@@ -332,6 +396,21 @@ def check_css():
                   "absorbed into the wrong rule." % depth)
             failures += 1
 
+    # The hero's accent word is 66px bold, so it owes 3:1. --lime-600 measures
+    # 1.74:1 and --lime-700's ORIGINAL #7E9C0A measured 2.99904:1 — under by a
+    # rounding hair. Both have been in this rule; neither may come back.
+    accent = re.search(r"\.kk-accent\s*\{([^}]*)\}", css)
+    if accent and re.search(r"--lime-[1-6]\d\d", accent.group(1)):
+        line = css[:accent.start()].count("\n") + 1
+        print("FAIL css/styles.css:%d: .kk-accent must not use a lime lighter "
+              "than --lime-700. It is 66px TEXT and owes 3:1 on paper." % line)
+        failures += 1
+    if "#7E9C0A" in css:
+        line = css[:css.index("#7E9C0A")].count("\n") + 1
+        print("FAIL css/styles.css:%d: #7E9C0A is back. It measures 2.99904:1 on "
+              "paper-50 — under the 3:1 large-text minimum by 0.001." % line)
+        failures += 1
+
     return failures
 
 
@@ -370,6 +449,7 @@ def main():
                 + check_markers(sources)
                 + check_inline_styles(sources)
                 + check_css()
+                + check_discoverability()
                 + check_links())
 
     # Print what opted out, so a page escaping the checks is visible in CI

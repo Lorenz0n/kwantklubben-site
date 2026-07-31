@@ -182,3 +182,8 @@ adding a new block, reuse these rather than inventing styles.
 | `kk-step__n` / `__t` / `__d` | The numbered steps in "How it works" |
 
 Every one is defined in `css/styles.css` under a commented group near the bottom.
+
+**Do not use `kk-badge--survived`, `kk-badge--killed`, `kk-stamp--survived` or
+`kk-stamp--killed`.** They exist because they came with the design system, but
+"survived / killed" verdict cards are excluded by the klub's brief — the site
+does not pass verdicts on research it has not published. Use `kk-badge--neutral`.
