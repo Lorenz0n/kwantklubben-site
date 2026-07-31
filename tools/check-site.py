@@ -398,13 +398,33 @@ def check_css():
 
     # The hero's accent word is 66px bold, so it owes 3:1. --lime-600 measures
     # 1.74:1 and --lime-700's ORIGINAL #7E9C0A measured 2.99904:1 — under by a
-    # rounding hair. Both have been in this rule; neither may come back.
+    # rounding hair. Both have been the TEXT colour here; neither may come back.
+    #
+    # Narrowed 2026-07-31 from "no pale lime anywhere in this rule" to "no pale
+    # lime as the FOREGROUND". The old test read the whole declaration block, so
+    # it could not tell the failing case from its fix: the word is now ink-900
+    # on a lime-500 block (13.81:1), which is how the hero gets full-strength
+    # brand lime while staying legible. A background lime is only safe because
+    # the text on it is ink, so that is checked rather than assumed — drop the
+    # colour declaration and this fails again, which is the point.
     accent = re.search(r"\.kk-accent\s*\{([^}]*)\}", css)
-    if accent and re.search(r"--lime-[1-6]\d\d", accent.group(1)):
+    if accent:
+        body = accent.group(1)
         line = css[:accent.start()].count("\n") + 1
-        print("FAIL css/styles.css:%d: .kk-accent must not use a lime lighter "
-              "than --lime-700. It is 66px TEXT and owes 3:1 on paper." % line)
-        failures += 1
+        fg = re.search(r"(?<!-)\bcolor\s*:\s*([^;]+)", body)
+        bg = re.search(r"\bbackground(?:-color)?\s*:\s*([^;]+)", body)
+        if fg and re.search(r"--lime-[1-6]\d\d", fg.group(1)):
+            print("FAIL css/styles.css:%d: .kk-accent must not use a lime lighter "
+                  "than --lime-700 as its TEXT colour. It is 66px text and owes "
+                  "3:1 on paper (lime-500 is 1.31:1). Put the lime behind it "
+                  "instead: ink-900 on a lime-500 block is 13.81:1." % line)
+            failures += 1
+        if bg and re.search(r"--lime-\d\d\d", bg.group(1)):
+            if not (fg and re.search(r"--ink-[89]00", fg.group(1))):
+                print("FAIL css/styles.css:%d: .kk-accent fills with lime but does "
+                      "not set an ink text colour. A lime block is only readable "
+                      "because the word on it is ink-900." % line)
+                failures += 1
     if "#7E9C0A" in css:
         line = css[:css.index("#7E9C0A")].count("\n") + 1
         print("FAIL css/styles.css:%d: #7E9C0A is back. It measures 2.99904:1 on "
