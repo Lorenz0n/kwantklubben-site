@@ -20,9 +20,9 @@ sponsors/index.html   redirect stub -> /partners/  (the old URL is on LinkedIn)
 css/styles.css        the original brand stylesheet (tokens + component idiom),
                       a short relaunch section, then the page-furniture classes
 js/kk-nav.js          the mobile drawer. Drives the `hidden` ATTRIBUTE, not a class.
-js/kk-bean.js         the hero board — one random walk per month, stacking into
-                      the distribution they are drawn from. No pegs: nothing
-                      collides with anything. Inert on any page with no
+js/kk-bean.js         the hero board — one random walk per trading day, stacking
+                      into the distribution they are drawn from. No pegs:
+                      nothing collides with anything. Inert on any page with no
                       #kk-bean, which is why it can sit in the shared block.
 assets/               logos, favicon set
 tools/check-site.py   the drift + invariant check. Read the next section.
@@ -121,10 +121,12 @@ doubles as its graph paper.
 on a log-odds axis. No such file has ever existed in this repo. What shipped is
 the board below. The fat-tails idea is still a good one and is still unbuilt.)*
 
-**A month is twenty-five trading days.** Each bead is one month: it opens at zero
-and steps left or right once per day, so where it comes to rest after 25 steps is
-that month's count of up days. Stack enough months and the pile is
-Binomial(25, p) — the distribution a month is drawn from.
+**Each bead is one trading day.** It opens at zero and takes twenty-five small
+moves through the session, so where it comes to rest is that day's close. Stack
+enough days and the pile is Binomial(25, p) — the distribution a day is drawn
+from. Months are just `days / 30`, a calendar convenience for reading the
+horizon; nothing in the model knows what a month is, and a *trading* month is
+nearer 21 days.
 
 There are **no pegs**, and that is deliberate rather than cosmetic. Nothing ever
 collided with anything: every outcome is drawn from a seeded LCG before the bead
@@ -134,10 +136,15 @@ independent days. What is drawn instead is the one true thing about the geometry
 — `binX(12.5)` **is** `cx`, so the column every walk opens in is exactly the 0σ
 tick it will be measured against, and a faint rule says so.
 
-- **solid bars** — months that actually landed. A fill means "this happened".
-- **lime bars** — the same months, beyond 2σ *of a fair coin*
+- **solid bars** — days that actually closed there. A fill means "this happened".
+- **lime bars** — the same days, beyond 2σ *of a fair coin*
 - **ink outline** — the exact Binomial(25, p) at the odds currently set: where the
-  pile *would* sit if every month so far had run at these odds
+  pile *would* sit if every day so far had run at these odds
+
+Because the bars butt together with no gap, the pile reads as one silhouette and
+the outline reads through it: **solid is what happened, hollow is what the model
+expected.** Where the outline rises above the fill, the model wanted more days
+there than arrived.
 
 **Mark type carries the layer, lightness carries the region, and hue is
 load-bearing on nothing.** Fill means measured, outline means implied — so the
@@ -150,21 +157,30 @@ bars so it survives crossing one. Both of those are load-bearing; `probe-bean.ht
 asserts them (`C4`).
 
 The x axis is in standard deviations of a **fair** coin and does not move when
-you move `P(up day)`. A ruler that slides with the thing it measures cannot show
+you move `P(up move)`. A ruler that slides with the thing it measures cannot show
 you that the thing moved. So "beyond 2σ" means *further than a market with no
 edge in it would have gone* — which is why the tail figure climbing as you raise
-`P(up day)` is the point rather than a rounding artefact.
+the odds is the point rather than a rounding artefact. The slider is `P(up move)`
+and not `P(up day)`: it sets the odds on each of the 25 moves *inside* the
+session. The odds that the day itself closes up is a different number, one the
+walk produces rather than takes.
 
 `R = 25` is load-bearing. Bar edges sit at half-integers and σ is `sqrt(R)/2`, so
 a bar edge coincides with 2σ only when R is an odd perfect square. At 25: σ = 2.5,
 mean = 12.5, so ±2σ land on 7.5 and 17.5 — the shared edges of bins 7|8 and 17|18.
 Every bar is whole, no width is fudged, and no bar ever straddles the line.
 
-**One bead is one MONTH.** The readout prints months and then `25 × months` days.
-An earlier build printed `N` as days and `N/25` as months — the same 25× error
-made twice in opposite directions — and claimed 2,400 days out of what were
-actually 60,000 coin flips. If you touch the readout, keep the units straight;
-`probe-bean.html` asserts both numbers.
+**One bead is one DAY.** The readout prints days and then `days / 30` months. The
+units here have been wrong before, in both directions, so if you touch the readout
+keep them straight — `probe-bean.html` asserts both numbers against the spoken
+description, which is the only place the units are stated in words.
+
+**The board is a fixed size.** Its height is one of two values, stepping at 560px,
+and the space reserved above it for the readout is a constant per width bracket —
+*not* the number of rows the readout happened to wrap to. Both of those were
+previously derived, which meant the entire drawing resized as the window moved and
+jumped 16px the instant a counter grew a digit. If you add a metric, check it
+still fits the reserve rather than making the reserve follow it.
 
 Under `prefers-reduced-motion: reduce` it resolves 2,400 months at once, draws the
 finished board, and never calls `requestAnimationFrame` at all. `rAF` is throttled

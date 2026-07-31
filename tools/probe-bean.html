@@ -106,26 +106,21 @@
   var rateC = hC.querySelectorAll('input[type=range]')[1];
   say('C rate slider disabled', rateC.disabled, rateC.disabled === true);
   var alC = cC.getAttribute('aria-label') || '';
-  // One bead runs R Bernoulli days and lands ONCE, so N counts MONTHS. The
-  // readout used to print N as days and N/R as months -- the same 25x error
-  // twice, in opposite directions -- and this probe asserted the wrong one of
-  // the two, which is how it survived. instantDrops(2400) is 2,400 months and
-  // therefore 60,000 days.
-  var mC = alC.match(/([\d,]+) months/);
-  say('C aria months', mC ? mC[1] : '(none)', !!mC && mC[1] === '2,400');
+  // One bead is one DAY -- it takes R moves through the session and closes once
+  // -- so N counts days directly and months are days/30. instantDrops(2400) is
+  // therefore 2,400 days and 80 months. Both are asserted: the readout has been
+  // wrong about this pair before, in both directions, and the description is the
+  // only place the units are stated in words.
   var dC = alC.match(/([\d,]+) days/);
-  say('C aria days', dC ? dC[1] : '(none)', !!dC && dC[1] === '60,000');
+  say('C aria days', dC ? dC[1] : '(none)', !!dC && dC[1] === '2,400');
+  var mC = alC.match(/([\d,]+) months/);
+  say('C aria months', mC ? mC[1] : '(none)', !!mC && mC[1] === '80');
   say('C aria has measured', /Measured mean/.test(alC), /Measured mean/.test(alC));
   // A filled board: the TALLEST bar reaches MAXH. Sampling one bin would not do
   // -- bars are scaled against the realised maximum, and in 2,400 draws the bin
   // nearest the mean is not reliably the fullest one.
   var barTop = 999, xs, yy;
   for (xs = cx - 120; xs <= cx + 120; xs += 5) {
-    // Skip the centre column. The zero rule -- the mark that says every walk
-    // opens at zero, and that binX(12.5) IS cx -- runs the full height of the
-    // board there, so a column sampling it finds paint at the top of the scan
-    // and reports the rule as a very tall bar.
-    if (Math.abs(xs - cx) <= 2) { continue; }
     for (yy = 232; yy < 366; yy++) {
       if (painted(px(xC, xs, yy))) { if (yy < barTop) { barTop = yy; } break; }
     }

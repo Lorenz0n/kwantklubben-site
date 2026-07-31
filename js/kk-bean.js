@@ -1,24 +1,25 @@
 /* kk-bean.js — the hero board
  *
- * A month is twenty-five trading days. Each bead walks one: it opens at zero and
- * steps left or right once per day, so where it comes to rest after 25 steps is
- * that month's count of up days. Stack enough months and the pile is
- * Binomial(25, p) — the distribution a month is drawn from.
+ * Each bead is ONE TRADING DAY. It opens at zero and takes twenty-five small
+ * moves through the session, so where it comes to rest is that day's close.
+ * Stack enough days and the pile is Binomial(25, p) — the distribution a day is
+ * drawn from. Months are just days/30, a calendar convenience for reading the
+ * horizon; nothing in the model knows about them.
  *
  * There are no pegs, because nothing bounces off anything. The bead's horizontal
  * position IS its running sum, and the column it opens in is the zero of the very
  * axis it lands on. A peg field drew a mechanism that does not exist, and read as
  * a pinball machine — which asserts that the shape comes from the apparatus. It
- * comes from adding up twenty-five independent days.
+ * comes from adding up twenty-five independent moves.
  *
- *   solid bars        months that actually landed. A fill means "this happened".
- *   lime bars         the same months, out beyond 2 sigma of a FAIR coin
+ *   solid bars        days that actually closed there. A fill means "this happened".
+ *   lime bars         the same days, out beyond 2 sigma of a FAIR coin
  *   ink outline       the exact distribution at the odds currently set: where the
- *                     pile WOULD sit if every month so far had run at these odds.
+ *                     pile WOULD sit if every day so far had run at these odds.
  *                     An open stroke, drawn LAST and over the bars — a reference
  *                     you cannot see where the data is is not a reference. It
  *                     jumps the instant the slider moves; the bars migrate toward
- *                     it only as new months land.
+ *                     it only as new days land.
  *
  * Mark type carries the layer (fill = measured, outline = implied) and lightness
  * carries the region (ink = body, lime = tail). Hue is load-bearing on nothing, so
@@ -28,10 +29,10 @@
  * comparison, at 1.10-1.38:1, under bars that were drawn on top of it.
  *
  * The x axis is in standard deviations of a FAIR coin and does not move when you
- * move P(up day). A ruler that slides with the thing it measures cannot show you
+ * move P(up move). A ruler that slides with the thing it measures cannot show you
  * that the thing moved. "Beyond 2 sigma" therefore means "further than a market
  * with no edge in it would have gone" — which is why the tail figure climbing as
- * you raise P(up day) is the whole point rather than a rounding artefact.
+ * you raise the odds is the whole point rather than a rounding artefact.
  *
  * R = 25, and that is load-bearing. Bar edges sit at half-integers and sigma is
  * sqrt(R)/2, so a bar edge lands exactly on 2 sigma only when R is an odd perfect
@@ -39,9 +40,9 @@
  * edges of bins 7|8 and 17|18. Whole bars AND an exact split — and the walk opens
  * at binX(12.5), which is exactly the 0 sigma tick.
  *
- * Settled bars are history and are never recomputed. Moving P(up day) changes the
- * odds for steps that have not happened yet; it does not reach back and re-roll
- * months that already landed.
+ * Settled bars are history and are never recomputed. Moving the odds changes the
+ * odds for moves that have not happened yet; it does not reach back and re-roll
+ * days that already closed.
  *
  * ES5-only IIFE to match js/kk-nav.js — no build step here.
  */
@@ -92,6 +93,11 @@
       // the edges of bins 7|8 and 17|18. Whole bars, exact split, no widths
       // fudged. At 21 you can have one or the other, not both.
       var R = 25;
+      // Months are a reading convenience laid over the day count, not part of the
+      // model -- nothing in the walk knows what a month is. 30 is calendar days;
+      // a trading month is nearer 21. This is here to give the day count a sense
+      // of horizon, not to settle anything.
+      var DAYS_PER_MONTH = 30;
       // Vertical geometry is derived, not fixed. H comes from the measured width
       // in layout(); BASE, BOARD_BOTTOM and MAXH are recomputed from it in
       // render(). At the 440px desktop height they resolve to exactly the
@@ -103,12 +109,12 @@
       var BOARD_BOTTOM = 236;  /* y where the 25th step lands */
       var BASE = 366;          /* bin floor */
       var MAXH = 126;          /* tallest bar */
-      // The plot is scaled against at least this many months. Without a floor the
-      // first month to land is the tallest bar on an empty board, so it is drawn
+      // The plot is scaled against at least this many days. Without a floor the
+      // first day to land is the tallest bar on an empty board, so it is drawn
       // at full plot height and the scale then collapses under it over the next
       // second. It also lets the implied outline -- which depends on p alone and
       // needs no data -- be drawn from the very first frame instead of leaving
-      // the hero blank until enough months have landed. Above 60 months this is
+      // the hero blank until enough days have landed. Above 60 days this is
       // inert and the drawing is unchanged.
       var N_REF = 60;
       var u;
@@ -157,7 +163,7 @@
       // something else: the visible text then IS the accessible name, which is
       // what voice control needs to address the control (WCAG 2.5.3).
       var lab = document.createElement('label');
-      lab.textContent = 'P(up day)';
+      lab.textContent = 'P(up move)';
       lab.htmlFor = uid + '-p';
       var slider = document.createElement('input');
       slider.type = 'range';
@@ -170,16 +176,13 @@
       val.textContent = '0.500';
       val.style.cssText = 'color:' + INK + ';min-width:42px;';
       var rLab = document.createElement('label');
-      // months/sec, not "daily returns/sec". One bead is one month of R days, so
-      // this slider was mislabelled by a factor of R in the same way the readout
-      // was.
-      rLab.textContent = 'months/sec';
+      rLab.textContent = 'days/sec';
       rLab.htmlFor = uid + '-rate';
       var rate = document.createElement('input');
       rate.type = 'range';
       rate.id = uid + '-rate';
       rate.min = '1'; rate.max = '60'; rate.step = '1'; rate.value = '12';
-      rate.setAttribute('aria-valuetext', '12 months per second');
+      rate.setAttribute('aria-valuetext', '12 days per second');
       rate.style.cssText = 'flex:1 1 120px;max-width:190px;accent-color:' + LIME + ';cursor:pointer;';
       var rVal = document.createElement('span');
       rVal.textContent = '12';
@@ -221,11 +224,14 @@
         var dpr = Math.min(2, window.devicePixelRatio || 1);
         var w = Math.floor(canvas.clientWidth || root.clientWidth || 640);
         if (w < 200) { w = 200; }
-        // Anything at or above 564px keeps the full 440 this was tuned at, so a
-        // desktop hero is untouched; below that the board gets shorter instead
-        // of keeping a 440px slab on a 360px phone.
-        var h = Math.round(w * 0.78);
-        if (h < H_MIN) { h = H_MIN; } else if (h > H_MAX) { h = H_MAX; }
+        // TWO heights, not a continuous ramp. h = round(w * 0.78) meant every
+        // pixel of width changed the height, so the board resized under a
+        // dragged window, under a scrollbar appearing, and under a webfont
+        // landing -- the whole drawing breathed. One step, at the same 560px the
+        // rest of this layout already breaks at: a phone gets the short board,
+        // everything else gets the 440 this was tuned at, and between those two
+        // nothing moves at all.
+        var h = w < 560 ? H_MIN : H_MAX;
         if (w !== W || h !== H || dpr !== DPR) {
           W = w; H = h; DPR = dpr;
           canvas.style.height = H + 'px';
@@ -288,13 +294,13 @@
 
       /* ---------- histogram ----------
          The bars are settled outcomes and are never recomputed. Changing
-         P(up day) changes the odds for days that have not happened yet; it does
-         not reach back and re-roll months that already landed.
+         the odds changes them for moves that have not happened yet; it does
+         not reach back and re-roll days that already closed.
 
          pmf is the exact Binomial(R, p) at the CURRENT setting. Scaled to N it
-         is the implied distribution: where the pile would sit if every month so
+         is the implied distribution: where the pile would sit if every day so
          far had run at these odds. It jumps the moment the slider moves, while
-         the bars migrate toward it only as new months land. */
+         the bars migrate toward it only as new days land. */
       function buildPmf() {
         pmf = [];
         var c = 1, i;
@@ -401,7 +407,7 @@
       function groupsFor(ts, d) {
         var mo = moments(), ex = exact();
         // Every metric keeps its slot from the first frame. The exact column is a
-        // function of P(up day) alone, so it is meaningful with no data at all;
+        // function of P(up move) alone, so it is meaningful with no data at all;
         // the measured column shows an en dash until a ball actually lands.
         // Printing 0.00 for a statistic nobody has measured yet reads as "we
         // measured zero", which is a different claim from "we have no data".
@@ -411,20 +417,19 @@
         // actually buys a legible size at 360px instead of bottoming out at 9px.
         var kDay = small ? 'd ' : 'days ';
         var kMon = small ? 'mo ' : 'months ';
-        var kP = small ? 'p ' : 'P(up day) ';
-        // Whose sigma was never stated. It is the fair coin's, fixed, and saying
-        // so is the difference between "the tails" (a property of the ruler) and
-        // "further than a market with no edge would have gone" (a claim).
-        var kT = small ? 'tails ' : 'tails>2σ fair ';
-        // One bead runs R Bernoulli days and lands ONCE, so N counts MONTHS and
-        // the day count is N*R. The old build printed N as days and N/R as
-        // months, which was the same 25x error made twice in opposite
-        // directions: at 2,400 beads it claimed 2,400 days out of what were
-        // actually 60,000 coin flips. Months lead now — it is the unit a bead
-        // actually is, and the one the pile is a distribution OF.
+        // P(up MOVE), not P(up day). It is the odds on each of the R moves inside
+        // the session; the odds that the DAY closes up is a different number the
+        // walk produces rather than takes.
+        var kP = small ? 'p ' : 'P(up move) ';
+        var kT = 'Tails ';
+        // One bead is one DAY -- it takes R moves through the session and closes
+        // once -- so N counts days directly, and months are days/30. Days lead:
+        // it is the unit a bead actually is, and the one the pile is a
+        // distribution OF. The month figure is a horizon, nothing more.
         var g = [
-          [{ t: kMon, c: INK4 }, { t: fmtInt(N), c: INK, b: 1 }],
-          [{ t: d + kDay, c: INK4 }, { t: fmtInt(N * R), c: INK, b: 1 }],
+          [{ t: kDay, c: INK4 }, { t: fmtInt(N), c: INK, b: 1 }],
+          [{ t: d + kMon, c: INK4 },
+           { t: fmtInt(Math.floor(N / DAYS_PER_MONTH)), c: INK, b: 1 }],
           [{ t: d + kP, c: INK4 }, { t: p.toFixed(3), c: INK, b: 1 }],
           [{ t: d + kT, c: INK4 },
            { t: N ? (ts.lo + ts.hi).toFixed(2) + '%' : nil, c: N ? LIME8 : INK4, b: 1 }],
@@ -518,7 +523,15 @@
         var i;
         for (i = 0; i < lines.length; i++) { drawSegs(lines[i], pad, 13 + i * 16); }
 
-        yTop = 28 + (lines.length - 1) * 16;
+        // RESERVED, not measured. Deriving the board's top from the number of
+        // rows the readout happened to wrap to meant the entire drawing -- BASE,
+        // MAXH, stepY, every bar and every bead -- jumped 16px the instant a
+        // number grew a digit and pushed the metrics onto another row. The board
+        // moved because a counter ticked over. The reserve is the most rows the
+        // readout can need at this width, so it grows into space already set
+        // aside for it and the geometry below is constant.
+        var METRIC_ROWS = small ? 3 : (W < 900 ? 2 : 1);
+        yTop = 28 + (METRIC_ROWS - 1) * 16;
         // Derived from the measured height so a short board stays in proportion
         // instead of keeping desktop constants on a phone. At H=440 these come
         // out to exactly 366 / 126 / 236 -- the values this was tuned at.
@@ -541,30 +554,16 @@
            twenty-five independent days, which is a fact about the arithmetic and
            not about the machine.
 
-           What replaces them is the one true thing about this geometry. The walk
-           opens at cx, and binX(12.5) IS cx, so the column every bead starts in
-           is exactly the 0 sigma tick it will be measured against. The rule runs
-           all the way to the axis and is drawn BEFORE the bars, so the pile hides
-           the middle of it and the eye still joins the opening to the zero. */
-        ctx.save();
-        ctx.globalAlpha = 0.30;
-        ctx.strokeStyle = INK4;
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(Math.round(cx) + 0.5, yTop - 7);
-        ctx.lineTo(Math.round(cx) + 0.5, BASE);
-        ctx.stroke();
-        /* the opening itself, so "every month starts here, at zero" is a mark on
-           the board rather than something you have to infer from the symmetry */
-        ctx.globalAlpha = 0.6;
-        ctx.beginPath();
-        ctx.moveTo(cx - 5.5, yTop - 6.5);
-        ctx.lineTo(cx + 5.5, yTop - 6.5);
-        ctx.stroke();
-        ctx.restore();
+           A full-height rule at cx replaced them for one revision, marking that
+           the walk opens at zero -- binX(12.5) IS cx, so the opening column is
+           exactly the 0 sigma tick. It is gone: a vertical line rising from the
+           origin of a chart reads as a Y AXIS, and this chart has no y axis to
+           offer. It was answering a question nobody asked while implying a scale
+           that does not exist. The opening is still legible without it, from the
+           point the walks fan out from and from the 0 tick directly below it. */
 
-        // Scale against at least N_REF months. On an empty board the tallest
-        // thing in the plot was the single month that had just landed, so it was
+        // Scale against at least N_REF days. On an empty board the tallest
+        // thing in the plot was the single day that had just landed, so it was
         // drawn at full height and the scale then collapsed under it; and the
         // implied outline, which needs no data at all, was suppressed entirely
         // until enough had landed to give it a height. Both were the same missing
@@ -574,7 +573,20 @@
         for (q = 0; q <= R; q++) { if (pmf[q] * nEff > pmfMaxN) { pmfMaxN = pmf[q] * nEff; } }
         var denom = Math.max(1, maxC, pmfMaxN);
         var sc = MAXH / denom;
-        var bw = Math.max(2, dx - 2);
+
+        // Bars butt up against each other: no gap, and the edges are ROUNDED so
+        // adjacent bars share an integer x. A bar was dx-2 wide centred on
+        // binX(j), which left a ~2px paper gap; at zero gap on fractional
+        // coordinates the shared edge antialiases into a pale seam instead, which
+        // is a gap you did not ask for and cannot control. Rounding both edges and
+        // taking the width as the difference makes bin j end exactly where bin j+1
+        // begins. The only adjacency this creates is ink against lime-800 at the
+        // sigma line, which is 3.65:1 -- the one place the palette was chosen to
+        // survive touching.
+        function barEdge(j) {
+          var x0 = Math.round(binX(j) - dx / 2);
+          return { x0: x0, w: Math.round(binX(j) + dx / 2) - x0 };
+        }
 
         /* MEASURED — what actually landed. Solid fill, FULL opacity, coloured by
            bin index. Every bin is wholly body or wholly tail (isTail), which is
@@ -587,20 +599,21 @@
            anyway. Paying for a transparency nobody could see cost the bars 2:1 of
            their own contrast. */
         function paintBars() {
-          var j, hh, tp, col;
+          var j, hh, tp, col, e;
           for (j = 0; j <= R; j++) {
             if (counts[j] <= 0) { continue; }
             col = isTail(j) ? LIME8 : INK;
             hh = Math.max(0.8, counts[j] * sc);
             tp = BASE - hh;
+            e = barEdge(j);
             ctx.fillStyle = col;
-            ctx.fillRect(binX(j) - bw / 2, tp, bw, hh);
+            ctx.fillRect(e.x0, tp, e.w, hh);
             if (now - hits[j] < 260) {
               ctx.strokeStyle = col;
               ctx.lineWidth = 1.6;
               ctx.beginPath();
-              ctx.moveTo(binX(j) - bw / 2, tp - 1);
-              ctx.lineTo(binX(j) + bw / 2, tp - 1);
+              ctx.moveTo(e.x0, tp - 1);
+              ctx.lineTo(e.x0 + e.w, tp - 1);
               ctx.stroke();
             }
           }
@@ -646,7 +659,7 @@
           }
         }
         function paintImplied() {
-          var j, hh;
+          var j, hh, e;
           ctx.lineJoin = 'miter';
           ctx.save();
           // An empty path clips to nothing, so on an empty board the casing pass
@@ -656,7 +669,8 @@
           for (j = 0; j <= R; j++) {
             if (counts[j] <= 0) { continue; }
             hh = Math.max(0.8, counts[j] * sc);
-            ctx.rect(binX(j) - bw / 2, BASE - hh, bw, hh);
+            e = barEdge(j);
+            ctx.rect(e.x0, BASE - hh, e.w, hh);
           }
           ctx.clip();
           impliedPath();
@@ -807,10 +821,8 @@
         var dt = last ? Math.min(0.05, (ts - last) / 1000) : 0.016;
         last = ts;
 
-        // One bead IS one month, so the slider is beads per second directly: at 1
-        // the board opens one new month a second. (It is emphatically NOT one
-        // daily return, which is what the comment here used to claim and what the
-        // readout used to print.)
+        // One bead IS one day, so the slider is beads per second directly: at 1
+        // the board opens one new trading day a second.
         var rps = parseInt(rate.value, 10) || 12;
         if (rps < 1) { rps = 1; }
         var gap = 1 / rps;
@@ -884,22 +896,22 @@
       // without this none of it exists for a screen reader.
       function describe() {
         var t = tailSplit(), mo = moments(), ex = exact();
-        var s = 'A distribution built out of random walks. Each bead is one month: ' +
-          // "R trading days", never "R days": the running total further down this
-          // string is reported as "N days", and a listener (or a regex) meeting
-          // two different "<number> days" in one description has no way to tell
-          // the month length from the day count.
-          'it opens at zero and steps up or down once per day for ' + R +
-          ' trading days, and where it comes to rest is that month\'s count of ' +
-          'up days. ' +
-          'The months stack into a histogram, and an outline over it is the exact ' +
+        // "R small moves", never "R days": the running total further down this
+        // string is reported as "N days", and a listener (or a regex) meeting two
+        // different "<number> days" in one description has no way to tell which
+        // is the count.
+        var s = 'A distribution built out of random walks. Each bead is one ' +
+          'trading day: it opens at zero and takes ' + R + ' small moves through ' +
+          'the session, and where it comes to rest is that day\'s close. ' +
+          'The days stack into a histogram, and an outline over it is the exact ' +
           'distribution implied by the odds currently set. The axis is in standard ' +
           'deviations of a fair coin and does not move when the odds do, so bars ' +
-          'beyond 2 sigma are months that went further than a market with no edge ' +
+          'beyond 2 sigma are days that went further than a market with no edge ' +
           'in it would have gone. ' +
-          'Press Enter to release more months. ' +
-          'P of an up day, ' + p.toFixed(3) + '. ' +
-          fmtInt(N) + ' months, ' + fmtInt(N * R) + ' days. ';
+          'Press Enter to release more days. ' +
+          'P of an up move, ' + p.toFixed(3) + '. ' +
+          fmtInt(N) + ' days, ' +
+          fmtInt(Math.floor(N / DAYS_PER_MONTH)) + ' months. ';
         if (mo) {
           s += 'Beyond 2 sigma, ' + (t.lo + t.hi).toFixed(2) + '% of the pile: ' +
             t.lo.toFixed(2) + '% left, ' + t.hi.toFixed(2) + '% right. ' +
@@ -926,7 +938,7 @@
       /* ---------- interaction ---------- */
       rate.addEventListener('input', function () {
         rVal.textContent = rate.value;
-        rate.setAttribute('aria-valuetext', rate.value + ' months per second');
+        rate.setAttribute('aria-valuetext', rate.value + ' days per second');
       });
       slider.addEventListener('input', function () {
         p = parseInt(slider.value, 10) / 1000;
